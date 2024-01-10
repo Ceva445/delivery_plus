@@ -7,14 +7,15 @@
 </head>
 <body>
     <div class="d-flex align-items-center justify-content-center min-vh-100">
-        <div class="w-25"> <!-- Займатиме 25% від ширини екрану -->
+        <div class="col-md-8"> <!-- Займатиме 25% від ширини екрану -->
+
             <div class="btn-group">
                 {% block navigation %}
                 {% endblock %}
             </div>
             <br>
             <br>
-            <div class="d-flex align-items-center justify-content-center min-vh-100">
+            <div class="content">
                 {% block content %}{% endblock %}
             </div>
             <br>
