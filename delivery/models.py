@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator
 from .utils import get_unique_identifier
+from deliveryplus import settings
 
 
 class WorkZone(models.Model):
@@ -63,7 +64,7 @@ class Delivery(models.Model):
     ssc_barcode = models.CharField(max_length=20)# !!!! можливо 20 задежить чи сканер читає (00)
     images_url = models.ImageField(upload_to="images/")
     date_recive = models.DateTimeField(auto_now_add=True)
-    #user = None
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     comment = models.TextField() # додати генерацію коменту
     recive_location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name="recive_location") # створити модель для локалізацій
     delivery_id = None # стоворити функцію для генерації унікального коду YYYY:MM:DD:NNN
