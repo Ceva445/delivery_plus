@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+<form method="post" action="{% url 'delivery:delivery_create' %}">
+    {% csrf_token %}
+
+    <div class="input-group mb-3" type="number">
+        <span class="input-group-text" style="width: 20%;">Supplier </span>
+        <input type="text" style="width: 80%;" name="supplier_company" id="supplier_company_search" autocomplete="off" oninput="searchSupplier()">
+        <div id="supplier_suggestions" onclick="selectSupplier(event)">
+        </div>
+    <input type="hidden" name="selected_supplier_id" id="selected_supplier_id">
+    </div>
+    
+    
+    <div class="input-group mb-3" type="number">
+        <span class="input-group-text" style="width: 21%;">Zam NR.: </span>
+        <input type="number" style="width: 79%;" name="nr_order" required>
+    </div>
+
+    <div class="input-group mb-3" type="number">
+        <span class="input-group-text" style="width: 26%;" >SSC: </span>
+        <input type="text" style="width: 74%;" name="ssc_barcode" maxlength="20" required>
+    </div>
+    
+
+    <div class="mb-3">
+        <input name="images_url" class="form-control" type="file" id="formFileMultiple" multiple>
+      </div>
+    
+
+    <span class="input-group-text" >Reasone</span>
+    <select name="reasones" class="form-select">
+        {% for reasone in reasones %}
+            <option value="{{ reasone.id }}">{{ reasone.name }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="ean">Products:</label>
+    <div id="product-fields">
+        <div class="product-field">
+            <input type="number" name="ean" style="width: 70%;" placeholder="EAN" margin-right: 1px;> 
+            <input type="number" name="qty" style="width: 28%;" placeholder="QTY" required>
+        </div>
+    </div>
+
+    <button type="button" onclick="addProductField()" style="width: 100%;">+</button>
+    <br>
+    <br>
+    {% comment %} <div class="input-group">
+        <span class="input-group-text">EAN/QTY</span>
+        <input type="number" aria-label="ean" class="form-control" style="width: 50%;">
+        <input type="number" aria-label="qty" class="form-control">
+      </div>
+    <br>
+    {% endcomment %}
+    <input class="btn btn-secondary" type="submit" value="Submit" style="width: 100%;"> 
+</form>
+
+
+
+
+<script>
+    function searchSupplier() {
+        const input = document.getElementById('supplier_company_search').value;
+        const suggestionsDiv = document.getElementById('supplier_suggestions');
+    
+        // Dummy suppliers data for testing
+        const suppliers = {{ suppliers|safe }};
+    
+        // Filter suppliers based on user input
+        const filteredSuppliers = suppliers.filter(supplier => supplier.name.toLowerCase().includes(input.toLowerCase()));
+    
+        // Generate HTML for suggestions
+        const suggestionsHTML = filteredSuppliers.map(supplier => `<div data-id="${supplier.id}">${supplier.name}</div>`).join('');
+    
+        // Update the suggestionsDiv with the generated HTML
+        suggestionsDiv.innerHTML = suggestionsHTML;
+    }
+    
+    function selectSupplier(event) {
+        const selectedSupplierId = event.target.getAttribute('data-id');
+        const selectedSupplierInput = document.getElementById('selected_supplier_id');
+        const supplierSearchInput = document.getElementById('supplier_company_search');
+    
+        if (selectedSupplierId) {
+            selectedSupplierInput.value = selectedSupplierId;
+            supplierSearchInput.value = event.target.innerText;
+            document.getElementById('supplier_suggestions').innerHTML = '';  // Clear suggestions
+        }
+    }
+
+
+    function addProductField() {
+        const productFieldsContainer = document.getElementById('product-fields');
+
+        // Create a new product field container
+        const newProductField = document.createElement('div');
+        newProductField.className = 'product-field';
+
+        // Create new "ean" input
+        const eanInput = document.createElement('input');
+        eanInput.type = 'number';
+        eanInput.name = 'ean';
+        eanInput.style.width = '70%';
+        eanInput.style.marginRight = '4px';
+        eanInput.placeholder = 'EAN';
+       
+        // Create new "qty" input
+        const qtyInput = document.createElement('input');
+        qtyInput.type = 'number';
+        qtyInput.name = 'qty';
+        qtyInput.placeholder = 'QTY';
+        qtyInput.required = true;
+        qtyInput.style.width = '28%';
+
+        // Append new inputs to the container
+        newProductField.appendChild(eanInput);
+        newProductField.appendChild(qtyInput);
+
+        // Append the new container to the main container
+        productFieldsContainer.appendChild(newProductField);
+    }
+
+
+    </script>
+
+    
+{% endblock %}
