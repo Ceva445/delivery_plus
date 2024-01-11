@@ -2,7 +2,7 @@
 {% load crispy_forms_filters %}
 
 {% block content %}
-<form method="post" action="{% url 'delivery:delivery_create' %}">
+<form method="post" action="{% url 'delivery:delivery_create' %}" enctype="multipart/form-data">
     {% csrf_token %}
 
     <div class="input-group mb-3" type="number">
@@ -26,7 +26,7 @@
     
 
     <div class="mb-3">
-        <input name="images_url" class="form-control" type="file" id="formFileMultiple" multiple>
+        <input name="images_url" class="form-control" type="file" id="formFileMultiple">
       </div>
     
 
@@ -40,8 +40,8 @@
     <label for="ean">Products:</label>
     <div id="product-fields">
         <div class="product-field">
-            <input type="number" name="ean" style="width: 70%;" placeholder="EAN" margin-right: 1px;> 
-            <input type="number" name="qty" style="width: 28%;" placeholder="QTY" required>
+            <input type="number" name="ean_0" style="width: 70%;" placeholder="EAN" margin-right: 1px;> 
+            <input type="number" name="qty_0" style="width: 29.5%;" placeholder="QTY" required>
         </div>
     </div>
 
@@ -94,6 +94,7 @@
 
     function addProductField() {
         const productFieldsContainer = document.getElementById('product-fields');
+        const fieldCount = productFieldsContainer.childElementCount;
 
         // Create a new product field container
         const newProductField = document.createElement('div');
@@ -102,7 +103,7 @@
         // Create new "ean" input
         const eanInput = document.createElement('input');
         eanInput.type = 'number';
-        eanInput.name = 'ean';
+        eanInput.name = `ean_${fieldCount}`;
         eanInput.style.width = '70%';
         eanInput.style.marginRight = '4px';
         eanInput.placeholder = 'EAN';
@@ -110,10 +111,10 @@
         // Create new "qty" input
         const qtyInput = document.createElement('input');
         qtyInput.type = 'number';
-        qtyInput.name = 'qty';
+        qtyInput.name = `qty_${fieldCount}`;
         qtyInput.placeholder = 'QTY';
         qtyInput.required = true;
-        qtyInput.style.width = '28%';
+        qtyInput.style.width = '29.5%';
 
         // Append new inputs to the container
         newProductField.appendChild(eanInput);
