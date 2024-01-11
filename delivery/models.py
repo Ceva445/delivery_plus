@@ -5,6 +5,11 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from .utils import get_unique_identifier
 from deliveryplus import settings
 
+class ReasoneComment(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self) -> str:
+        return self.name
 
 class WorkZone(models.Model):
     WORK_ZONE = [
@@ -56,6 +61,8 @@ class Shop(models.Model):
 
     def __str__(self) -> str:
         return f"{self.position_nr} {self.name}"
+
+
 
 
 class Delivery(models.Model):
