@@ -20,14 +20,20 @@
     </div>
 
     <div class="input-group mb-3" type="number">
+        <span class="input-group-text" style="width: 21%;">Shop: </span>
+        <input type="number" style="width: 79%;" name="shop" required>
+    </div>
+
+    <div class="input-group mb-3" type="number">
         <span class="input-group-text" style="width: 26%;" >SSC: </span>
         <input type="text" style="width: 74%;" name="ssc_barcode" maxlength="20" required>
     </div>
     
 
-    <div class="mb-3">
+    <div class="mb-3" id="imag-fields">
         <input name="images_url" class="form-control" type="file" id="formFileMultiple">
-      </div>
+        <button type="button" onclick="addImageField()" style="width: 100%;">+</button>
+    </div>
     
 
     <span class="input-group-text" >Reasone</span>
@@ -48,13 +54,6 @@
     <button type="button" onclick="addProductField()" style="width: 100%;">+</button>
     <br>
     <br>
-    {% comment %} <div class="input-group">
-        <span class="input-group-text">EAN/QTY</span>
-        <input type="number" aria-label="ean" class="form-control" style="width: 50%;">
-        <input type="number" aria-label="qty" class="form-control">
-      </div>
-    <br>
-    {% endcomment %}
     <input class="btn btn-secondary" type="submit" value="Submit" style="width: 100%;"> 
 </form>
 
@@ -123,6 +122,31 @@
         // Append the new container to the main container
         productFieldsContainer.appendChild(newProductField);
     }
+
+    function addImageField(){
+        const imageFieldContainer = document.getElementById('imag-fields');
+        const fieldCount = imageFieldContainer.childElementCount;
+        
+        const newImageField = document.createElement('div');
+        newImageField.className = 'mb-3';
+
+
+
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.className = "form-control";
+        fileInput.name = `img_${fieldCount}`;
+        fileInput.style.width = '100%';
+        fileInput.style.marginTop = "15px";
+
+        // Insert the new container before the button
+        imageFieldContainer.insertBefore(newImageField, imageFieldContainer.lastElementChild);
+
+        // Append new inputs to the container
+        newImageField.appendChild(fileInput);
+
+    }
+
 
 
     </script>
