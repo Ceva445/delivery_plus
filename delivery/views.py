@@ -4,8 +4,33 @@ from django.views import View
 from .forms import DeliveryForm
 
 
-class DeliveryCreateView(View):
-    template_name = 'delivery/create_delivery.html'
+def home(request):
+    return render(request, "index.html")
+
+def create_delivery(request):
+    return render(request, "delivery/create_delivery.html")
+
+class FirstRecivCreateView(View):
+    template_name = "delivery/create_delivery_1_rec.html"
+
+    def get_context_data(self, **kwargs):
+        supliers_list = Supplier.objects.all()
+        suppliers = [{"id": sup.id, "name": sup.name} for sup in supliers_list]
+        
+        return {
+            "suppliers": suppliers,
+            }
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        return render(request, self.template_name)
+
+
+class SecondRecivCreateView(View):
+    template_name = "delivery/create_delivery_2_rec.html"
 
     def get_context_data(self, **kwargs):
         # Dummy data for testing
@@ -14,13 +39,8 @@ class DeliveryCreateView(View):
         reasones_list = ReasoneComment.objects.all()
         reasones = [{"id": reas.id, "name": reas.name} for reas in reasones_list]
 
-        # reasones = [
-        #     {'id': 1, 'name': 'Reasone 1'},
-        #     {'id': 2, 'name': 'Reasone 2'},
-        #     {'id': 3, 'name': 'Reasone 3'},
-        # ]
         return {
-            'suppliers': suppliers, 
+            "suppliers": suppliers, 
             "reasones": reasones
             }
 

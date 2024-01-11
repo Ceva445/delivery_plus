@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+{% comment %} <div class="d-flex align-items-center justify-content-center"> {% endcomment %}
+    <a class="btn btn-outline-secondary d-flex align-items-center justify-content-center" role="button" href="{% url 'delivery:delivery_create' %}"> Nowe Delivery </a> <br>
+    <a class="btn btn-outline-secondary d-flex align-items-center justify-content-center" role="button" href="">Sprawdź bazę </a><br>
+    <a class="btn btn-outline-secondary d-flex align-items-center justify-content-center" role="button" href="">Relokacja </a><br>
+    <a class="btn btn-outline-secondary d-flex align-items-center justify-content-center" role="button" href="">Raporty </a><br>
+{% comment %} </div> {% endcomment %}
+{% endblock %}
