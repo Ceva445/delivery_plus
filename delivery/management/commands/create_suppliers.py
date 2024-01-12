@@ -7,13 +7,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         workbook = xlrd.open_workbook("suppliers.xls")
-
-        # Select the first sheet (you may need to adjust this based on your Excel file)
         sheet = workbook.sheet_by_index(0)
-
-        # for row_index in range(sheet.nrows):
-        #     row_data = sheet.row_values(row_index)
-        #     print(row_data)
 
         supp_inst = [
             Supplier(name=sheet.row_values(row)[1], supplier_id=sheet.row_values(row)[0]) 

@@ -7,35 +7,17 @@ from .forms import DeliveryForm
 def home(request):
     return render(request, "index.html")
 
-def create_delivery(request):
-    return render(request, "delivery/create_delivery.html")
-
-class FirstRecivCreateView(View):
-    template_name = "delivery/create_delivery_1_rec.html"
-
-    def get_context_data(self, **kwargs):
-        supliers_list = Supplier.objects.all()
-        suppliers = [{"id": sup.id, "name": sup.name} for sup in supliers_list]
-        
-        return {
-            "suppliers": suppliers,
-            }
-
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data()
-        return render(request, self.template_name, context)
-
-    def post(self, request, *args, **kwargs):
-        return render(request, self.template_name)
-
+def select_reception(request):
+    return render(request, "delivery/select_reception.html")
 
 class SecondRecivCreateView(View):
-    template_name = "delivery/create_delivery_2_rec.html"
+    template_name = "delivery/delivery_create.html"
 
     def get_context_data(self, **kwargs):
         # Dummy data for testing
+        
         supliers_list = Supplier.objects.all()
-        suppliers = [{"id": sup.id, "name": sup.name} for sup in supliers_list]
+        suppliers = [{"id": sup.id, "name": sup.name, "supplier_wms_id":sup.supplier_wms_id} for sup in supliers_list]
         reasones_list = ReasoneComment.objects.all()
         reasones = [{"id": reas.id, "name": reas.name} for reas in reasones_list]
 
@@ -45,7 +27,9 @@ class SecondRecivCreateView(View):
             }
 
     def get(self, request, *args, **kwargs):
+        reception = (self.request.GET.get('reception', None))
         context = self.get_context_data()
+        context["reception"] = reception
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):

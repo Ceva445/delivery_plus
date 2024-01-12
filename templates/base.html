@@ -28,3 +28,95 @@
     {% endblock %}
 </body>
 </html>
+
+<script>
+    function searchSupplier() {
+        const input = document.getElementById('supplier_company_search').value;
+        const suggestionsDiv = document.getElementById('supplier_suggestions');
+    
+        // Dummy suppliers data for testing
+        const suppliers = {{ suppliers|safe }};
+        console.log(suppliers);
+    
+        // Filter suppliers based on user input
+        const filteredSuppliers = suppliers.filter(supplier => supplier.name.toLowerCase().includes(input.toLowerCase()));
+    
+        // Generate HTML for suggestions
+        const suggestionsHTML = filteredSuppliers.map(supplier => `<div data-id="${supplier.id}">${supplier.name} - ${supplier.supplier_wms_id}</div>`).join('');
+    
+        // Update the suggestionsDiv with the generated HTML
+        suggestionsDiv.innerHTML = suggestionsHTML;
+    }
+    
+    function selectSupplier(event) {
+        const selectedSupplierId = event.target.getAttribute('data-id');
+        const selectedSupplierInput = document.getElementById('selected_supplier_id');
+        const supplierSearchInput = document.getElementById('supplier_company_search');
+    
+        if (selectedSupplierId) {
+            selectedSupplierInput.value = selectedSupplierId;
+            supplierSearchInput.value = event.target.innerText;
+            document.getElementById('supplier_suggestions').innerHTML = '';  // Clear suggestions
+        }
+    }
+
+
+    function addProductField() {
+        const productFieldsContainer = document.getElementById('product-fields');
+        const fieldCount = productFieldsContainer.childElementCount;
+
+        // Create a new product field container
+        const newProductField = document.createElement('div');
+        newProductField.className = 'product-field';
+
+        // Create new "ean" input
+        const eanInput = document.createElement('input');
+        eanInput.type = 'number';
+        eanInput.name = `ean_${fieldCount}`;
+        eanInput.style.width = '70%';
+        eanInput.style.marginRight = '4px';
+        eanInput.placeholder = 'EAN';
+       
+        // Create new "qty" input
+        const qtyInput = document.createElement('input');
+        qtyInput.type = 'number';
+        qtyInput.name = `qty_${fieldCount}`;
+        qtyInput.placeholder = 'QTY';
+        qtyInput.required = true;
+        qtyInput.style.width = '28%';
+
+        // Append new inputs to the container
+        newProductField.appendChild(eanInput);
+        newProductField.appendChild(qtyInput);
+
+        // Append the new container to the main container
+        productFieldsContainer.appendChild(newProductField);
+    }
+
+    function addImageField(){
+        const imageFieldContainer = document.getElementById('imag-fields');
+        const fieldCount = imageFieldContainer.childElementCount;
+        
+        const newImageField = document.createElement('div');
+        newImageField.className = 'mb-3';
+
+
+
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.className = "form-control";
+        fileInput.name = `img_${fieldCount}`;
+        fileInput.style.width = '100%';
+        fileInput.style.marginTop = "15px";
+
+        // Insert the new container before the button
+        imageFieldContainer.insertBefore(newImageField, imageFieldContainer.lastElementChild);
+
+        // Append new inputs to the container
+        newImageField.appendChild(fileInput);
+
+    }
+
+
+
+    </script>

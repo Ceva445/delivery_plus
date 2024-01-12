@@ -43,13 +43,13 @@ class Location(models.Model):
 
 class Supplier(models.Model):
     name = models.CharField(max_length=70)
-    supplier_id = models.CharField(max_length = 40)
+    supplier_wms_id = models.CharField(max_length = 40)
 
     class Meta:
-        unique_together = ("name", "supplier_id")
+        unique_together = ("name", "supplier_wms_id")
     
     def __str__(self) -> str:
-        return f"{self.name} - {self.supplier_id}"
+        return f"{self.name} - {self.supplier_wms_id}"
     
 
 class Shop(models.Model):
