@@ -10,12 +10,11 @@ def home(request):
 def select_reception(request):
     return render(request, "delivery/select_reception.html")
 
-class SecondRecivCreateView(View):
+class DeliveryCreateView(View):
     template_name = "delivery/delivery_create.html"
 
     def get_context_data(self, **kwargs):
-        # Dummy data for testing
-        
+
         supliers_list = Supplier.objects.all()
         suppliers = [{"id": sup.id, "name": sup.name, "supplier_wms_id":sup.supplier_wms_id} for sup in supliers_list]
         reasones_list = ReasoneComment.objects.all()
@@ -33,17 +32,29 @@ class SecondRecivCreateView(View):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        # Process the form submission
-        form = DeliveryForm(request.POST, request.FILES)
-        # Retrieve values from the form
-        supplier_company = request.POST.get('supplier_company')
-        nr_order = request.POST.get('nr_order')
-        ssc_barcode = request.POST.get('ssc_barcode')
-        images_url = request.FILES.get('images_url')
-        reasones = request.POST.get('reasones')
-        selected_supplier_id = request.POST.get('selected_supplier_id')
 
-        print(request.FILES)
+        form = DeliveryForm(request.POST, request.FILES)
+
+        supplier_company = request.POST.get('supplier_company')
+        selected_supplier_id = request.POST.get('selected_supplier_id')
+        order_nr = request.POST.get('order_nr')
+        sscc_barcode = request.POST.get('sscc_barcode')
+        shop_nr = request.POST.get("shop")
+        reasones = request.POST.get('reasones')
+        comment = request.POST.get("comment", None)
+
+
+        print(f"Supplier Company: {supplier_company}")
+        print(f"Selected Supplier ID: {selected_supplier_id}")
+        print(f"Order Number: {order_nr}")
+        print(f"SSCC Barcode: {sscc_barcode}")
+        print(f"Shop Number: {shop_nr}")
+        print(f"Reasones: {reasones}")
+        print(f"Comment: {comment}")
+
+        if request.FILES:
+            for _ in request.FILES.items():
+                print(_)
         
         # field_count = 0
         # while True:
@@ -59,4 +70,4 @@ class SecondRecivCreateView(View):
         #     field_count += 1
 
      
-        return render(request, self.template_name)
+        return render(request, "delivery/select_reception.html")

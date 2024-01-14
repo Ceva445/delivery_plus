@@ -69,7 +69,7 @@ class Delivery(models.Model):
     supplier_company = models.ForeignKey(Supplier, on_delete=models.SET_NULL, null=True)
     nr_order = models.IntegerField()# додати валідатор довжина 20 знаків
     ssc_barcode = models.CharField(max_length=20)# !!!! можливо 20 задежить чи сканер читає (00)
-    images_url = models.ImageField(upload_to="images/")
+    images_url = models.ImageField(upload_to="images/", blank=True)
     date_recive = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     comment = models.TextField() # додати генерацію коменту

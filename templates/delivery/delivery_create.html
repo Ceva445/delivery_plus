@@ -18,13 +18,13 @@
         <input type="text" style="width: 75%;" name="supplier_company" id="supplier_company_search" autocomplete="off" oninput="searchSupplier()">
         <div id="supplier_suggestions" onclick="selectSupplier(event)">
         </div>
-    <input type="hidden" name="selected_supplier_id" id="selected_supplier_id">
+    <input type="hidden" name="selected_supplier_id" id="selected_supplier_id" required>
     </div>
     
     
     <div class="input-group mb-3" type="number">
         <span class="input-group-text" style="width: 25%;">Zamówienie: </span>
-        <input type="number" style="width: 75%;" name="nr_order" required>
+        <input type="number" style="width: 75%;" name="order_nr" required>
     </div>
 
     <div class="input-group mb-3" type="number">
@@ -34,7 +34,7 @@
 
     <div class="input-group mb-3" type="number">
         <span class="input-group-text" style="width: 25%;" >SSCC: </span>
-        <input type="text" style="width: 75%;" name="ssc_barcode" maxlength="20" required>
+        <input type="text" style="width: 75%;" name="sscc_barcode" maxlength="20" required>
     </div>
     
 
@@ -44,7 +44,7 @@
     </div>
 
     {% if reception == "first" %}
-        <input type="text" class="form-control" placeholder="Dodaj komentarz" required>
+        <input name="comment" type="text" class="form-control" placeholder="Dodaj komentarz" required>
     {% endif %}
     
     {% if reception == "second" %}    
