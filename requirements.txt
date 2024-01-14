@@ -10,3 +10,9 @@ psycopg2==2.9.6
 whitenoise==6.4.0
 gunicorn==20.1.0
 openpyxl
+google-cloud-storage==2.12.0
+google-auth 
+google-auth-oauthlib 
+google-auth-httplib2
+django-storages
+xlrd

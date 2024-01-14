@@ -2,7 +2,8 @@ from django.contrib import admin
 from .models import (
     Location, WorkZone, 
     Shop, Supplier, 
-    Delivery, ReasoneComment
+    Delivery, ReasoneComment,
+    ImageModel
     )
 
 
@@ -13,3 +14,4 @@ admin.site.register(Shop)
 admin.site.register(Supplier)
 admin.site.register(Delivery)
 admin.site.register(ReasoneComment)
+admin.site.register(ImageModel)

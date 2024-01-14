@@ -14,6 +14,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 import dj_database_url
+from google.oauth2 import service_account
 
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -43,7 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "delivery",
     "user",
-    "crispy_forms"
+    "crispy_forms",
 ]
 
 MIDDLEWARE = [
@@ -149,5 +150,19 @@ MEDIA_URL = "/media/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+
+# Google Cloud Storage settings
+GS_BUCKET_NAME = os.environ["GS_BUCKET_NAME"]
+GS_PROJECT_ID = os.environ["GS_PROJECT_ID"]
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    os.path.join(BASE_DIR, "cred.json")
+)
+GS_AUTO_CREATE_BUCKET = True  # Automatically create the bucket if it doesn't exist
+
+# Static and media settings
+MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-MEDIA_URL = "/media/"
+
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.path.join(BASE_DIR, 'cred.json')

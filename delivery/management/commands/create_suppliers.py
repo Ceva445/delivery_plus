@@ -10,7 +10,7 @@ class Command(BaseCommand):
         sheet = workbook.sheet_by_index(0)
 
         supp_inst = [
-            Supplier(name=sheet.row_values(row)[1], supplier_id=sheet.row_values(row)[0]) 
+            Supplier(name=sheet.row_values(row)[1], supplier_wms_id=sheet.row_values(row)[0]) 
             for row in range(1,sheet.nrows)
         ]
         Supplier.objects.bulk_create(supp_inst)

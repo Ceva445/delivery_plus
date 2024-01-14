@@ -4,6 +4,12 @@ from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator
 from .utils import get_unique_identifier
 from deliveryplus import settings
+from datetime import datetime
+from google.cloud import storage
+from django.core.files.storage import default_storage
+from google.oauth2 import service_account
+import os
+
 
 class ReasoneComment(models.Model):
     name = models.CharField(max_length=100)
@@ -81,5 +87,36 @@ class Delivery(models.Model):
         return str(self.nr_order)
 
 
+
+def custom_upload_path(instance, filename):
+    main_path = datetime.now().strftime("%Y/%m/%d/")
+    syfix_name = datetime.now().strftime("%H%M%S%f")[:-3]
+    filename, file_extension = os.path.splitext(filename)
+    return f"{main_path}{instance.custom_prefix}_{syfix_name}{file_extension}"
+
+
 class ImageModel(models.Model):
-    image_data = models.BinaryField()
+    custom_prefix = models.CharField(max_length=50, blank=True)
+    image_data = models.ImageField(upload_to=custom_upload_path)
+
+
+    def __str__(self):
+        return self.new_filename()  # Call the method to get the new filename
+
+    def new_filename(self):
+        return os.path.basename(self.image_data.name)
+    
+    def delete(self, *args, **kwargs):
+        self.delete_image_from_bucket()
+        super().delete(*args, **kwargs)
+
+    def delete_image_from_bucket(self):
+        bucket_name = settings.GS_BUCKET_NAME
+        file_path = str(self.image_data)
+        credentials = service_account.Credentials.from_service_account_file('cred.json')
+        client = storage.Client(credentials=credentials)
+        bucket = client.bucket(bucket_name)
+        blob = bucket.blob(file_path)
+        blob.delete()
+
+   

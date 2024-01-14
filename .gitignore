@@ -10,3 +10,4 @@ htmlcov/
 data/
 staticfiles/
 *.xls
+cred.json
