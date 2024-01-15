@@ -16,7 +16,7 @@ class DeliveryCreateView(View):
     def get_context_data(self, **kwargs):
 
         supliers_list = Supplier.objects.all()
-        suppliers = [{"id": sup.id, "name": sup.name, "supplier_wms_id":sup.supplier_wms_id} for sup in supliers_list]
+        suppliers = [{"id": sup.id, "name":f"{sup.name} - {sup.supplier_wms_id}"} for sup in supliers_list]
         reasones_list = ReasoneComment.objects.all()
         reasones = [{"id": reas.id, "name": reas.name} for reas in reasones_list]
 

@@ -42,7 +42,7 @@
         const filteredSuppliers = suppliers.filter(supplier => supplier.name.toLowerCase().includes(input.toLowerCase()));
     
         // Generate HTML for suggestions
-        const suggestionsHTML = filteredSuppliers.map(supplier => `<div data-id="${supplier.id}">${supplier.name} - ${supplier.supplier_wms_id}</div>`).join('');
+        const suggestionsHTML = filteredSuppliers.map(supplier => `<div data-id="${supplier.id}">${supplier.name}</div>`).join('');
     
         // Update the suggestionsDiv with the generated HTML
         suggestionsDiv.innerHTML = suggestionsHTML;
