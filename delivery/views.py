@@ -2,15 +2,22 @@ from django.shortcuts import render, redirect
 from .models import Delivery, Supplier, ReasoneComment
 from django.views import View
 from .forms import DeliveryForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-def home(request):
-    return render(request, "index.html")
+class HomeView(LoginRequiredMixin, View):
+    template_name = "index.html"
 
-def select_reception(request):
-    return render(request, "delivery/select_reception.html")
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
 
-class DeliveryCreateView(View):
+class SelectReceptionView(LoginRequiredMixin, View):
+    template_name = "delivery/select_reception.html"
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
+
+class DeliveryCreateView(LoginRequiredMixin, View):
     template_name = "delivery/delivery_create.html"
 
     def get_context_data(self, **kwargs):

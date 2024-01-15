@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "delivery",
     "user",
+    "crispy_bootstrap4",
     "crispy_forms",
 ]
 
@@ -118,7 +119,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 AUTH_USER_MODEL = "user.User"
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/delivery/"
 
 
 # Internationalization
@@ -166,3 +167,5 @@ MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.path.join(BASE_DIR, 'cred.json')
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"

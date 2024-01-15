@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 class="title">
+        Workers
+      </h1>
+
+      {% if user_list %}
+      <div class="table-responsive">
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th>Username</th>
+              <th>Update</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+              {% for employee in user_list %}
+              <tr>
+                  <td><a class="text-dark" href="">{{ employee.username }}</a></td>
+                  <td><a class="text-info" href="{% url 'user:user-update' pk=employee.id %}">Update</a></td>
+                  <td><a style="color: rgb(252, 61, 3);" href="{% url 'user:user-delete' pk=employee.id %}">Delete</a></td>
+              </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+        
+          
+        {% else %}
+        <p>The are no user in Employees</p>
+        {% endif %}
+        <a class="button" style="float: right;" href="{% url 'user:user-create' %}">Create</a>
+
+{% endblock %}
