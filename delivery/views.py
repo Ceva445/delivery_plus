@@ -41,66 +41,35 @@ class DeliveryCreateView(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-
-        form = DeliveryForm(request.POST, request.FILES)
-
-        supplier_company = request.POST.get('supplier_company')
         selected_supplier_id = int(request.POST.get('selected_supplier_id'))
         order_nr = int(request.POST.get('order_nr'))
         sscc_barcode = request.POST.get('sscc_barcode')
         shop_nr = int(request.POST.get("shop"))
         reasones = request.POST.get('reasones')
         comment = request.POST.get("comment", None)
-
         if comment is None:
             recive_loc = Location.objects.get(name="2R")
             comment = gen_comment(request)
         else:
             recive_loc =  Location.objects.get(name="1R")
-
-        if request.FILES:
-                # Extract all files dynamically based on the pattern 'images_url_{{index}}'
-                index = 0
-                images = []
-                while f'images_url_{index}' in request.FILES:
-                    image_file = request.FILES[f'images_url_{index}']
-                    images.append(ImageModel(custom_prefix=order_nr, image_data=image_file))
-                    index += 1
-
-                # Bulk create the images
-                image_instances = ImageModel.objects.bulk_create(images)
-        else:
-            image_instances = []
-
-
-        with transaction.atomic():
+        with transaction.atomic():   
+            delivery = Delivery.objects.create(
+                supplier_company=Supplier.objects.get(id=selected_supplier_id),
+                nr_order=order_nr,
+                sscc_barcode=sscc_barcode,
+                user=self.request.user,
+                comment=comment,
+                recive_location=recive_loc,
+                location=recive_loc
+            )
             if request.FILES:
-                # Extract all files dynamically based on the pattern 'images_url_{{index}}'
                 index = 1
                 images = []
                 while f'images_url_{index}' in request.FILES:
                     image_file = request.FILES[f'images_url_{index}']
                     images.append(ImageModel(custom_prefix=order_nr, image_data=image_file))
                     index += 1
-
-                # Bulk create the images
                 image_instances = ImageModel.objects.bulk_create(images)
-                print(image_instances)
-                # Create the delivery instance after bulk creation of image instances
-                delivery = Delivery.objects.create(
-                    supplier_company=Supplier.objects.get(id=selected_supplier_id),
-                    nr_order=order_nr,
-                    sscc_barcode=sscc_barcode,
-                    user=self.request.user,
-                    comment=comment,
-                    recive_location=recive_loc,
-                    location=recive_loc
-                )
-                
-                # Save the delivery instance
-                delivery.save()
                 delivery.images_url.add(*image_instances)
-                delivery.save()
-
-
+            delivery.save()
         return render(request, "delivery/select_reception.html")
