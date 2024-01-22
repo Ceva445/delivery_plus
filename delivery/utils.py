@@ -7,5 +7,9 @@ def get_unique_identifier():
     return int(unique_identifier)
 
 
+def gen_comment(request):
+    return "Test"
+
+
 if __name__ == "main":
     pass

@@ -9,6 +9,7 @@ from google.cloud import storage
 from django.core.files.storage import default_storage
 from google.oauth2 import service_account
 import os
+import random
 
 
 class ReasoneComment(models.Model):
@@ -69,28 +70,9 @@ class Shop(models.Model):
         return f"{self.position_nr} {self.name}"
 
 
-
-
-class Delivery(models.Model):
-    supplier_company = models.ForeignKey(Supplier, on_delete=models.SET_NULL, null=True)
-    nr_order = models.IntegerField()# додати валідатор довжина 20 знаків
-    ssc_barcode = models.CharField(max_length=20)# !!!! можливо 20 задежить чи сканер читає (00)
-    images_url = models.ImageField(upload_to="images/", blank=True)
-    date_recive = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    comment = models.TextField() # додати генерацію коменту
-    recive_location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name="recive_location") # створити модель для локалізацій
-    delivery_id = None # стоворити функцію для генерації унікального коду YYYY:MM:DD:NNN
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name="location")
-    identifier = models.IntegerField(default=get_unique_identifier(), unique=True)
-    def __str__(self):
-        return str(self.nr_order)
-
-
-
 def custom_upload_path(instance, filename):
     main_path = datetime.now().strftime("%Y/%m/%d/")
-    syfix_name = datetime.now().strftime("%H%M%S%f")[:-3]
+    syfix_name = (datetime.now().strftime("%H%M%S")) + str(random.randrange(100,999))
     filename, file_extension = os.path.splitext(filename)
     return f"{main_path}{instance.custom_prefix}_{syfix_name}{file_extension}"
 
@@ -118,5 +100,28 @@ class ImageModel(models.Model):
         bucket = client.bucket(bucket_name)
         blob = bucket.blob(file_path)
         blob.delete()
+
+
+
+class Delivery(models.Model):
+    supplier_company = models.ForeignKey(Supplier, on_delete=models.SET_NULL, null=True)
+    nr_order = models.IntegerField()# додати валідатор довжина 20 знаків
+    sscc_barcode = models.CharField(max_length=20)# !!!! можливо 20 задежить чи сканер читає (00)
+    images_url = models.ManyToManyField(ImageModel, blank=True)
+    date_recive = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    comment = models.TextField() # додати генерацію коменту
+    recive_location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name="recive_location") # створити модель для локалізацій
+
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name="location")
+    identifier = models.BigIntegerField(default=get_unique_identifier(), unique=True)
+    def __str__(self):
+        return str(self.nr_order)
+
+
+
+
+
+
 
    
