@@ -69,7 +69,8 @@ class DeliveryCreateView(LoginRequiredMixin, View):
 
                 # Bulk create the images
                 image_instances = ImageModel.objects.bulk_create(images)
-
+        else:
+            image_instances = []
 
 
         with transaction.atomic():

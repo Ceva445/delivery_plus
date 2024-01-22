@@ -9,7 +9,8 @@ from google.cloud import storage
 from django.core.files.storage import default_storage
 from google.oauth2 import service_account
 import os
-import random
+import uuid
+
 
 
 class ReasoneComment(models.Model):
@@ -72,7 +73,7 @@ class Shop(models.Model):
 
 def custom_upload_path(instance, filename):
     main_path = datetime.now().strftime("%Y/%m/%d/")
-    syfix_name = (datetime.now().strftime("%H%M%S")) + str(random.randrange(100,999))
+    syfix_name = (datetime.now().strftime("%H%M%S")) + f"{uuid.uuid4()}"
     filename, file_extension = os.path.splitext(filename)
     return f"{main_path}{instance.custom_prefix}_{syfix_name}{file_extension}"
 
