@@ -103,7 +103,6 @@ class ImageModel(models.Model):
         blob.delete()
 
 
-
 class Delivery(models.Model):
     supplier_company = models.ForeignKey(Supplier, on_delete=models.SET_NULL, null=True)
     nr_order = models.IntegerField()# додати валідатор довжина 20 знаків
@@ -113,7 +112,7 @@ class Delivery(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     comment = models.TextField() # додати генерацію коменту
     recive_location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name="recive_location") # створити модель для локалізацій
-
+    shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
     location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name="location")
     identifier = models.BigIntegerField(default=get_unique_identifier(), unique=True)
     def __str__(self):

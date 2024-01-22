@@ -1,5 +1,11 @@
 from django.shortcuts import render, redirect
-from .models import Delivery, Supplier, ReasoneComment, Location, ImageModel
+from .models import (Delivery, 
+                     Supplier, 
+                     ReasoneComment, 
+                     Location, 
+                     ImageModel,
+                     Shop,
+                     )
 from django.views import View
 from .forms import DeliveryForm
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -60,6 +66,7 @@ class DeliveryCreateView(LoginRequiredMixin, View):
                 user=self.request.user,
                 comment=comment,
                 recive_location=recive_loc,
+                shop=Shop.objects.get(position_nr=int(shop_nr)),
                 location=recive_loc
             )
             if request.FILES:
