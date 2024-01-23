@@ -48,10 +48,10 @@
     {% endif %}
     
     {% if reception == "second" %}    
-        <span class="input-group-text" >Wybierz komentarz: </span>
-        <select name="reasones" class="form-select">
+        <select name="reasones" class="form-select" required>
+            <option  disabled selected value="" >Wybierz powód</option>
             {% for reasone in reasones %}
-                <option value="{{ reasone.id }}">{{ reasone.name }}</option>
+                <option value="{{ reasone.name }}">{{ reasone.name }}</option>
             {% endfor %}
         </select>
 

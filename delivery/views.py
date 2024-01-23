@@ -11,6 +11,7 @@ from .forms import DeliveryForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .utils import gen_comment
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 
 
 class HomeView(LoginRequiredMixin, View):
@@ -47,11 +48,10 @@ class DeliveryCreateView(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        selected_supplier_id = int(request.POST.get('selected_supplier_id'))
+        selected_supplier_id = request.POST.get('selected_supplier_id')
         order_nr = int(request.POST.get('order_nr'))
         sscc_barcode = request.POST.get('sscc_barcode')
         shop_nr = int(request.POST.get("shop"))
-        reasones = request.POST.get('reasones')
         comment = request.POST.get("comment", None)
         if comment is None:
             recive_loc = Location.objects.get(name="2R")
@@ -60,7 +60,7 @@ class DeliveryCreateView(LoginRequiredMixin, View):
             recive_loc =  Location.objects.get(name="1R")
         with transaction.atomic():   
             delivery = Delivery.objects.create(
-                supplier_company=Supplier.objects.get(id=selected_supplier_id),
+                supplier_company=get_object_or_404(Supplier,id=selected_supplier_id),
                 nr_order=order_nr,
                 sscc_barcode=sscc_barcode,
                 user=self.request.user,
