@@ -17,7 +17,6 @@ def gen_comment(request):
         ean_qty_str += f"{ean} {qty} szt. "
         index += 1
     comment = f"Podczas kontroli wykryto {reasones}: {ean_qty_str}"
-    print(comment)
     return comment
 
 

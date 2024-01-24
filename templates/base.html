@@ -93,6 +93,17 @@
         productFieldsContainer.appendChild(newProductField);
     }
 
+    function removeLastProductField() {
+        const productFieldsContainer = document.getElementById('product-fields');
+        const fieldCount = productFieldsContainer.childElementCount;
+
+        // Ensure there is at least one product field before removing
+        if (fieldCount > 1) {
+            // Remove the last child (product field) from the container
+            productFieldsContainer.removeChild(productFieldsContainer.lastChild);
+        }
+    }
+
     function addImageField(){
         const imageFieldContainer = document.getElementById('imag-fields');
         const fieldCount = imageFieldContainer.childElementCount;
