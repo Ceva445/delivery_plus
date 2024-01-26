@@ -3,7 +3,7 @@
 
 {% block navigation %}
     <nav class="navigation">
-        <a class="btn btn-secondary" role="button" href="{% url 'delivery:home' %}">Do głównej</a>
+        <a class="btn btn-secondary" style="margin-left: 30px;" role="button" href="{% url 'delivery:home' %}">Do głównej</a>
         <a class="btn btn-outline-secondary" role="button" href="{% url 'delivery:delivery_storage' %}">Wróć</a>
         
     </nav>
@@ -13,7 +13,7 @@
 <div class="container" style="width: 90%;">
     <div class="row justify-content-center">
         <div class="col-lg-12">
-            <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+            
                 <table class="table table-sm">
                     <thead class="thead-dark">
                         <tr>
@@ -34,7 +34,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
-            </div>
+           
         </div>
     </div>
 </div>
