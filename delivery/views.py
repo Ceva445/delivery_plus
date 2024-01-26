@@ -117,6 +117,6 @@ class DeliveryStorageView(LoginRequiredMixin, View):
         if shop:
             queryset = queryset.filter(shop=shop)
         if location:
-            queryset = queryset.filter(location__name__icontain=location)
+            queryset = queryset.filter(location__name__icontains=location)
         context["delivery_list"] = queryset
         return render(request, "delivery/delivery_list.html", context) 
