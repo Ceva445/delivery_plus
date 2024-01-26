@@ -3,7 +3,7 @@
 
 {% block navigation %}
     <nav class="navigation">
-        <a class="btn btn-secondary" role="button" style="margin-left: 10px;" href="{% url 'delivery:home' %}">Do głównej</a>
+        <a class="btn btn-secondary" role="button" href="{% url 'delivery:home' %}">Do głównej</a>
         <a class="btn btn-outline-secondary" role="button" href="{% url 'delivery:delivery_storage' %}">Wróć</a>
         
     </nav>
@@ -11,14 +11,13 @@
 
 {% block content %}
 
-<div  style="width: 95%;">
-    <table class="table">
+    <table class="table table-sm">
         <thead class="thead-dark">
         <tr>
-            <th>Identyfikator</th>
-            <th>Lokalizacja</th>
-            <th>Zamówienie</th>
-            <th>Supplier</th>
+            <th>Id</th>
+            <th>Lok</th>
+            <th>Zam</th>
+            <th>Sup</th>
         </tr>   
         </thead>
         <tbody>
@@ -32,6 +31,6 @@
         {% endfor %}
       </tbody>
     </table>
-</div>
-    
+
+
 {% endblock %}
