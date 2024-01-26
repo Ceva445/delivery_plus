@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+
+{% block navigation %}
+    <nav class="navigation">
+        <a class="btn btn-secondary" role="button" href="{% url 'delivery:home' %}">Do głównej</a>
+        <a class="btn btn-outline-secondary" role="button" href="{% url 'delivery:delivery_storage' %}">Wróć</a>
+        
+    </nav>
+{% endblock %}
+
+{% block content %}
+
+<div class="table-responsive">
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th>Identyfikator</th>
+            <th>Lokalizacja</th>
+            <th>Zamówienie</th>
+            <th>Supplier</th>
+        </tr>   
+        </thead>
+        <tbody>
+        {% for delivery in delivery_list %}
+            <tr>
+                <td>{{ delivery.identifier }}</td>
+                <td>{{ delivery.location }}</td>
+                <td>{{ delivery.nr_order }}</td>
+                <td>{{ delivery.supplier_company.name }}</td>
+            </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+</div>
+    
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block navigation %}
+    <nav class="navigation">
+        <a class="btn btn-secondary" role="button" href="{% url 'delivery:home' %}"
+        style="font-size: 30px; padding: 10px;"
+        >Do głównej</a> 
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <form method="post" action="{% url 'delivery:delivery_storage' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="input-group mb-3" type="number">
+            <input type="number" name="identifier" style="width: 100%;" placeholder="Identyfikator">
+        </div>
+
+        <div class="input-group mb-3" type="number">
+            <input type="number" name="nr_order" style="width: 100%;" placeholder="Zamówienie">
+        </div>
+
+        <div class="input-group mb-3" type="number">
+            <input type="text" name="sscc_barcode" style="width: 100%;" placeholder="SSCC">
+        </div>
+
+        <div class="input-group mb-3" type="number">
+            <input type="date" name="date_recive" style="width: 100%;" placeholder="Data przyjąća">
+        </div>
+        
+        <div class="input-group mb-3" type="number">
+            <input type="number" name="shop" style="width: 100%;" placeholder="Sklep">
+        </div>
+
+        <div class="input-group mb-3" type="number">
+            <input type="text" name="location" style="width: 100%;" placeholder="Lokalizacja">
+        </div>
+
+        <input class="btn btn-secondary" type="submit" value="Submit" style="width: 100%;"> 
+    </form>
+{% endblock %}

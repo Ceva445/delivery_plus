@@ -84,8 +84,6 @@ class DeliveryCreateView(LoginRequiredMixin, View):
                 delivery.images_url.add(*image_instances)
             delivery.save()
         return render(request, "delivery/select_reception.html")
-        
-
 
 class DeliveryStorageView(LoginRequiredMixin, View):
     template_name = "delivery/storeg_filter_page.html"
@@ -105,8 +103,9 @@ class DeliveryStorageView(LoginRequiredMixin, View):
         sscc_barcode = request.POST.get("sscc_barcode")
         date_recive = request.POST.get("date_recive")
         shop = request.POST.get("shop")
+        location = request.POST.get("location")
 
-        queryset = Delivery.objects.all()
+        queryset = Delivery.objects.all().select_related("supplier_company", "recive_location", "shop", "location")
         if identifier:
             queryset = queryset.filter(identifier__icontains=identifier)
         if nr_order:
@@ -117,8 +116,10 @@ class DeliveryStorageView(LoginRequiredMixin, View):
             queryset = queryset.filter(date_recive=date_recive)
         if shop:
             queryset = queryset.filter(shop=shop)
-        print(queryset)
+        if location:
+            queryset = queryset.filter(location__name__icontains=location)
+        context["delivery_list"] = queryset
             
         
 
-        return render(request, self.template_name, context) 
+        return render(request, "delivery/delivery_list.html", context) 
