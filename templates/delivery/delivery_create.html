@@ -46,6 +46,14 @@
     {% if reception == "first" %}
         <input name="comment" type="text" class="form-control" placeholder="Dodaj komentarz" required>
     {% endif %}
+
+    {% if request.user.is_superuser %}
+    <div class="input-group mb-3" type="number", >
+        <span class="input-group-text" id="inputGroup-sizing-default">Data: </span>
+        <input name="date_to_print", id="work_day" type="date" class="form-control" aria-describedby="inputGroup-sizing-default" value="{{data_today}}">
+        
+    </div>
+    {% endif %}
     
     {% if reception == "second" %}    
         <select name="reasones" class="form-select" required>
