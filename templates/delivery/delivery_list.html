@@ -26,7 +26,11 @@
                     <tbody>
                         {% for delivery in delivery_list %}
                         <tr>
-                            <td>{{ delivery.identifier }}</td>
+                            <td><a style="text-decoration:none" 
+                                class="link-dark " 
+                                href="{% url 'delivery:delivery_detail' pk=delivery.id %}">
+                                {{ delivery.identifier }}
+                            </a></td>
                             <td>{{ delivery.location }}</td>
                             <td>{{ delivery.nr_order }}</td>
                             <td>{{ delivery.supplier_company.name }}</td>

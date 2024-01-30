@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+
+{% block navigation %}
+    <a class="btn btn-secondary" role="button" href="{% url 'delivery:home' %}">Do głównej</a>
+    <a class="btn btn-outline-secondary" role="button" href="{% url 'delivery:delivery_storage' %}">Wróć</a>
+{% endblock %}
+
+{% block content %}
+
+<form method="post" action="">
+    {% csrf_token %}
+    
+    <!-- Supplier Company -->
+    <p class="alert alert-dark">Supplier Company: {{ delivery.supplier_company }}</p>
+    <p class="alert alert-dark">Numer zamówienia: {{ delivery.nr_order }}</p>
+    <p class="alert alert-dark">SSCC: {{ delivery.sscc_barcode }}</p>
+    <p class="alert alert-dark">Data otrzymania: {{ date_recive }}</p>
+    <p class="alert alert-dark">Uzytkownik ktory przyjal towar: {{ delivery.user }}</p>
+    {% comment %} <p class="alert alert-dark">Uzytkownik ktory wykonal ostatni ruch: {{}}</p> {% endcomment %}
+    <p class="alert alert-dark">Komentarz: {{ delivery.comment }}</p>
+    <p class="alert alert-dark">Lokalizacja przyjęciowa: {{ delivery.recive_location }}</p>
+    <p class="alert alert-dark">Obecna lokalizacja: {{ delivery.location }}</p>
+    <p class="alert alert-dark">Sklep: {{ delivery.shop }}</p>
+    <p class="alert alert-dark">Identyfikator: {{ delivery.identifier }}</p>
+
+    {% for image_path in image_urls %}
+        <img src="{{ image_path }}" alt="Nie mam obrazów" style="width: 100%;">
+        <p>{{image.image_data}}</p>
+        <!-- Populate options from database if needed -->
+    {% endfor %}
+   
+    <input type="submit" value="Submit">
+</form>
+{% endblock %}

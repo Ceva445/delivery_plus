@@ -13,6 +13,7 @@ from .utils import gen_comment
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from datetime import date
+from deliveryplus.settings import GS_BUCKET_NAME
 
 
 
@@ -84,6 +85,32 @@ class DeliveryCreateView(LoginRequiredMixin, View):
                 delivery.images_url.add(*image_instances)
             delivery.save()
         return render(request, "delivery/select_reception.html")
+
+class DeleveryDetailView(LoginRequiredMixin, View):
+    def get_context_data(self, delivery_id):
+        context = {}
+        delivery = get_object_or_404(Delivery, id=delivery_id)
+        date_recive = delivery.date_recive.strftime("%d.%m.%Y")
+        context["date_recive"] = date_recive
+
+        if delivery.images_url.all():
+            context["image_urls"] = []
+            for url in delivery.images_url.all():
+                image_path = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/{url.image_data}"
+                context["image_urls"].append(image_path)
+        context["delivery"] = delivery
+        
+        
+        return context
+    
+
+    def get(self, request, *args, **kwargs):
+        delivery_id = self.kwargs.get("pk")
+        context = self.get_context_data(delivery_id=delivery_id)
+        
+        return render(request, "delivery/delivery_detail.html",context)
+
+
 
 class DeliveryStorageView(LoginRequiredMixin, View):
     template_name = "delivery/storeg_filter_page.html"
