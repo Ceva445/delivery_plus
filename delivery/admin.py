@@ -7,10 +7,15 @@ from .models import (
     )
 
 
+class ShopAdmin(admin.ModelAdmin):
+    list_display = ("position_nr", "name",)  # Fields to display in the admin panel
+    ordering = ("position_nr",)  # Default sorting order
+    list_display_links = ("position_nr", "name")
+
 
 admin.site.register(Location)
 admin.site.register(WorkZone)
-admin.site.register(Shop)
+admin.site.register(Shop, ShopAdmin)
 admin.site.register(Supplier)
 admin.site.register(Delivery)
 admin.site.register(ReasoneComment)
