@@ -16,7 +16,7 @@ def gen_comment(request):
         ean = request.POST.get(f"ean_{index}", "")
         ean_qty_str += f"{ean} {qty} szt. "
         index += 1
-    comment = f"Podczas kontroli wykryto {reasones}: {ean_qty_str}"
+    comment = f"{reasones}: {ean_qty_str}"
     return comment
 
 
