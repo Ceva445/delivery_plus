@@ -4,6 +4,7 @@ from .views import (
     DeliveryCreateView,
     DeleveryDetailView, 
     HomeView, DeliveryStorageView,
+    RlocationView
 
     )
 
@@ -12,6 +13,7 @@ urlpatterns = [
     path("reception/", SelectReceptionView.as_view(), name="select_receprion"),
     path("reception/create/", DeliveryCreateView.as_view(), name="delivery_create"),
     path("storage/", DeliveryStorageView.as_view(), name="delivery_storage"),
-    path("<int:pk>/detail/", DeleveryDetailView.as_view(), name="delivery_detail")
+    path("<int:pk>/detail/", DeleveryDetailView.as_view(), name="delivery_detail"),
+    path("relocation/", RlocationView.as_view(), name="delivery_relocation"),
 ]
 app_name = "delivery"

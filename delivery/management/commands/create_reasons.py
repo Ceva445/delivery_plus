@@ -3,7 +3,7 @@ from delivery.models import ReasoneComment
 import xlrd
 
 class Command(BaseCommand):
-    help = 'Description of my custom command'
+    help = "Auto create Reasone code"
 
     def handle(self, *args, **options):
         workbook = xlrd.open_workbook("reasons.xls")

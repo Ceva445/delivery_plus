@@ -111,7 +111,6 @@ class DeleveryDetailView(LoginRequiredMixin, View):
         return render(request, "delivery/delivery_detail.html",context)
 
 
-
 class DeliveryStorageView(LoginRequiredMixin, View):
     template_name = "delivery/storeg_filter_page.html"
     
@@ -147,3 +146,47 @@ class DeliveryStorageView(LoginRequiredMixin, View):
             queryset = queryset.filter(location__name__icontains=location)
         context["delivery_list"] = queryset
         return render(request, "delivery/delivery_list.html", context) 
+
+
+class RlocationView(LoginRequiredMixin, View):
+    template_name = "delivery/relocation.html"
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
+    
+    def post(self, request, *args, **kwargs):
+        identifier = request.POST.get("identifier")
+        to_location = request.POST.get("to_location")
+        
+        context = self.relocate_or_get_error(identifier, to_location)
+        if context["status"]:
+            return render(request, self.template_name,)
+        else:
+            return render(request, self.template_name, context)
+        
+
+    def relocate_or_get_error(self, identifier, to_location):
+        error_message = ""
+        status = True
+        auto_in_val = {"identifier":identifier, "to_location": to_location}
+        try:
+            location = Location.objects.get(name__iexact=to_location)
+        except Location.DoesNotExist:
+            error_message = "Nieprawidłowa lokalizacja"
+            del auto_in_val["to_location"]
+            status = False 
+        try:
+            delivery = Delivery.objects.get(identifier=identifier)
+        except Delivery.DoesNotExist:
+            if error_message:
+                error_message += "i identyfikator."
+            else:
+                error_message = "Nieprawidłowy identyfikator."
+            del auto_in_val["identifier"]
+            status = False
+
+        if status:
+            delivery.location = location
+            delivery.save()
+            return {"status": status}
+        return {"status": status, "error_message": error_message} | auto_in_val
