@@ -96,7 +96,7 @@ class ImageModel(models.Model):
     def delete_image_from_bucket(self):
         bucket_name = settings.GS_BUCKET_NAME
         file_path = str(self.image_data)
-        credentials = service_account.Credentials.from_service_account_file('cred.json')
+        credentials = service_account.Credentials.from_service_account_file(settings.GS_CREDENTIALS)
         client = storage.Client(credentials=credentials)
         bucket = client.bucket(bucket_name)
         blob = bucket.blob(file_path)

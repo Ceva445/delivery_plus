@@ -9,7 +9,7 @@ from .models import (Delivery,
 from django.views import View
 from .forms import DeliveryForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .utils import gen_comment
+from .utils import gen_comment, write_report_gs
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from datetime import date
@@ -19,7 +19,7 @@ from deliveryplus.settings import GS_BUCKET_NAME
 
 class HomeView(LoginRequiredMixin, View):
     template_name = "index.html"
-
+    #write_report_gs()
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
 
