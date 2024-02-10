@@ -14,6 +14,7 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404
 from datetime import date
 from deliveryplus.settings import GS_BUCKET_NAME
+from .print_server import send_label_to_cups
 
 
 
@@ -51,11 +52,11 @@ class DeliveryCreateView(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        selected_supplier_id = request.POST.get('selected_supplier_id')
-        order_nr = int(request.POST.get('order_nr'))
+        selected_supplier_id = request.POST.get("selected_supplier_id")
+        order_nr = int(request.POST.get("order_nr"))
         sscc_barcode = request.POST.get('sscc_barcode')
         shop_nr = int(request.POST.get("shop"))
-        comment = request.POST.get("comment", None)
+        comment = request.POST.get("comment", None)        
         date_recive = request.POST.get("date_recive", date.today())
         if comment is None:
             recive_loc = Location.objects.get(name="2R")
@@ -74,16 +75,19 @@ class DeliveryCreateView(LoginRequiredMixin, View):
                 location=recive_loc,
                 date_recive=date_recive
             )
+
             if request.FILES:
                 index = 1
                 images = []
-                while f'images_url_{index}' in request.FILES:
-                    image_file = request.FILES[f'images_url_{index}']
+                while f"images_url_{index}" in request.FILES:
+                    image_file = request.FILES[f"images_url_{index}"]
                     images.append(ImageModel(custom_prefix=order_nr, image_data=image_file))
                     index += 1
                 image_instances = ImageModel.objects.bulk_create(images)
                 delivery.images_url.add(*image_instances)
             delivery.save()
+        # Made it Celery  Task
+        send_label_to_cups(delivery, request.POST.get("reasones"))
         return render(request, "delivery/select_reception.html")
 
 class DeleveryDetailView(LoginRequiredMixin, View):
