@@ -58,11 +58,15 @@ class DeliveryCreateView(LoginRequiredMixin, View):
         shop_nr = int(request.POST.get("shop"))
         comment = request.POST.get("comment", None)        
         date_recive = request.POST.get("date_recive", date.today())
+        reasone = request.POST.get("reasones")
+
         if comment is None:
             recive_loc = Location.objects.get(name="2R")
             comment = gen_comment(request)
+            label_comment = reasone
         else:
             recive_loc =  Location.objects.get(name="1R")
+            label_comment = comment
         with transaction.atomic():   
             delivery = Delivery.objects.create(
                 supplier_company=get_object_or_404(Supplier,id=selected_supplier_id),
@@ -87,7 +91,7 @@ class DeliveryCreateView(LoginRequiredMixin, View):
                 delivery.images_url.add(*image_instances)
             delivery.save()
         # Made it Celery  Task
-        send_label_to_cups(delivery, request.POST.get("reasones"))
+        send_label_to_cups(delivery,label_comment)
         return render(request, "delivery/select_reception.html")
 
 class DeleveryDetailView(LoginRequiredMixin, View):

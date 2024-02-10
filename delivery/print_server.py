@@ -2,7 +2,13 @@ import requests
 from deliveryplus.settings import CUPS_POST_URL
 
 def send_label_to_cups(delivery, comment):
-    comment = comment.replace("Podczas kontroli wykryto ", "")
+    print(comment)
+    if comment:
+        if "Podczas kontroli wykryto " in comment:
+            comment = comment.replace("Podczas kontroli wykryto ", "")
+            print(comment)
+    else:
+        comment = ""
     rec_data = delivery.date_recive.strftime("%Y/%m/%d")
     data_to_send = {
     "supplier_company": f"{delivery.supplier_company.name}",
