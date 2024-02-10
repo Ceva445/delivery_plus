@@ -9,7 +9,6 @@ from google.cloud import storage
 from django.core.files.storage import default_storage
 from google.oauth2 import service_account
 import os
-import uuid
 
 
 
@@ -114,14 +113,7 @@ class Delivery(models.Model):
     recive_location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name="recive_location") # створити модель для локалізацій
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
     location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name="location")
-    identifier = models.BigIntegerField(default=get_unique_identifier(), unique=True)
+    identifier = models.BigIntegerField(unique=True)
     def __str__(self):
         return str(self.nr_order)
 
-
-
-
-
-
-
-   
