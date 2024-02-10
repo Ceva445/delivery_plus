@@ -9,6 +9,7 @@ from google.cloud import storage
 from django.core.files.storage import default_storage
 from google.oauth2 import service_account
 import os
+import uuid
 
 
 
