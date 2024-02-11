@@ -46,7 +46,7 @@ class DeliveryCreateView(LoginRequiredMixin, View):
             }
 
     def get(self, request, *args, **kwargs):
-        reception = (self.request.GET.get('reception', None))
+        reception = self.request.GET.get("reception", None)
         context = self.get_context_data()
         context["reception"] = reception
         return render(request, self.template_name, context)
@@ -80,18 +80,48 @@ class DeliveryCreateView(LoginRequiredMixin, View):
                 date_recive=date_recive
             )
 
-            if request.FILES:
-                index = 1
-                images = []
-                while f"images_url_{index}" in request.FILES:
-                    image_file = request.FILES[f"images_url_{index}"]
-                    images.append(ImageModel(custom_prefix=order_nr, image_data=image_file))
-                    index += 1
-                image_instances = ImageModel.objects.bulk_create(images)
-                delivery.images_url.add(*image_instances)
+            # if request.FILES:
+            #     index = 1
+            #     images = []
+            #     while f"images_url_{index}" in request.FILES:
+            #         image_file = request.FILES[f"images_url_{index}"]
+            #         images.append(ImageModel(custom_prefix=order_nr, image_data=image_file))
+            #         index += 1
+            #     image_instances = ImageModel.objects.bulk_create(images)
+            #     delivery.images_url.add(*image_instances)
             delivery.save()
         # Made it Celery  Task
         send_label_to_cups(delivery,label_comment)
+        return render(request, "delivery/delivery_image_add.html", {"delivery_id": delivery.id})
+
+
+class DeliveryImageAdd(LoginRequiredMixin, View):
+    template_name = "delivery/delivery_image_create.html"
+    
+    def get_context_data(self, **kwargs):
+        context = {}
+        return context
+
+    def get(self, request, *args, **kwargs):
+        delivery_id = int(self.request.GET.get("delivery_id"))
+        context = self.get_context_data()
+        context["delivery_id"] = delivery_id
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        delivery_id = self.request.POST.get("delivery_id")
+
+        if request.FILES:
+            delivery = Delivery.objects.get(id=delivery_id)
+            index = 1
+            images = []
+            while f"images_url_{index}" in request.FILES:
+                image_file = request.FILES[f"images_url_{index}"]
+                images.append(ImageModel(custom_prefix=delivery.nr_order, image_data=image_file))
+                index += 1
+            image_instances = ImageModel.objects.bulk_create(images)
+            delivery.images_url.add(*image_instances)
+            delivery.save()
         return render(request, "delivery/select_reception.html")
 
 class DeleveryDetailView(LoginRequiredMixin, View):

@@ -2,7 +2,7 @@ import requests
 from deliveryplus.settings import CUPS_POST_URL
 
 def send_label_to_cups(delivery, comment):
-    print(comment)
+    #print(comment)
     if comment:
         if "Podczas kontroli wykryto " in comment:
             comment = comment.replace("Podczas kontroli wykryto ", "")

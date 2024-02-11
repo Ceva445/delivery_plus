@@ -38,10 +38,12 @@
     </div>
     
 
+    {% comment %} 
     <div class="mb-3" id="imag-fields">
         <input name="images_url_1" class="form-control" type="file" id="formFileMultiple">
         <button type="button" onclick="addImageField()" style="width: 100%;">+</button>
-    </div>
+    </div> 
+    {% endcomment %}
 
     {% if reception == "first" %}
         <input name="comment" type="text" class="form-control" placeholder="Dodaj komentarz" required>
