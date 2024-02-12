@@ -10,6 +10,16 @@
 {% block content %}
     <form method="post" action="{% url 'delivery:delivery_storage' %}" enctype="multipart/form-data">
         {% csrf_token %}
+
+        <div class="input-group mb-3">
+        <select name="status" class="form-select">
+            <option  disabled selected value="" >Wybierz Status</option>
+            <option value=1>Przyjęty</option>
+            <option value=2>Magazynowane</option>
+            <option value=3>Wysłano</option>
+        </select>
+        </div>
+
         <div class="input-group mb-3" type="number">
             <input type="number" name="identifier" style="width: 100%;" placeholder="Identyfikator">
         </div>

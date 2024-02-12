@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import (
-    Location, WorkZone, 
+    Location,
     Shop, Supplier, 
     Delivery, ReasoneComment,
     ImageModel
@@ -14,7 +14,6 @@ class ShopAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Location)
-admin.site.register(WorkZone)
 admin.site.register(Shop, ShopAdmin)
 admin.site.register(Supplier)
 admin.site.register(Delivery)

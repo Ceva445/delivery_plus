@@ -19,12 +19,30 @@ class ReasoneComment(models.Model):
     def __str__(self) -> str:
         return self.name
 
-class WorkZone(models.Model):
-    WORK_ZONE = [
-        ("Recive", "Recive"),
-        ("Storage", "Storage"),
-        ("Shipment", "Shipment")
-    ]
+# class WorkZone(models.Model):
+#     WORK_ZONE = [
+#         ("Recive", "Recive"),
+#         ("Storage", "Storage"),
+#         ("Shipment", "Shipment")
+#     ]
+
+#     WORKZON_ONE = 1
+#     WORKZON_TWO = 2
+#     WORKZON_THREE = 3
+
+#     WORKZON_CHOICES = (
+#         (WORKZON_ONE, "Recive"),
+#         (WORKZON_TWO, "Storage"),
+#         (WORKZON_THREE, "Shipment"),
+#     )
+
+#     name = models.CharField(max_length=10, choices=WORK_ZONE)
+#     way_index = models.IntegerField(choices=WORKZON_CHOICES)
+
+#     def __str__(self) -> str:
+#         return self.name
+    
+class Location(models.Model):
 
     WORKZON_ONE = 1
     WORKZON_TWO = 2
@@ -35,16 +53,12 @@ class WorkZone(models.Model):
         (WORKZON_TWO, "Storage"),
         (WORKZON_THREE, "Shipment"),
     )
+    DEFAULT_WORK_ZONE = WORKZON_ONE
 
-    name = models.CharField(max_length=10, choices=WORK_ZONE)
-    way_index = models.IntegerField(choices=WORKZON_CHOICES)
-
-    def __str__(self) -> str:
-        return self.name
-    
-class Location(models.Model):
     name = models.CharField(max_length=20)
-    work_zone = models.ForeignKey(WorkZone, on_delete=models.CASCADE)
+    work_zone = models.IntegerField(
+        choices=WORKZON_CHOICES, default=DEFAULT_WORK_ZONE
+        )
 
     def __str__(self) -> str:
         return self.name

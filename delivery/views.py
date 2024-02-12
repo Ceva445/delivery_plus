@@ -80,15 +80,6 @@ class DeliveryCreateView(LoginRequiredMixin, View):
                 date_recive=date_recive
             )
 
-            # if request.FILES:
-            #     index = 1
-            #     images = []
-            #     while f"images_url_{index}" in request.FILES:
-            #         image_file = request.FILES[f"images_url_{index}"]
-            #         images.append(ImageModel(custom_prefix=order_nr, image_data=image_file))
-            #         index += 1
-            #     image_instances = ImageModel.objects.bulk_create(images)
-            #     delivery.images_url.add(*image_instances)
             delivery.save()
         # Made it Celery  Task
         send_label_to_cups(delivery,label_comment)
@@ -168,8 +159,12 @@ class DeliveryStorageView(LoginRequiredMixin, View):
         date_recive = request.POST.get("date_recive")
         shop = request.POST.get("shop")
         location = request.POST.get("location")
+        status = request.POST.get("status")
+        print(status)
 
         queryset = Delivery.objects.all().select_related("supplier_company", "recive_location", "shop", "location")
+        if status:
+            queryset = queryset.filter(location__work_zone=status)
         if identifier:
             queryset = queryset.filter(identifier__icontains=identifier)
         if nr_order:
