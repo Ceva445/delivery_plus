@@ -14,8 +14,8 @@
     {% csrf_token %}
 
     <div class="input-group mb-3" type="number">
-        <span class="input-group-text" style="width: 25%;">Dostawca: </span>
-        <input type="text" style="width: 75%;" name="supplier_company" id="supplier_company_search" autocomplete="off" oninput="searchSupplier()">
+        <span class="input-group-text" style="width: 30%;">Dostawca: </span>
+        <input type="text" style="width: 70%;" name="supplier_company" id="supplier_company_search" autocomplete="off" oninput="searchSupplier()">
         <div id="supplier_suggestions" onclick="selectSupplier(event)">
         </div>
     <input type="hidden" name="selected_supplier_id" id="selected_supplier_id" required>
@@ -23,18 +23,18 @@
     
     
     <div class="input-group mb-3" type="number">
-        <span class="input-group-text" style="width: 25%;">Zamówienie: </span>
-        <input type="number" style="width: 75%;" name="order_nr" required required min="10000000" max="99999999">
+        <span class="input-group-text" style="width: 30%;">Zamówienie: </span>
+        <input type="number" style="width: 70%;" name="order_nr" required required min="10000000" max="99999999">
     </div>
 
     <div class="input-group mb-3" type="number">
-        <span class="input-group-text" style="width: 25%;">Sklep: </span>
-        <input type="number" style="width: 75%;" name="shop" required min="1" max="84">
+        <span class="input-group-text" style="width: 30%;">Sklep: </span>
+        <input type="number" style="width: 70%;" name="shop" required min="1" max="84">
     </div>
 
     <div class="input-group mb-3" type="number">
-        <span class="input-group-text" style="width: 25%;" >SSCC: </span>
-        <input type="text" style="width: 75%;" name="sscc_barcode" maxlength="20" required>
+        <span class="input-group-text" style="width: 30%;" >SSCC: </span>
+        <input type="text" style="width: 70%;" name="sscc_barcode" maxlength="20" required>
     </div>
     
 

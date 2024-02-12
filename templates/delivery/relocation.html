@@ -11,13 +11,13 @@
     {% csrf_token %}
 
     <div class="input-group mb-3" type="number">
-        <span class="input-group-text" style="width: 25%;">Identyfikator: </span>
-        <input type="number" style="width: 75%;" name="identifier" value="{{ identifier }}" required>
+        <span class="input-group-text" style="width: 30%;">Identyfikator: </span>
+        <input type="number" style="width: 70%;" name="identifier" value="{{ identifier }}" required>
     </div>
 
     <div class="input-group mb-3" type="number">
-        <span class="input-group-text" style="width: 25%;">To Location: </span>
-        <input type="text" style="width: 75%;" name="to_location" value="{{ to_location }}" required>
+        <span class="input-group-text" style="width: 30%;">To Location: </span>
+        <input type="text" style="width: 70%;" name="to_location" value="{{ to_location }}" required>
     </div>
 
     <button type="submit" style="width: 100%;">Relokuj</button>

@@ -160,7 +160,6 @@ class DeliveryStorageView(LoginRequiredMixin, View):
         shop = request.POST.get("shop")
         location = request.POST.get("location")
         status = request.POST.get("status")
-        print(status)
 
         queryset = Delivery.objects.all().select_related("supplier_company", "recive_location", "shop", "location")
         if status:
