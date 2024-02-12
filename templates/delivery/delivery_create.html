@@ -14,8 +14,8 @@
     {% csrf_token %}
 
     <div class="input-group mb-3" type="number">
-        <span class="input-group-text" style="width: 30%;">Dostawca: </span>
-        <input type="text" style="width: 70%;" name="supplier_company" id="supplier_company_search" autocomplete="off" oninput="searchSupplier()">
+        <span class="input-group-text" style="width: 35%;">Dostawca: </span>
+        <input type="text" style="width: 65%;" name="supplier_company" id="supplier_company_search" autocomplete="off" oninput="searchSupplier()">
         <div id="supplier_suggestions" onclick="selectSupplier(event)">
         </div>
     <input type="hidden" name="selected_supplier_id" id="selected_supplier_id" required>
@@ -23,18 +23,18 @@
     
     
     <div class="input-group mb-3" type="number">
-        <span class="input-group-text" style="width: 30%;">Zamówienie: </span>
-        <input type="number" style="width: 70%;" name="order_nr" required required min="10000000" max="99999999">
+        <span class="input-group-text" style="width: 35%;">Zamówienie: </span>
+        <input type="number" style="width: 65%;" name="order_nr" required required min="10000000" max="99999999">
     </div>
 
     <div class="input-group mb-3" type="number">
-        <span class="input-group-text" style="width: 30%;">Sklep: </span>
-        <input type="number" style="width: 70%;" name="shop" required min="1" max="84">
+        <span class="input-group-text" style="width: 35%;">Sklep: </span>
+        <input type="number" style="width: 65%;" name="shop" required min="1" max="84">
     </div>
 
     <div class="input-group mb-3" type="number">
-        <span class="input-group-text" style="width: 30%;" >SSCC: </span>
-        <input type="text" style="width: 70%;" name="sscc_barcode" maxlength="20" required>
+        <span class="input-group-text" style="width: 35%;" >SSCC: </span>
+        <input type="text" style="width: 65%;" name="sscc_barcode" maxlength="20" required>
     </div>
     
 
@@ -68,7 +68,7 @@
         <label for="ean">Products:</label>
         <div id="product-fields">
             <div class="product-field">
-                <input type="number" name="ean_0" style="width: 70%;" placeholder="EAN" margin-right: 1px;> 
+                <input type="number" name="ean_0" style="width: 65%;" placeholder="EAN" margin-right: 1px;> 
                 <input type="number" name="qty_0" style="width: 28%;" placeholder="QTY" required>
             </div>
         </div>
