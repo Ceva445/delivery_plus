@@ -41,6 +41,24 @@ class UserCreateView(LoginRequiredMixin, generic.CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy("user:user-list")
 
+    def form_valid(self, form):
+        user = form.save(commit=False)
+
+        # Manually handle the role assignment
+        role = self.request.POST.get("role")  # Get the selected role from the request
+        user.role = role
+
+        user.save()
+        
+        # Redirect to success_url
+        return redirect(self.success_url)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["user_role"] = User.USER_ROLE_CHOICES
+        
+        return context
+
 
 class UserUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = User
@@ -49,20 +67,28 @@ class UserUpdateView(LoginRequiredMixin, generic.UpdateView):
     def form_valid(self, form):
         user = form.save(commit=False)
 
-        user.username = form.cleaned_data['username']
+        # Set user's role
+        role = self.request.POST.get('role')
+        user.role = role
 
         new_password = form.cleaned_data['new_password']
         if new_password:
             user.set_password(new_password)
             # self.request.user = user
-            update_session_auth_hash(self.request, user)  # Update session to prevent logout
+            update_session_auth_hash(self.request, user) 
+
 
         user.save()
+
         return redirect(self.get_success_url())
 
     def get_success_url(self):
         return self.object.get_absolute_url()
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["user_role"] = User.USER_ROLE_CHOICES
+        return context
 
 class UserDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = User

@@ -4,6 +4,13 @@ from django.urls import reverse
 
 
 class User(AbstractUser):
+    USER_ROLE_CHOICES = (
+        ("admin", "Admin"),
+        ("leader", "Leader"),
+        ("regular", "Regular User"),
+    )
+
+    role = models.CharField(max_length=10, choices=USER_ROLE_CHOICES, default="regular")
     class Meta:
         ordering = ["username"]
 
