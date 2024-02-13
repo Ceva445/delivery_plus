@@ -167,9 +167,9 @@ class DeliveryStorageView(LoginRequiredMixin, View):
         if identifier:
             queryset = queryset.filter(identifier__icontains=identifier)
         if nr_order:
-            queryset = queryset.filter(nr_order__icontain=nr_order)
+            queryset = queryset.filter(nr_order=nr_order)
         if sscc_barcode:
-            queryset = queryset.filter(sscc_barcode=sscc_barcode)
+            queryset = queryset.filter(sscc_barcode__icontains=sscc_barcode)
         if date_recive:
             queryset = queryset.filter(date_recive=date_recive)
         if shop:
