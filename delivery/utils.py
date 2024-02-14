@@ -27,27 +27,33 @@ service = apiclient.discovery.build("sheets", "v4", http=httpAuth)
 def write_report_gs(data=None, sheet_name=None):
     row_data = ["Value1", "Value2", "Value3"]
 
-    request_body = {
-        'values': [row_data]
-    }
+    request_body = {"values": [row_data]}
 
     # Call the Sheets API to append the data
-    request = service.spreadsheets().values().update(spreadsheetId=spreadsheet_id, range='A1', valueInputOption='RAW', body=request_body)
+    request = (
+        service.spreadsheets()
+        .values()
+        .update(
+            spreadsheetId=spreadsheet_id,
+            range="A1",
+            valueInputOption="RAW",
+            body=request_body,
+        )
+    )
     response = request.execute()
 
-    print('Row appended successfully.')
-
+    print("Row appended successfully.")
 
 
 def get_unique_identifier():
     now = datetime.now()
-    unique_identifier = now.strftime("%Y%m%d") + str(random.randrange(1000,9999))
+    unique_identifier = now.strftime("%Y%m%d") + str(random.randrange(1000, 9999))
     return int(unique_identifier)
 
 
 def gen_comment(request):
     index = 0
-    reasones = request.POST.get('reasones')
+    reasones = request.POST.get("reasones")
     ean_qty_str = ""
     while request.POST.get(f"qty_{index}"):
         qty = request.POST.get(f"qty_{index}")

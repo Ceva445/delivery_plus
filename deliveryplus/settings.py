@@ -31,7 +31,7 @@ SPREADSHEET_ID = os.environ["SPREADSHEET_ID"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1","deliveru-plus.onrender.com"]
+ALLOWED_HOSTS = ["127.0.0.1", "deliveru-plus.onrender.com"]
 
 
 # Application definition
@@ -140,7 +140,7 @@ MEDIA_URL = "/media/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
 
 # Google Cloud Storage settings
 GS_BUCKET_NAME = os.environ["GS_BUCKET_NAME"]
@@ -154,6 +154,6 @@ GS_AUTO_CREATE_BUCKET = True  # Automatically create the bucket if it doesn't ex
 MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.path.join(BASE_DIR, 'cred.json')
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(BASE_DIR, "cred.json")
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"

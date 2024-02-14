@@ -7,18 +7,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('delivery', '0003_delivery_shop_alter_delivery_identifier'),
+        ("delivery", "0003_delivery_shop_alter_delivery_identifier"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='delivery',
-            name='identifier',
+            model_name="delivery",
+            name="identifier",
             field=models.BigIntegerField(default=20240122923, unique=True),
         ),
         migrations.AlterField(
-            model_name='delivery',
-            name='shop',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='delivery.shop'),
+            model_name="delivery",
+            name="shop",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="delivery.shop"
+            ),
         ),
     ]

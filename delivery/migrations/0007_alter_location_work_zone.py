@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('delivery', '0006_alter_delivery_identifier'),
+        ("delivery", "0006_alter_delivery_identifier"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='location',
-            name='work_zone',
-            field=models.IntegerField(choices=[(1, 'Recive'), (2, 'Storage'), (3, 'Shipment')], default=1),
+            model_name="location",
+            name="work_zone",
+            field=models.IntegerField(
+                choices=[(1, "Recive"), (2, "Storage"), (3, "Shipment")], default=1
+            ),
         ),
     ]

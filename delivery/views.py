@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
-from .models import (Delivery, 
-                     Supplier, 
-                     ReasoneComment, 
-                     Location, 
-                     ImageModel,
-                     Shop,
-                     )
+from .models import (
+    Delivery,
+    Supplier,
+    ReasoneComment,
+    Location,
+    ImageModel,
+    Shop,
+)
 from django.views import View
 from .forms import DeliveryForm
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -17,12 +18,13 @@ from deliveryplus.settings import GS_BUCKET_NAME
 from .print_server import send_label_to_cups
 
 
-
 class HomeView(LoginRequiredMixin, View):
     template_name = "index.html"
-    #write_report_gs()
+
+    # write_report_gs()
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
+
 
 class SelectReceptionView(LoginRequiredMixin, View):
     template_name = "delivery/select_reception.html"
@@ -30,20 +32,21 @@ class SelectReceptionView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
 
+
 class DeliveryCreateView(LoginRequiredMixin, View):
     template_name = "delivery/delivery_create.html"
 
     def get_context_data(self, **kwargs):
 
         supliers_list = Supplier.objects.all()
-        suppliers = [{"id": sup.id, "name":f"{sup.name} - {sup.supplier_wms_id}"} for sup in supliers_list]
+        suppliers = [
+            {"id": sup.id, "name": f"{sup.name} - {sup.supplier_wms_id}"}
+            for sup in supliers_list
+        ]
         reasones_list = ReasoneComment.objects.all()
         reasones = [{"id": reas.id, "name": reas.name} for reas in reasones_list]
 
-        return {
-            "suppliers": suppliers, 
-            "reasones": reasones
-            }
+        return {"suppliers": suppliers, "reasones": reasones}
 
     def get(self, request, *args, **kwargs):
         reception = self.request.GET.get("reception", None)
@@ -54,9 +57,9 @@ class DeliveryCreateView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         selected_supplier_id = request.POST.get("selected_supplier_id")
         order_nr = int(request.POST.get("order_nr"))
-        sscc_barcode = request.POST.get('sscc_barcode')
+        sscc_barcode = request.POST.get("sscc_barcode")
         shop_nr = int(request.POST.get("shop"))
-        comment = request.POST.get("comment", None)        
+        comment = request.POST.get("comment", None)
         date_recive = request.POST.get("date_recive", date.today())
         reasone = request.POST.get("reasones")
 
@@ -65,11 +68,11 @@ class DeliveryCreateView(LoginRequiredMixin, View):
             comment = gen_comment(request)
             label_comment = reasone
         else:
-            recive_loc =  Location.objects.get(name="1R")
+            recive_loc = Location.objects.get(name="1R")
             label_comment = comment
-        with transaction.atomic():   
+        with transaction.atomic():
             delivery = Delivery.objects.create(
-                supplier_company=get_object_or_404(Supplier,id=selected_supplier_id),
+                supplier_company=get_object_or_404(Supplier, id=selected_supplier_id),
                 nr_order=order_nr,
                 sscc_barcode=sscc_barcode,
                 user=self.request.user,
@@ -77,18 +80,20 @@ class DeliveryCreateView(LoginRequiredMixin, View):
                 recive_location=recive_loc,
                 shop=Shop.objects.get(position_nr=int(shop_nr)),
                 location=recive_loc,
-                date_recive=date_recive
+                date_recive=date_recive,
             )
 
             delivery.save()
         # Made it Celery  Task
-        send_label_to_cups(delivery,label_comment)
-        return render(request, "delivery/delivery_image_add.html", {"delivery_id": delivery.id})
+        send_label_to_cups(delivery, label_comment)
+        return render(
+            request, "delivery/delivery_image_add.html", {"delivery_id": delivery.id}
+        )
 
 
 class DeliveryImageAdd(LoginRequiredMixin, View):
     template_name = "delivery/delivery_image_create.html"
-    
+
     def get_context_data(self, **kwargs):
         context = {}
         return context
@@ -108,12 +113,15 @@ class DeliveryImageAdd(LoginRequiredMixin, View):
             images = []
             while f"images_url_{index}" in request.FILES:
                 image_file = request.FILES[f"images_url_{index}"]
-                images.append(ImageModel(custom_prefix=delivery.nr_order, image_data=image_file))
+                images.append(
+                    ImageModel(custom_prefix=delivery.nr_order, image_data=image_file)
+                )
                 index += 1
             image_instances = ImageModel.objects.bulk_create(images)
             delivery.images_url.add(*image_instances)
             delivery.save()
         return render(request, "delivery/select_reception.html")
+
 
 class DeleveryDetailView(LoginRequiredMixin, View):
     def get_context_data(self, delivery_id):
@@ -125,32 +133,32 @@ class DeleveryDetailView(LoginRequiredMixin, View):
         if delivery.images_url.all():
             context["image_urls"] = []
             for url in delivery.images_url.all():
-                image_path = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/{url.image_data}"
+                image_path = (
+                    f"https://storage.googleapis.com/{GS_BUCKET_NAME}/{url.image_data}"
+                )
                 context["image_urls"].append(image_path)
         context["delivery"] = delivery
-        
-        
+
         return context
-    
 
     def get(self, request, *args, **kwargs):
         delivery_id = self.kwargs.get("pk")
         context = self.get_context_data(delivery_id=delivery_id)
-        
-        return render(request, "delivery/delivery_detail.html",context)
+
+        return render(request, "delivery/delivery_detail.html", context)
 
 
 class DeliveryStorageView(LoginRequiredMixin, View):
     template_name = "delivery/storeg_filter_page.html"
-    
+
     def get_context_data(self, **kwargs):
         context = {}
         return context
-    
+
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
         return render(request, self.template_name, context)
-       
+
     def post(self, request, *args, **kwargs):
         context = {}
         identifier = request.POST.get("identifier")
@@ -161,7 +169,9 @@ class DeliveryStorageView(LoginRequiredMixin, View):
         location = request.POST.get("location")
         status = request.POST.get("status")
 
-        queryset = Delivery.objects.all().select_related("supplier_company", "recive_location", "shop", "location")
+        queryset = Delivery.objects.all().select_related(
+            "supplier_company", "recive_location", "shop", "location"
+        )
         if status:
             queryset = queryset.filter(location__work_zone=status)
         if identifier:
@@ -177,7 +187,7 @@ class DeliveryStorageView(LoginRequiredMixin, View):
         if location:
             queryset = queryset.filter(location__name__icontains=location)
         context["delivery_list"] = queryset
-        return render(request, "delivery/delivery_list.html", context) 
+        return render(request, "delivery/delivery_list.html", context)
 
 
 class RlocationView(LoginRequiredMixin, View):
@@ -185,28 +195,30 @@ class RlocationView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
-    
+
     def post(self, request, *args, **kwargs):
         identifier = request.POST.get("identifier")
         to_location = request.POST.get("to_location")
-        
+
         context = self.relocate_or_get_error(identifier, to_location)
         if context["status"]:
-            return render(request, self.template_name,)
+            return render(
+                request,
+                self.template_name,
+            )
         else:
             return render(request, self.template_name, context)
-        
 
     def relocate_or_get_error(self, identifier, to_location):
         error_message = ""
         status = True
-        auto_in_val = {"identifier":identifier, "to_location": to_location}
+        auto_in_val = {"identifier": identifier, "to_location": to_location}
         try:
             location = Location.objects.get(name__iexact=to_location)
         except Location.DoesNotExist:
             error_message = "Nieprawidłowa lokalizacja"
             del auto_in_val["to_location"]
-            status = False 
+            status = False
         try:
             delivery = Delivery.objects.get(identifier=identifier)
         except Delivery.DoesNotExist:

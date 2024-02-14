@@ -17,73 +17,200 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='ImageModel',
+            name="ImageModel",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('custom_prefix', models.CharField(blank=True, max_length=50)),
-                ('image_data', models.ImageField(upload_to=delivery.models.custom_upload_path)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("custom_prefix", models.CharField(blank=True, max_length=50)),
+                (
+                    "image_data",
+                    models.ImageField(upload_to=delivery.models.custom_upload_path),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Location',
+            name="Location",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=20)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=20)),
             ],
         ),
         migrations.CreateModel(
-            name='ReasoneComment',
+            name="ReasoneComment",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
             ],
         ),
         migrations.CreateModel(
-            name='Shop',
+            name="Shop",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=140)),
-                ('position_nr', models.IntegerField(validators=[django.core.validators.MinValueValidator(limit_value=1, message='Value must be greater than or equal to 1.'), django.core.validators.MaxValueValidator(limit_value=140, message='Value must be less than or equal to 140.')])),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=140)),
+                (
+                    "position_nr",
+                    models.IntegerField(
+                        validators=[
+                            django.core.validators.MinValueValidator(
+                                limit_value=1,
+                                message="Value must be greater than or equal to 1.",
+                            ),
+                            django.core.validators.MaxValueValidator(
+                                limit_value=140,
+                                message="Value must be less than or equal to 140.",
+                            ),
+                        ]
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='WorkZone',
+            name="WorkZone",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(choices=[('Recive', 'Recive'), ('Storage', 'Storage'), ('Shipment', 'Shipment')], max_length=10)),
-                ('way_index', models.IntegerField(choices=[(1, 'Recive'), (2, 'Storage'), (3, 'Shipment')])),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        choices=[
+                            ("Recive", "Recive"),
+                            ("Storage", "Storage"),
+                            ("Shipment", "Shipment"),
+                        ],
+                        max_length=10,
+                    ),
+                ),
+                (
+                    "way_index",
+                    models.IntegerField(
+                        choices=[(1, "Recive"), (2, "Storage"), (3, "Shipment")]
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Supplier',
+            name="Supplier",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=70)),
-                ('supplier_wms_id', models.CharField(max_length=40)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=70)),
+                ("supplier_wms_id", models.CharField(max_length=40)),
             ],
             options={
-                'unique_together': {('name', 'supplier_wms_id')},
+                "unique_together": {("name", "supplier_wms_id")},
             },
         ),
         migrations.CreateModel(
-            name='Delivery',
+            name="Delivery",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('nr_order', models.IntegerField()),
-                ('sscc_barcode', models.CharField(max_length=20)),
-                ('date_recive', models.DateTimeField(auto_now_add=True)),
-                ('comment', models.TextField()),
-                ('identifier', models.BigIntegerField(default=20240119627, unique=True)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('images_url', models.ForeignKey(blank=True, on_delete=django.db.models.deletion.CASCADE, to='delivery.imagemodel')),
-                ('location', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='location', to='delivery.location')),
-                ('recive_location', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='recive_location', to='delivery.location')),
-                ('supplier_company', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='delivery.supplier')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("nr_order", models.IntegerField()),
+                ("sscc_barcode", models.CharField(max_length=20)),
+                ("date_recive", models.DateTimeField(auto_now_add=True)),
+                ("comment", models.TextField()),
+                (
+                    "identifier",
+                    models.BigIntegerField(default=20240119627, unique=True),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "images_url",
+                    models.ForeignKey(
+                        blank=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="delivery.imagemodel",
+                    ),
+                ),
+                (
+                    "location",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="location",
+                        to="delivery.location",
+                    ),
+                ),
+                (
+                    "recive_location",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="recive_location",
+                        to="delivery.location",
+                    ),
+                ),
+                (
+                    "supplier_company",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="delivery.supplier",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='location',
-            name='work_zone',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='delivery.workzone'),
+            model_name="location",
+            name="work_zone",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="delivery.workzone"
+            ),
         ),
     ]

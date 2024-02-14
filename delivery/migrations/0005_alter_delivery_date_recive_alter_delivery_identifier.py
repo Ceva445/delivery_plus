@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('delivery', '0004_alter_delivery_identifier_alter_delivery_shop'),
+        ("delivery", "0004_alter_delivery_identifier_alter_delivery_shop"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='delivery',
-            name='date_recive',
+            model_name="delivery",
+            name="date_recive",
             field=models.DateField(),
         ),
         migrations.AlterField(
-            model_name='delivery',
-            name='identifier',
+            model_name="delivery",
+            name="identifier",
             field=models.BigIntegerField(default=202401267884, unique=True),
         ),
     ]

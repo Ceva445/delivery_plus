@@ -3,14 +3,14 @@ from .views import (
     SelectReceptionView,
     DeliveryCreateView,
     DeliveryImageAdd,
-    DeleveryDetailView, 
-    HomeView, DeliveryStorageView,
-    RlocationView
-
-    )
+    DeleveryDetailView,
+    HomeView,
+    DeliveryStorageView,
+    RlocationView,
+)
 
 urlpatterns = [
-    path('', HomeView.as_view(), name='home'),
+    path("", HomeView.as_view(), name="home"),
     path("reception/", SelectReceptionView.as_view(), name="select_receprion"),
     path("reception/create/", DeliveryCreateView.as_view(), name="delivery_create"),
     path("add-image/", DeliveryImageAdd.as_view(), name="add_image"),

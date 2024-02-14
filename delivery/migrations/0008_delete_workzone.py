@@ -6,11 +6,11 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('delivery', '0007_alter_location_work_zone'),
+        ("delivery", "0007_alter_location_work_zone"),
     ]
 
     operations = [
         migrations.DeleteModel(
-            name='WorkZone',
+            name="WorkZone",
         ),
     ]

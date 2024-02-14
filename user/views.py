@@ -67,11 +67,11 @@ class UserUpdateView(LoginRequiredMixin, generic.UpdateView):
     def form_valid(self, form):
         user = form.save(commit=False)
 
-        # Set user's role
-        role = self.request.POST.get('role')
+        # Set user"s role
+        role = self.request.POST.get("role")
         user.role = role
 
-        new_password = form.cleaned_data['new_password']
+        new_password = form.cleaned_data["new_password"]
         if new_password:
             user.set_password(new_password)
             # self.request.user = user

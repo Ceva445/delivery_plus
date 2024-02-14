@@ -6,22 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('delivery', '0001_initial'),
+        ("delivery", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='delivery',
-            name='identifier',
+            model_name="delivery",
+            name="identifier",
             field=models.BigIntegerField(default=20240119280, unique=True),
         ),
         migrations.RemoveField(
-            model_name='delivery',
-            name='images_url',
+            model_name="delivery",
+            name="images_url",
         ),
         migrations.AddField(
-            model_name='delivery',
-            name='images_url',
-            field=models.ManyToManyField(blank=True, to='delivery.imagemodel'),
+            model_name="delivery",
+            name="images_url",
+            field=models.ManyToManyField(blank=True, to="delivery.imagemodel"),
         ),
     ]
