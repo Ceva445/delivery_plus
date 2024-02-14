@@ -19,30 +19,6 @@ class ReasoneComment(models.Model):
         return self.name
 
 
-# class WorkZone(models.Model):
-#     WORK_ZONE = [
-#         ("Recive", "Recive"),
-#         ("Storage", "Storage"),
-#         ("Shipment", "Shipment")
-#     ]
-
-#     WORKZON_ONE = 1
-#     WORKZON_TWO = 2
-#     WORKZON_THREE = 3
-
-#     WORKZON_CHOICES = (
-#         (WORKZON_ONE, "Recive"),
-#         (WORKZON_TWO, "Storage"),
-#         (WORKZON_THREE, "Shipment"),
-#     )
-
-#     name = models.CharField(max_length=10, choices=WORK_ZONE)
-#     way_index = models.IntegerField(choices=WORKZON_CHOICES)
-
-#     def __str__(self) -> str:
-#         return self.name
-
-
 class Location(models.Model):
 
     WORKZON_ONE = 1

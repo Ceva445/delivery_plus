@@ -4,6 +4,15 @@
 {% block navigation %}
     <a class="btn btn-secondary" role="button" href="{% url 'delivery:home' %}">Do głównej</a>
     <a class="btn btn-outline-secondary" role="button" href="{% url 'delivery:delivery_storage' %}">Wróć</a>
+
+    <form action="{% url 'delivery:generaport' %}" method="post" target="_blank" style="display: inline; float: right;">
+        {% csrf_token %}
+        <input type="hidden" name="delivery_number" value="{{ delivery.id }}" id="delivery_id">
+        <button type="submit" class="btn btn-outline-secondary">Wydrukować Protokół</button>
+    </form>
+
+
+
 {% endblock %}
 
 {% block content %}

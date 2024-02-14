@@ -5,6 +5,8 @@ import apiclient.discovery
 from oauth2client.service_account import ServiceAccountCredentials
 from deliveryplus import settings
 from datetime import date
+import io
+from reportlab.pdfgen import canvas
 
 
 # open credential file
@@ -64,5 +66,71 @@ def gen_comment(request):
     return comment
 
 
+def gen_pdf_damage_repor(delivery):
+    
+    recive_loc = delivery.recive_location.name
+    order = delivery.nr_order
+    shop = delivery.shop.position_nr
+    total_qty = 100 # !!! Add count to total
+    supplier = delivery.supplier_company.name
+    full_name = "FULL NAME"
+    recive_data = "14/02/2024"
+    #full_comment = comment + extra_comment
+    paragraph_text = "Podczsas kontroli wykryto dekomplet: 9002754329167 34 szt. 64527543294567 64 szt. Product wyjento z palety, nosznik wycofano"
+    sscc = delivery.sscc_barcode
+
+    if recive_loc == "1R":
+        path_first_page = "static/img/second_rec_first_page.jpg"
+        path_second_page = "static/img/second_rec_second_page.jpg"
+    else:
+        path_first_page = "static/img/first_rec_first_page.jpg"
+        path_second_page = "static/img/first_rec_second_page.jpg"
+
+    buffer = io.BytesIO()
+    my_canvas = canvas.Canvas(buffer)
+    my_canvas.drawImage(path_first_page, -30, -100, width=652, height=960)
+    my_canvas.setFont("Helvetica", 12)
+
+    my_canvas.drawString(210, 654, f"{full_name}")
+    my_canvas.drawString(435, 654, f"{recive_data}")
+
+    my_canvas.drawString(40, 270, f"{order}")
+    my_canvas.drawString(140, 270, f"LM - {shop}")
+    my_canvas.drawString(210, 270, f"{total_qty} szt.")
+    my_canvas.drawString(290, 270, f"{supplier}")
+
+
+    my_canvas.showPage()
+
+    my_canvas.drawImage(path_second_page, -30, -100, width=652, height=960)
+    my_canvas.setFont("Helvetica", 12)
+
+    left_margin = 30
+    bottom_margin = 557
+
+    line_spacing = 25
+    number_of_lines = 5
+
+    x_position = left_margin + 5
+    y_position = bottom_margin + line_spacing
+
+
+    my_canvas.drawString(x_position, 607, f"SSCC: {sscc}")
+    for line in paragraph_text.split(".")[:number_of_lines]:
+        my_canvas.drawString(x_position, y_position, f"{line}.")
+        y_position -= line_spacing
+
+    
+
+
+    my_canvas.showPage()
+    my_canvas.save()
+    buffer.seek(0)
+    return buffer
+
+
+
+
 if __name__ == "main":
     pass
+

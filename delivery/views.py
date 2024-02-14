@@ -1,3 +1,4 @@
+from django.http import FileResponse
 from django.shortcuts import render, redirect
 from .models import (
     Delivery,
@@ -10,7 +11,7 @@ from .models import (
 from django.views import View
 from .forms import DeliveryForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .utils import gen_comment, write_report_gs
+from .utils import gen_comment, write_report_gs, gen_pdf_damage_repor
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from datetime import date
@@ -234,3 +235,17 @@ class RlocationView(LoginRequiredMixin, View):
             delivery.save()
             return {"status": status}
         return {"status": status, "error_message": error_message} | auto_in_val
+
+
+
+def generate_damage_pdf_report(request):
+    #delivery = Delivery.objects.get(id=delivery_id)
+    delivery_id = request.POST.get("delivery_number")
+    
+    delivery = Delivery.objects.get(id=delivery_id)
+    
+    report = gen_pdf_damage_repor(delivery)
+
+    response = FileResponse(report, as_attachment=False, filename="Protokół szkody.pdf")
+    return response
+

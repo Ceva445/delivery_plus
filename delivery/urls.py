@@ -7,6 +7,7 @@ from .views import (
     HomeView,
     DeliveryStorageView,
     RlocationView,
+    generate_damage_pdf_report
 )
 
 urlpatterns = [
@@ -17,5 +18,6 @@ urlpatterns = [
     path("storage/", DeliveryStorageView.as_view(), name="delivery_storage"),
     path("<int:pk>/detail/", DeleveryDetailView.as_view(), name="delivery_detail"),
     path("relocation/", RlocationView.as_view(), name="delivery_relocation"),
+    path("print-report/", generate_damage_pdf_report, name="generaport"),
 ]
 app_name = "delivery"
