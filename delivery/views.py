@@ -61,6 +61,7 @@ class DeliveryCreateView(LoginRequiredMixin, View):
         sscc_barcode = request.POST.get("sscc_barcode")
         shop_nr = int(request.POST.get("shop"))
         comment = request.POST.get("comment", None)
+        extra_comment = request.POST.get("extra_comment", "")
         date_recive = request.POST.get("date_recive", datetime.now())
         reasone = request.POST.get("reasones")
 
@@ -82,6 +83,7 @@ class DeliveryCreateView(LoginRequiredMixin, View):
                 shop=Shop.objects.get(position_nr=int(shop_nr)),
                 location=recive_loc,
                 date_recive=date_recive,
+                extra_comment=extra_comment
             )
 
             delivery.save()

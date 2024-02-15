@@ -118,6 +118,8 @@ class Delivery(models.Model):
         Location, on_delete=models.CASCADE, related_name="location"
     )
     identifier = models.BigIntegerField(unique=True)
+    office_chek = models.BooleanField(default=False)
+    extra_comment = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
         return str(self.nr_order)
