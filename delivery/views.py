@@ -169,6 +169,7 @@ class DeliveryStorageView(LoginRequiredMixin, View):
         shop = request.POST.get("shop")
         location = request.POST.get("location")
         status = request.POST.get("status")
+        recive_loc = request.POST.get("recive_loc")
 
         queryset = Delivery.objects.all().select_related(
             "supplier_company", "recive_location", "shop", "location"
@@ -183,12 +184,13 @@ class DeliveryStorageView(LoginRequiredMixin, View):
             queryset = queryset.filter(sscc_barcode__icontains=sscc_barcode)
         if date_recive:
             date_recive_dt = datetime.strptime(date_recive, "%Y-%m-%d")
-            print(date_recive)
             queryset = queryset.filter(date_recive__date=date_recive_dt)
         if shop:
             queryset = queryset.filter(shop=shop)
         if location:
             queryset = queryset.filter(location__name__icontains=location)
+        if recive_loc:
+            queryset = queryset.filter(recive_location__name=recive_loc)
         
         context["delivery_list"] = queryset.order_by("-date_recive")
         return render(request, "delivery/delivery_list.html", context)
