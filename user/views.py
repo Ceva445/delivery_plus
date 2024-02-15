@@ -44,9 +44,10 @@ class UserCreateView(LoginRequiredMixin, generic.CreateView):
     def form_valid(self, form):
         user = form.save(commit=False)
 
-        # Manually handle the role assignment
+        
         role = self.request.POST.get("role")  # Get the selected role from the request
-        user.role = role
+        if role:
+            user.role = role
 
         user.save()
         
@@ -69,7 +70,12 @@ class UserUpdateView(LoginRequiredMixin, generic.UpdateView):
 
         # Set user"s role
         role = self.request.POST.get("role")
-        user.role = role
+        full_name = self.request.POST.get("full_name")
+        if role:
+            user.role = role
+
+        if full_name:
+            user.full_name = full_name
 
         new_password = form.cleaned_data["new_password"]
         if new_password:

@@ -73,7 +73,7 @@ def gen_pdf_damage_repor(delivery):
     shop = delivery.shop.position_nr
     total_qty = 100 # !!! Add count to total
     supplier = delivery.supplier_company.name
-    full_name = "FULL NAME"
+    full_name = delivery.user.full_name
     recive_data = "14/02/2024"
     #full_comment = comment + extra_comment
     comment = "Podczsas kontroli wykryto dekomplet: 9002754329167 34 szt. 64527543294567 64 szt."
@@ -90,8 +90,8 @@ def gen_pdf_damage_repor(delivery):
     my_canvas.drawImage(damage_protocol_path, 0, 0, width=602, height=840)
     my_canvas.setFont("Helvetica", 10)
 
-    my_canvas.drawString(170, 660, f"{full_name}")
-    my_canvas.drawString(342, 660, f"{recive_data}")
+    my_canvas.drawString(170, 663, f"{full_name}")
+    my_canvas.drawString(342, 663, f"{recive_data}")
 
     my_canvas.drawString(50, 505, f"{order}")
     my_canvas.drawString(210, 505, f"LM - {shop}")

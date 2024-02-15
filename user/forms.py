@@ -16,7 +16,7 @@ class UserUpdateForm(forms.ModelForm):
     new_password = forms.CharField(widget=forms.PasswordInput, required=False)  # New password field
     class Meta:
         model = User
-        fields = ["username","new_password"]
+        fields = ["username", "full_name","new_password"]
 
 
 class UserSearchForm(forms.Form):

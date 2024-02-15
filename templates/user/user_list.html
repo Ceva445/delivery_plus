@@ -2,9 +2,10 @@
 
 {% block content %}
     <h1 class="title">
-        Workers
+        Pracowniki
       </h1>
-
+      <a class="button" style="float: right;" href="{% url 'user:user-create' %}">Create</a>
+      <br>
       {% if user_list %}
       <div class="table-responsive">
         <table class="table">
@@ -33,6 +34,5 @@
         {% else %}
         <p>The are no user in Employees</p>
         {% endif %}
-        <a class="button" style="float: right;" href="{% url 'user:user-create' %}">Create</a>
-
+        
 {% endblock %}
