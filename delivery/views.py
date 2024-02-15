@@ -14,7 +14,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .utils import gen_comment, write_report_gs, gen_pdf_damage_repor
 from django.db import transaction
 from django.shortcuts import get_object_or_404
-from datetime import date
+from datetime import datetime    
 from deliveryplus.settings import GS_BUCKET_NAME
 from .print_server import send_label_to_cups
 
@@ -61,7 +61,7 @@ class DeliveryCreateView(LoginRequiredMixin, View):
         sscc_barcode = request.POST.get("sscc_barcode")
         shop_nr = int(request.POST.get("shop"))
         comment = request.POST.get("comment", None)
-        date_recive = request.POST.get("date_recive", date.today())
+        date_recive = request.POST.get("date_recive", datetime.now())
         reasone = request.POST.get("reasones")
 
         if comment is None:
@@ -182,12 +182,15 @@ class DeliveryStorageView(LoginRequiredMixin, View):
         if sscc_barcode:
             queryset = queryset.filter(sscc_barcode__icontains=sscc_barcode)
         if date_recive:
-            queryset = queryset.filter(date_recive=date_recive)
+            date_recive_dt = datetime.strptime(date_recive, "%Y-%m-%d")
+            print(date_recive)
+            queryset = queryset.filter(date_recive__date=date_recive_dt)
         if shop:
             queryset = queryset.filter(shop=shop)
         if location:
             queryset = queryset.filter(location__name__icontains=location)
-        context["delivery_list"] = queryset
+        
+        context["delivery_list"] = queryset.order_by("-date_recive")
         return render(request, "delivery/delivery_list.html", context)
 
 

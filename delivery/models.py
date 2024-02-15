@@ -107,7 +107,7 @@ class Delivery(models.Model):
         max_length=20
     )  # !!!! можливо 20 задежить чи сканер читає (00)
     images_url = models.ManyToManyField(ImageModel, blank=True)
-    date_recive = models.DateField()
+    date_recive = models.DateTimeField()
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     comment = models.TextField()  # додати генерацію коменту
     recive_location = models.ForeignKey(
