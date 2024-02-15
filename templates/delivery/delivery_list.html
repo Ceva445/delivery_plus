@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'pc_base.html' %}
 {% load crispy_forms_filters %}
 
 {% block navigation %}
@@ -18,9 +18,12 @@
                     <thead class="thead-dark">
                         <tr>
                             <th>Id</th>
-                            <th>Lok</th>
-                            <th>Zam</th>
-                            <th>Sup</th>
+                            <th>Data Przyjęcia</th>
+                            <th>Recepcija</th>
+                            <th>Obecna lokalizacja  </th>  
+                            <th>Supplier</th>
+                            <th>Zamówienie </th>
+                            <th>Powud<th>
                         </tr>   
                     </thead>
                     <tbody>
@@ -31,9 +34,12 @@
                                 href="{% url 'delivery:delivery_detail' pk=delivery.id %}">
                                 {{ delivery.identifier }}
                             </a></td>
+                            <td>{{ delivery.date_recive|date:"d-m-Y H:i" }}</td>
+                            <td>{{ delivery.recive_location }}</td>
                             <td>{{ delivery.location }}</td>
+                            <td>{{ delivery.supplier_company.name }}</td>     
                             <td>{{ delivery.nr_order }}</td>
-                            <td>{{ delivery.supplier_company.name }}</td>
+                            <td>Tu będzie powód</td>
                         </tr>
                         {% endfor %}
                     </tbody>
