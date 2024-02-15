@@ -76,51 +76,42 @@ def gen_pdf_damage_repor(delivery):
     full_name = "FULL NAME"
     recive_data = "14/02/2024"
     #full_comment = comment + extra_comment
-    paragraph_text = "Podczsas kontroli wykryto dekomplet: 9002754329167 34 szt. 64527543294567 64 szt. Product wyjento z palety, nosznik wycofano"
+    comment = "Podczsas kontroli wykryto dekomplet: 9002754329167 34 szt. 64527543294567 64 szt."
+    extra_commrnt = "Product wyjento z palety, nosznik wycofano"
     sscc = delivery.sscc_barcode
 
     if recive_loc == "1R":
-        path_first_page = "static/img/second_rec_first_page.jpg"
-        path_second_page = "static/img/second_rec_second_page.jpg"
+        damage_protocol_path = "static/img/first_rec.jpg"
     else:
-        path_first_page = "static/img/first_rec_first_page.jpg"
-        path_second_page = "static/img/first_rec_second_page.jpg"
+        damage_protocol_path = "static/img/second_rec.jpg"
 
     buffer = io.BytesIO()
     my_canvas = canvas.Canvas(buffer)
-    my_canvas.drawImage(path_first_page, -30, -100, width=652, height=960)
-    my_canvas.setFont("Helvetica", 12)
+    my_canvas.drawImage(damage_protocol_path, 0, 0, width=602, height=840)
+    my_canvas.setFont("Helvetica", 10)
 
-    my_canvas.drawString(210, 654, f"{full_name}")
-    my_canvas.drawString(435, 654, f"{recive_data}")
+    my_canvas.drawString(170, 660, f"{full_name}")
+    my_canvas.drawString(342, 660, f"{recive_data}")
 
-    my_canvas.drawString(40, 270, f"{order}")
-    my_canvas.drawString(140, 270, f"LM - {shop}")
-    my_canvas.drawString(210, 270, f"{total_qty} szt.")
-    my_canvas.drawString(290, 270, f"{supplier}")
+    my_canvas.drawString(50, 505, f"{order}")
+    my_canvas.drawString(210, 505, f"LM - {shop}")
+    my_canvas.drawString(280, 505, f"{total_qty} szt.")
+    my_canvas.drawString(360, 505, f"{supplier}")
 
 
-    my_canvas.showPage()
-
-    my_canvas.drawImage(path_second_page, -30, -100, width=652, height=960)
-    my_canvas.setFont("Helvetica", 12)
-
-    left_margin = 30
-    bottom_margin = 557
-
-    line_spacing = 25
+    line_spacing = 20
     number_of_lines = 5
 
-    x_position = left_margin + 5
-    y_position = bottom_margin + line_spacing
+    x_position = 40
+    y_position = 222
 
 
-    my_canvas.drawString(x_position, 607, f"SSCC: {sscc}")
-    for line in paragraph_text.split(".")[:number_of_lines]:
-        my_canvas.drawString(x_position, y_position, f"{line}.")
+    my_canvas.drawString(x_position, 240, f"SSCC: {sscc}")
+    for line in comment.split("szt.")[:-1]:
+        my_canvas.drawString(x_position, y_position, f"{line}szt.")
         y_position -= line_spacing
-
-    
+    if extra_commrnt:
+        my_canvas.drawString(x_position, y_position, f"{extra_commrnt}.")
 
 
     my_canvas.showPage()
