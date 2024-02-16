@@ -216,7 +216,7 @@ class DeliveryStorageView(LoginRequiredMixin, View):
         return render(request, "delivery/delivery_list.html", context)
 
 
-class RlocationView(LoginRequiredMixin, View):
+class RelocationView(LoginRequiredMixin, View):
     template_name = "delivery/relocation.html"
 
     def get(self, request, *args, **kwargs):

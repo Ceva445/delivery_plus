@@ -120,6 +120,8 @@ class Delivery(models.Model):
     identifier = models.BigIntegerField(unique=True)
     office_chek = models.BooleanField(default=False)
     extra_comment = models.CharField(max_length=255, blank=True)
+    transaction = models.TextField(blank=True)
+    
 
     def __str__(self):
         return str(self.nr_order)
