@@ -151,6 +151,21 @@ class DeleveryDetailView(LoginRequiredMixin, View):
         return render(request, "delivery/delivery_detail.html", context)
 
 
+    def post(self, request, *args, **kwargs):
+        delivery_id = self.kwargs.get("pk")
+        reverse_chek_status = self.request.POST.get("reverse_check_status")
+        delivery = Delivery.objects.get(id=delivery_id)
+
+        if reverse_chek_status:
+            delivery.office_chek = not delivery.office_chek
+        delivery.save()
+        
+        context = self.get_context_data(delivery_id=delivery_id)
+        return render(request, "delivery/delivery_detail.html", context)
+
+
+
+
 class DeliveryStorageView(LoginRequiredMixin, View):
     template_name = "delivery/storeg_filter_page.html"
 
@@ -172,6 +187,7 @@ class DeliveryStorageView(LoginRequiredMixin, View):
         location = request.POST.get("location")
         status = request.POST.get("status")
         recive_loc = request.POST.get("recive_loc")
+        office_chek = request.POST.get("office_chek")
 
         queryset = Delivery.objects.all().select_related(
             "supplier_company", "recive_location", "shop", "location"
@@ -193,6 +209,8 @@ class DeliveryStorageView(LoginRequiredMixin, View):
             queryset = queryset.filter(location__name__icontains=location)
         if recive_loc:
             queryset = queryset.filter(recive_location__name=recive_loc)
+        if office_chek:
+            queryset = queryset.filter(office_chek=office_chek)
         
         context["delivery_list"] = queryset.order_by("-date_recive")
         return render(request, "delivery/delivery_list.html", context)
