@@ -123,3 +123,10 @@ class Delivery(models.Model):
 
     def __str__(self):
         return str(self.nr_order)
+
+
+    def return_reasone_or_comment(self):
+        if self.recive_location.name == "2R":
+            return self.comment.replace("Podczas kontroli wykryto ","").split(":")[0]
+        else:
+            return self.comment

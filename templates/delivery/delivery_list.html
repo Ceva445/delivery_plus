@@ -22,7 +22,7 @@
                             <th>Recepcija</th>
                             <th>Obecna lokalizacja  </th>  
                             <th>Dostawca</th>
-                            <th></th>
+                            <th>Zamówienie</th>
                             <th>Powód<th>
                         </tr>   
                     </thead>
@@ -39,7 +39,7 @@
                             <td>{{ delivery.location }}</td>
                             <td>{{ delivery.supplier_company.name }}</td>     
                             <td>{{ delivery.nr_order }}</td>
-                            <td>Tu będzie powód</td>
+                            <td>{{ delivery.return_reasone_or_comment }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
