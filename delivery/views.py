@@ -85,7 +85,7 @@ class DeliveryCreateView(LoginRequiredMixin, View):
                 date_recive=date_recive,
                 extra_comment=extra_comment
             )
-
+            delivery.transaction = f"\n{datetime.now().strftime('%m/%d/%Y, %H:%M')} Użytkownik: {self.request.user.username} przyjął dostawę \n"
             delivery.save()
         # Made it Celery  Task
         send_label_to_cups(delivery, label_comment)
@@ -157,12 +157,12 @@ class DeleveryDetailView(LoginRequiredMixin, View):
         delivery = Delivery.objects.get(id=delivery_id)
 
         if reverse_chek_status:
+            delivery.transaction += f"""{datetime.now().strftime('%m/%d/%Y, %H:%M')} Użytkownik: {self.request.user.username} zmienił status dostawy z {delivery.office_chek} na {not delivery.office_chek}\n"""
             delivery.office_chek = not delivery.office_chek
         delivery.save()
         
         context = self.get_context_data(delivery_id=delivery_id)
         return render(request, "delivery/delivery_detail.html", context)
-
 
 
 
@@ -256,6 +256,7 @@ class RelocationView(LoginRequiredMixin, View):
             status = False
 
         if status:
+            delivery.transaction += f"{datetime.now().strftime('%m/%d/%Y, %H:%M')} Użytkownik przeniósł produkt z lokalizacji {delivery.location.name} do lokalizacji {location.name}\n"
             delivery.location = location
             delivery.save()
             return {"status": status}
