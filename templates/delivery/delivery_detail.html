@@ -42,6 +42,8 @@
     <p class="alert alert-dark">Obecna lokalizacja: {{ delivery.location }}</p>
     <p class="alert alert-dark">Sklep: {{ delivery.shop }}</p>
     <p class="alert alert-dark">Identyfikator: {{ delivery.identifier }}</p>
+    <p class="alert alert-dark">Transaction: {{ delivery.transaction | linebreaksbr}}</p>
+
 
     {% for image_path in image_urls %}
         <img src="{{ image_path }}" alt="Nie mam obrazów" style="width: 100%;">
