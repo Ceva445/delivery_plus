@@ -18,7 +18,7 @@ def send_label_to_cups(delivery, comment):
         "data": f"{rec_data}",
         "order": f"{delivery.nr_order}",
         "identifier": f"{delivery.identifier}",
-        "comment": f"{comment}",
+        "comment": f"{comment[:39]}",
     }
     # print(data_to_send)
     try:
