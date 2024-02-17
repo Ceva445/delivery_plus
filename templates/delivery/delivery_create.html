@@ -46,7 +46,7 @@
     {% endcomment %}
 
     {% if reception == "first" %}
-        <input name="comment" type="text" class="form-control" placeholder="Dodaj komentarz" required>
+        <input name="comment" type="text" maxlength="39" class="form-control" placeholder="Dodaj komentarz" required>
     {% endif %}
 
     {% if request.user.is_superuser %}
