@@ -24,11 +24,15 @@ class Location(models.Model):
     WORKZON_ONE = 1
     WORKZON_TWO = 2
     WORKZON_THREE = 3
+    WORKZON_FOR = 4
+
 
     WORKZON_CHOICES = (
         (WORKZON_ONE, "Recive"),
         (WORKZON_TWO, "Storage"),
-        (WORKZON_THREE, "Shipment"),
+        (WORKZON_THREE, "Ready to load"),
+        (WORKZON_FOR, "Utilization"),
+        (WORKZON_FOR, "Shiped")
     )
     DEFAULT_WORK_ZONE = WORKZON_ONE
 
@@ -121,6 +125,7 @@ class Delivery(models.Model):
     office_chek = models.BooleanField(default=False)
     extra_comment = models.CharField(max_length=255, blank=True)
     transaction = models.TextField(blank=True)
+    complite_status = models.BooleanField(default=False)
     
 
     def __str__(self):
