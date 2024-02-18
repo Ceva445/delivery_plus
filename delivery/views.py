@@ -26,6 +26,9 @@ class HomeView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
 
+def admin_panel(request):
+    return render(request, "delivery/admin_panel.html")
+
 
 class SelectReceptionView(LoginRequiredMixin, View):
     template_name = "delivery/select_reception.html"

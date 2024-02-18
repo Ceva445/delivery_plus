@@ -25,6 +25,14 @@ style="font-size: 30px; padding: 10px;">Relokacja </a>
     style="font-size: 30px; padding: 10px;">Raporty </a><br>
 {% endif %}
 
+
+{%if request.user.role == 'admin'%}
+    <a class="btn btn-outline-secondary d-flex align-items-center justify-content-center" 
+    role="button" href="{% url 'delivery:admin_panel' %}" 
+    style="font-size: 30px; padding: 10px;">ADMIN PANEL </a><br>
+{%endif%}
+
+
 {% if request.user.is_authenticated %}
     <form action="{% url 'logout' %}" method="post" class="btn btn-outline-secondary d-flex align-items-center justify-content-center">
       {% csrf_token %}
