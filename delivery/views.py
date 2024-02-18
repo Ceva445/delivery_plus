@@ -154,11 +154,25 @@ class DeleveryDetailView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         delivery_id = self.kwargs.get("pk")
         reverse_chek_status = self.request.POST.get("reverse_check_status")
+        devivery_shiped = self.request.POST.get("shiped")
+        delivery_utilize = self.request.POST.get("utilize")
         delivery = Delivery.objects.get(id=delivery_id)
 
+
+
         if reverse_chek_status:
-            delivery.transaction += f"""{datetime.now().strftime('%m/%d/%Y, %H:%M')} Użytkownik: {self.request.user.username} zmienił status dostawy z {delivery.office_chek} na {not delivery.office_chek}\n"""
+            delivery.transaction += f"{datetime.now().strftime('%m/%d/%Y, %H:%M')} Użytkownik: {self.request.user.username} zmienił status dostawy z {delivery.office_chek} na {not delivery.office_chek}\n"
             delivery.office_chek = not delivery.office_chek
+        if devivery_shiped or delivery_utilize:
+            if devivery_shiped:
+                to_location = Location.objects.get(name__iexact="Shiped")
+            else:
+                to_location = Location.objects.get(name__iexact="Utulizacja")
+            delivery = Delivery.objects.get(id=delivery_id)
+            delivery.transaction += f"{datetime.now().strftime('%m/%d/%Y, %H:%M')} Użytkownik: {self.request.user.username} przeniósł produkt z lokalizacji {delivery.location.name} do lokalizacji {to_location.name}\n"
+            delivery.complite_status = True
+            delivery.location = to_location
+        
         delivery.save()
         
         context = self.get_context_data(delivery_id=delivery_id)
@@ -240,7 +254,7 @@ class RelocationView(LoginRequiredMixin, View):
         status = True
         auto_in_val = {"identifier": identifier, "to_location": to_location}
         try:
-            location = Location.objects.get(name__iexact=to_location)
+            to_location = Location.objects.get(name__iexact=to_location)
         except Location.DoesNotExist:
             error_message = "Nieprawidłowa lokalizacja"
             del auto_in_val["to_location"]
@@ -256,8 +270,16 @@ class RelocationView(LoginRequiredMixin, View):
             status = False
 
         if status:
-            delivery.transaction += f"{datetime.now().strftime('%m/%d/%Y, %H:%M')} Użytkownik przeniósł produkt z lokalizacji {delivery.location.name} do lokalizacji {location.name}\n"
-            delivery.location = location
+            if delivery.complite_status:
+                del auto_in_val["to_location"]
+                del auto_in_val["identifier"]
+                error_message = "Zamówienie ma status complete"
+                return {"status": False, "error_message": error_message} | auto_in_val
+            delivery.transaction += f"{datetime.now().strftime('%m/%d/%Y, %H:%M')} Użytkownik przeniósł produkt z lokalizacji {delivery.location.name} do lokalizacji {to_location.name}\n"
+            #if shiped or utilization dalivery got Comlite status
+            if to_location.work_zone == 4:
+                delivery.complite_status = True
+            delivery.location = to_location
             delivery.save()
             return {"status": status}
         return {"status": status, "error_message": error_message} | auto_in_val

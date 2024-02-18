@@ -8,9 +8,9 @@
     <form action="{% url 'delivery:generaport' %}" method="post" target="_blank" style="display: inline; float: right;">
         {% csrf_token %}
         <input type="hidden" name="delivery_number" value="{{ delivery.id }}" id="delivery_id">
-        <button type="submit" class="btn btn-outline-secondary">Wydrukować Protokół</button>
+        <button type="submit" class="btn btn-outline-secondary">Protokół</button>
     </form>
-
+    {% if not delivery.office_chek %}
     <form action="{% url 'delivery:delivery_detail' pk=delivery.id %}" method="post"  style="display: inline;">
         {% csrf_token %}
         <input type="hidden", name="reverse_check_status", value="{{ delivery.id }}" , id="reverse_check_status">
@@ -21,7 +21,19 @@
             NO
         {% endif %}</button>
     </form>
+    
+    <form action="{% url 'delivery:delivery_detail' pk=delivery.id %}" method="post"  style="display: inline;">
+        {% csrf_token %}
+        <input type="hidden", name="utilization", value="{{ delivery.id }}" , id="utilization">
+        <button type="submit" class="btn btn-outline-secondary"> Utylizacja</button>
+    </form>
 
+    <form action="{% url 'delivery:delivery_detail' pk=delivery.id %}" method="post"  style="display: inline;">
+        {% csrf_token %}
+        <input type="hidden", name="shiped", value="{{ delivery.id }}" , id="utilization">
+        <button type="submit" class="btn btn-outline-secondary">Wysłać</button>
+    </form>
+    {% endif %}
 
 {% endblock %}
 
