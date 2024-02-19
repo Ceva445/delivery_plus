@@ -1,5 +1,6 @@
 from django.http import FileResponse
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from .models import (
     Delivery,
     Supplier,
@@ -12,7 +13,7 @@ from django.views import View
 from .forms import DeliveryForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .utils import gen_comment, write_report_gs, gen_pdf_damage_repor
-from django.db import transaction
+from django.db import IntegrityError, transaction
 from django.shortcuts import get_object_or_404
 from datetime import datetime    
 from deliveryplus.settings import GS_BUCKET_NAME
@@ -286,6 +287,54 @@ class RelocationView(LoginRequiredMixin, View):
             delivery.save()
             return {"status": status}
         return {"status": status, "error_message": error_message} | auto_in_val
+
+class SupplierListView(LoginRequiredMixin, View):
+    template_name = "delivery/supplier_list.html"
+    def get_context_data(self, **kwargs):
+        context={}
+        suppliers = Supplier.objects.all()
+        context["supplier_list"] = suppliers
+        return context
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        return render(request, self.template_name, context=context)
+
+class SupplierUpdateView(LoginRequiredMixin, View):
+    template_name = "delivery/supplier_update.html"
+    
+    def get_context_data(self, supplier_id):
+        context={}
+        supplier = Supplier.objects.get(id=supplier_id)
+        context["supplier"] = supplier
+        return context
+
+    def get(self, request, *args, **kwargs):
+        supplier_id = self.kwargs.get("pk")
+        context = self.get_context_data(supplier_id=supplier_id)
+        return render(request, self.template_name, context=context)
+
+    def post(self, request, *args, **kwargs):
+        supplier_id = self.kwargs.get("pk")
+        wms_id =  self.request.POST.get("wms_id")
+        name = self.request.POST.get("sup_name")
+        supplier = Supplier.objects.get(id=supplier_id)
+        context = self.get_context_data(supplier_id=supplier_id)
+        with transaction.atomic():
+            try:
+                if wms_id:
+                    supplier.supplier_wms_id = wms_id
+                if name:
+                    supplier.name = name
+                supplier.save()
+            except IntegrityError as e:
+                if "unique_supplier_wms_id" in str(e):
+                    context ["error_message"] = "Supplier with this WMS ID already exists"
+                else:
+                    context ["error_message"] = "An error occurred while saving the supplier"
+                return render(request, self.template_name, context)
+              
+        return redirect(reverse("delivery:supplier_list"))
 
 
 
