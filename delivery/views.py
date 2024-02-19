@@ -336,6 +336,29 @@ class SupplierUpdateView(LoginRequiredMixin, View):
               
         return redirect(reverse("delivery:supplier_list"))
 
+class SupplierCreateView(LoginRequiredMixin, View):
+    template_name = "delivery/supplier_create.html"
+    
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
+
+    def post(self, request, *args, **kwargs):
+        wms_id =  self.request.POST.get("wms_id")
+        name = self.request.POST.get("sup_name")
+        context = {"error_message": ""}
+        with transaction.atomic():
+            try:
+                supplier = Supplier(name=name, supplier_wms_id=wms_id)
+                supplier.save()
+            except IntegrityError as e:
+                if "unique_supplier_wms_id" in str(e):
+                    context ["error_message"] = "Supplier with this WMS ID already exists"
+                else:
+                    context ["error_message"] = "An error occurred while saving the supplier"
+                return render(request, self.template_name, context)
+              
+        return redirect(reverse("delivery:supplier_list"))
+
 
 
 def generate_damage_pdf_report(request):

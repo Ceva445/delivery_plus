@@ -10,7 +10,8 @@ from .views import (
     generate_damage_pdf_report,
     admin_panel,
     SupplierListView,
-    SupplierUpdateView
+    SupplierUpdateView,
+    SupplierCreateView,
 )
 
 urlpatterns = [
@@ -24,6 +25,7 @@ urlpatterns = [
     path("print-report/", generate_damage_pdf_report, name="generaport"),
     path("admin-panel/", admin_panel, name="admin_panel"),
     path("supplier-list/", SupplierListView.as_view(), name="supplier_list"),
+    path("supplier-create/", SupplierCreateView.as_view(), name="supplier_create"),
     path("<int:pk>/supplier-update/", SupplierUpdateView.as_view(), name="supplier_update")
 
 
