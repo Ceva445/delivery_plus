@@ -10,7 +10,8 @@
         <input type="hidden" name="delivery_number" value="{{ delivery.id }}" id="delivery_id">
         <button type="submit" class="btn btn-outline-secondary">Protokół</button>
     </form>
-    {% if not delivery.office_chek %}
+
+    {% if not delivery.complite_status %}
     <form action="{% url 'delivery:delivery_detail' pk=delivery.id %}" method="post"  style="display: inline;">
         {% csrf_token %}
         <input type="hidden", name="reverse_check_status", value="{{ delivery.id }}" , id="reverse_check_status">
