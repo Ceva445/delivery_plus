@@ -48,7 +48,12 @@ class Supplier(models.Model):
     supplier_wms_id = models.CharField(max_length=40)
 
     class Meta:
-        unique_together = ("name", "supplier_wms_id")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["name", "supplier_wms_id"], 
+                name="unique_supplier_wms_id"
+                )
+        ]
 
     def __str__(self) -> str:
         return f"{self.name} - {self.supplier_wms_id}"
