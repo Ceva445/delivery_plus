@@ -12,7 +12,7 @@ class Command(BaseCommand):
 
         supp_inst = [
             Supplier(
-                name=sheet.row_values(row)[1], supplier_wms_id=sheet.row_values(row)[0]
+                name=str(sheet.row_values(row)[1]), supplier_wms_id=str(sheet.row_values(row)[0])
             )
             for row in range(1, sheet.nrows)
         ]
