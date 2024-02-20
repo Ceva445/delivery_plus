@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
 {% load crispy_forms_filters %}
 
+{% block navigation %}
+    <nav class="navigation">
+      <a class="btn btn-secondary" role="button" href="{% url 'delivery:home' %}">Do głównej</a>
+      <a class="btn btn-outline-secondary" role="button" href="{% url 'user:user-list' %}">Wróć</a>
+    </nav>
+{% endblock %}
+
+
 {% block content %}
   <h1 class="title">{{ object|yesno:"Update,Create" }} Employee</h1>
   <form action="" method="post" novalidate>
