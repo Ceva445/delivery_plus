@@ -12,11 +12,12 @@ class User(AbstractUser):
 
     role = models.CharField(max_length=10, choices=USER_ROLE_CHOICES, default="regular")
     full_name = models.CharField(max_length=100, blank=True)
+
     class Meta:
         ordering = ["username"]
 
     def __str__(self):
         return self.username
-    
-    def get_absolute_url(self): # new
+
+    def get_absolute_url(self):  # new
         return reverse("user:user-list")

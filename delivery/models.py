@@ -26,13 +26,12 @@ class Location(models.Model):
     WORKZON_THREE = 3
     WORKZON_FOR = 4
 
-
     WORKZON_CHOICES = (
         (WORKZON_ONE, "Recive"),
         (WORKZON_TWO, "Storage"),
         (WORKZON_THREE, "Ready to load"),
         (WORKZON_FOR, "Utilization"),
-        (WORKZON_FOR, "Shiped")
+        (WORKZON_FOR, "Shiped"),
     )
     DEFAULT_WORK_ZONE = WORKZON_ONE
 
@@ -50,9 +49,8 @@ class Supplier(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["name", "supplier_wms_id"], 
-                name="unique_supplier_wms_id"
-                )
+                fields=["name", "supplier_wms_id"], name="unique_supplier_wms_id"
+            )
         ]
 
     def __str__(self) -> str:
@@ -131,14 +129,12 @@ class Delivery(models.Model):
     extra_comment = models.CharField(max_length=255, blank=True)
     transaction = models.TextField(blank=True)
     complite_status = models.BooleanField(default=False)
-    
 
     def __str__(self):
         return str(self.nr_order)
 
-
     def return_reasone_or_comment(self):
         if self.recive_location.name == "2R":
-            return self.comment.replace("Podczas kontroli wykryto ","").split(":")[0]
+            return self.comment.replace("Podczas kontroli wykryto ", "").split(":")[0]
         else:
             return self.comment

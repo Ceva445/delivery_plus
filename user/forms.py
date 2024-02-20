@@ -6,17 +6,20 @@ from user.models import User
 
 
 class UserCreationForm(UserCreationForm):
-    
+
     class Meta(UserCreationForm.Meta):
         model = User
         fields = UserCreationForm.Meta.fields
 
 
 class UserUpdateForm(forms.ModelForm):
-    new_password = forms.CharField(widget=forms.PasswordInput, required=False)  # New password field
+    new_password = forms.CharField(
+        widget=forms.PasswordInput, required=False
+    )  # New password field
+
     class Meta:
         model = User
-        fields = ["username", "full_name","new_password"]
+        fields = ["username", "full_name", "new_password"]
 
 
 class UserSearchForm(forms.Form):
@@ -24,7 +27,5 @@ class UserSearchForm(forms.Form):
         max_length=255,
         required=False,
         label="",
-        widget=forms.TextInput(
-            attrs={"placeholder": "Search by name"}
-        )
+        widget=forms.TextInput(attrs={"placeholder": "Search by name"}),
     )

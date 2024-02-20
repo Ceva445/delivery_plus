@@ -26,8 +26,10 @@ urlpatterns = [
     path("admin-panel/", admin_panel, name="admin_panel"),
     path("supplier-list/", SupplierListView.as_view(), name="supplier_list"),
     path("supplier-create/", SupplierCreateView.as_view(), name="supplier_create"),
-    path("<int:pk>/supplier-update/", SupplierUpdateView.as_view(), name="supplier_update")
-
-
+    path(
+        "<int:pk>/supplier-update/",
+        SupplierUpdateView.as_view(),
+        name="supplier_update",
+    ),
 ]
 app_name = "delivery"

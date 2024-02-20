@@ -15,7 +15,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .utils import gen_comment, write_report_gs, gen_pdf_damage_repor
 from django.db import IntegrityError, transaction
 from django.shortcuts import get_object_or_404
-from datetime import datetime    
+from datetime import datetime
 from deliveryplus.settings import GS_BUCKET_NAME
 from .print_server import send_label_to_cups
 
@@ -26,6 +26,7 @@ class HomeView(LoginRequiredMixin, View):
     # write_report_gs()
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
+
 
 def admin_panel(request):
     return render(request, "delivery/admin_panel.html")
@@ -87,7 +88,7 @@ class DeliveryCreateView(LoginRequiredMixin, View):
                 shop=Shop.objects.get(position_nr=int(shop_nr)),
                 location=recive_loc,
                 date_recive=date_recive,
-                extra_comment=extra_comment
+                extra_comment=extra_comment,
             )
             delivery.transaction = f"\n{datetime.now().strftime('%m/%d/%Y, %H:%M')} Użytkownik: {self.request.user.username} przyjął dostawę \n"
             delivery.save()
@@ -154,15 +155,12 @@ class DeleveryDetailView(LoginRequiredMixin, View):
 
         return render(request, "delivery/delivery_detail.html", context)
 
-
     def post(self, request, *args, **kwargs):
         delivery_id = self.kwargs.get("pk")
         reverse_chek_status = self.request.POST.get("reverse_check_status")
         devivery_shiped = self.request.POST.get("shiped")
         delivery_utilize = self.request.POST.get("utilize")
         delivery = Delivery.objects.get(id=delivery_id)
-
-
 
         if reverse_chek_status:
             delivery.transaction += f"{datetime.now().strftime('%m/%d/%Y, %H:%M')} Użytkownik: {self.request.user.username} zmienił status dostawy z {delivery.office_chek} na {not delivery.office_chek}\n"
@@ -176,12 +174,11 @@ class DeleveryDetailView(LoginRequiredMixin, View):
             delivery.transaction += f"{datetime.now().strftime('%m/%d/%Y, %H:%M')} Użytkownik: {self.request.user.username} przeniósł produkt z lokalizacji {delivery.location.name} do lokalizacji {to_location.name}\n"
             delivery.complite_status = True
             delivery.location = to_location
-        
+
         delivery.save()
-        
+
         context = self.get_context_data(delivery_id=delivery_id)
         return render(request, "delivery/delivery_detail.html", context)
-
 
 
 class DeliveryStorageView(LoginRequiredMixin, View):
@@ -229,7 +226,7 @@ class DeliveryStorageView(LoginRequiredMixin, View):
             queryset = queryset.filter(recive_location__name=recive_loc)
         if office_chek:
             queryset = queryset.filter(office_chek=office_chek)
-        
+
         context["delivery_list"] = queryset.order_by("-date_recive")
         return render(request, "delivery/delivery_list.html", context)
 
@@ -280,7 +277,7 @@ class RelocationView(LoginRequiredMixin, View):
                 error_message = "Zamówienie ma status complete"
                 return {"status": False, "error_message": error_message} | auto_in_val
             delivery.transaction += f"{datetime.now().strftime('%m/%d/%Y, %H:%M')} Użytkownik przeniósł produkt z lokalizacji {delivery.location.name} do lokalizacji {to_location.name}\n"
-            #if shiped or utilization dalivery got Comlite status
+            # if shiped or utilization dalivery got Comlite status
             if to_location.work_zone == 4:
                 delivery.complite_status = True
             delivery.location = to_location
@@ -288,10 +285,12 @@ class RelocationView(LoginRequiredMixin, View):
             return {"status": status}
         return {"status": status, "error_message": error_message} | auto_in_val
 
+
 class SupplierListView(LoginRequiredMixin, View):
     template_name = "delivery/supplier_list.html"
+
     def get_context_data(self, **kwargs):
-        context={}
+        context = {}
         suppliers = Supplier.objects.all()
         context["supplier_list"] = suppliers
         return context
@@ -300,11 +299,12 @@ class SupplierListView(LoginRequiredMixin, View):
         context = self.get_context_data()
         return render(request, self.template_name, context=context)
 
+
 class SupplierUpdateView(LoginRequiredMixin, View):
     template_name = "delivery/supplier_update.html"
-    
+
     def get_context_data(self, supplier_id):
-        context={}
+        context = {}
         supplier = Supplier.objects.get(id=supplier_id)
         context["supplier"] = supplier
         return context
@@ -316,7 +316,7 @@ class SupplierUpdateView(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         supplier_id = self.kwargs.get("pk")
-        wms_id =  self.request.POST.get("wms_id")
+        wms_id = self.request.POST.get("wms_id")
         name = self.request.POST.get("sup_name")
         supplier = Supplier.objects.get(id=supplier_id)
         context = self.get_context_data(supplier_id=supplier_id)
@@ -329,21 +329,26 @@ class SupplierUpdateView(LoginRequiredMixin, View):
                 supplier.save()
             except IntegrityError as e:
                 if "unique_supplier_wms_id" in str(e):
-                    context ["error_message"] = "Supplier with this WMS ID already exists"
+                    context["error_message"] = (
+                        "Supplier with this WMS ID already exists"
+                    )
                 else:
-                    context ["error_message"] = "An error occurred while saving the supplier"
+                    context["error_message"] = (
+                        "An error occurred while saving the supplier"
+                    )
                 return render(request, self.template_name, context)
-              
+
         return redirect(reverse("delivery:supplier_list"))
+
 
 class SupplierCreateView(LoginRequiredMixin, View):
     template_name = "delivery/supplier_create.html"
-    
+
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
 
     def post(self, request, *args, **kwargs):
-        wms_id =  self.request.POST.get("wms_id")
+        wms_id = self.request.POST.get("wms_id")
         name = self.request.POST.get("sup_name")
         context = {"error_message": ""}
         with transaction.atomic():
@@ -352,23 +357,25 @@ class SupplierCreateView(LoginRequiredMixin, View):
                 supplier.save()
             except IntegrityError as e:
                 if "unique_supplier_wms_id" in str(e):
-                    context ["error_message"] = "Supplier with this WMS ID already exists"
+                    context["error_message"] = (
+                        "Supplier with this WMS ID already exists"
+                    )
                 else:
-                    context ["error_message"] = "An error occurred while saving the supplier"
+                    context["error_message"] = (
+                        "An error occurred while saving the supplier"
+                    )
                 return render(request, self.template_name, context)
-              
+
         return redirect(reverse("delivery:supplier_list"))
 
 
-
 def generate_damage_pdf_report(request):
-    #delivery = Delivery.objects.get(id=delivery_id)
+    # delivery = Delivery.objects.get(id=delivery_id)
     delivery_id = request.POST.get("delivery_number")
-    
+
     delivery = Delivery.objects.get(id=delivery_id)
-    
+
     report = gen_pdf_damage_repor(delivery)
 
     response = FileResponse(report, as_attachment=False, filename="Protokół szkody.pdf")
     return response
-

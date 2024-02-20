@@ -20,11 +20,7 @@ class UserListView(LoginRequiredMixin, generic.ListView):
         context = super(UserListView, self).get_context_data(**kwargs)
 
         username = self.request.GET.get("username", "")
-        context["search_form"] = UserSearchForm(
-            initial={
-                "username": username
-            }
-        )
+        context["search_form"] = UserSearchForm(initial={"username": username})
         return context
 
     def get_queryset(self):
@@ -44,20 +40,19 @@ class UserCreateView(LoginRequiredMixin, generic.CreateView):
     def form_valid(self, form):
         user = form.save(commit=False)
 
-        
         role = self.request.POST.get("role")  # Get the selected role from the request
         if role:
             user.role = role
 
         user.save()
-        
+
         # Redirect to success_url
         return redirect(self.success_url)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["user_role"] = User.USER_ROLE_CHOICES
-        
+
         return context
 
 
@@ -81,8 +76,7 @@ class UserUpdateView(LoginRequiredMixin, generic.UpdateView):
         if new_password:
             user.set_password(new_password)
             # self.request.user = user
-            update_session_auth_hash(self.request, user) 
-
+            update_session_auth_hash(self.request, user)
 
         user.save()
 
@@ -95,6 +89,7 @@ class UserUpdateView(LoginRequiredMixin, generic.UpdateView):
         context = super().get_context_data(**kwargs)
         context["user_role"] = User.USER_ROLE_CHOICES
         return context
+
 
 class UserDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = User

@@ -67,15 +67,15 @@ def gen_comment(request):
 
 
 def gen_pdf_damage_repor(delivery):
-    
+
     recive_loc = delivery.recive_location.name
     order = delivery.nr_order
     shop = delivery.shop.position_nr
-    total_qty = 100 # !!! Add count to total
+    total_qty = 100  # !!! Add count to total
     supplier = delivery.supplier_company.name
     full_name = delivery.user.full_name
     recive_data = delivery.date_recive.strftime("%Y-%m-%d")
-    #full_comment = comment + extra_comment
+    # full_comment = comment + extra_comment
     comment = "Podczsas kontroli wykryto dekomplet: 9002754329167 34 szt. 64527543294567 64 szt."
     extra_commrnt = "Product wyjento z palety, nosznik wycofano"
     sscc = delivery.sscc_barcode
@@ -136,8 +136,5 @@ def gen_pdf_damage_repor(delivery):
     return buffer
 
 
-
-
 if __name__ == "main":
     pass
-
