@@ -19,6 +19,7 @@ from datetime import datetime
 from deliveryplus.settings import GS_BUCKET_NAME
 from .print_server import send_label_to_cups
 from .create_transaction import create_transaction
+from .reclocation import relocate_delivery
 
 
 class HomeView(LoginRequiredMixin, View):
@@ -169,17 +170,23 @@ class DeleveryDetailView(LoginRequiredMixin, View):
         delivery = Delivery.objects.get(id=delivery_id)
 
         if reverse_chek_status:
-            delivery.transaction += f"{datetime.now().strftime('%m/%d/%Y, %H:%M')} Użytkownik: {self.request.user.username} zmienił status dostawy z {delivery.office_chek} na {not delivery.office_chek}\n"
+            delivery.transaction += f"\
+                {datetime.now().strftime('%m/%d/%Y, %H:%M')} \
+                    Użytkownik: {self.request.user.username} \
+                        zmienił status dostawy z {delivery.office_chek} \
+                            na {not delivery.office_chek}\n"
             delivery.office_chek = not delivery.office_chek
         if devivery_shiped or delivery_utilize:
+            
             if devivery_shiped:
                 to_location = Location.objects.get(name__iexact="Shiped")
             else:
                 to_location = Location.objects.get(name__iexact="Utulizacja")
-            delivery = Delivery.objects.get(id=delivery_id)
-            delivery.transaction += f"{datetime.now().strftime('%m/%d/%Y, %H:%M')} Użytkownik: {self.request.user.username} przeniósł produkt z lokalizacji {delivery.location.name} do lokalizacji {to_location.name}\n"
-            delivery.complite_status = True
-            delivery.location = to_location
+            relocate_delivery(
+                    user=self.request.user,
+                    delivery=delivery,
+                    to_location=to_location
+                )
 
         delivery.save()
 
@@ -282,11 +289,11 @@ class RelocationView(LoginRequiredMixin, View):
                 del auto_in_val["identifier"]
                 error_message = "Zamówienie ma status complete"
                 return {"status": False, "error_message": error_message} | auto_in_val
-            delivery.transaction += f"{datetime.now().strftime('%m/%d/%Y, %H:%M')} Użytkownik przeniósł produkt z lokalizacji {delivery.location.name} do lokalizacji {to_location.name}\n"
-            # if shiped or utilization dalivery got Comlite status
-            if to_location.work_zone == 4:
-                delivery.complite_status = True
-            delivery.location = to_location
+            relocate_delivery(
+                    user=self.request.user,
+                    delivery=delivery,
+                    to_location=to_location
+                )
             delivery.save()
             return {"status": status}
         return {"status": status, "error_message": error_message} | auto_in_val

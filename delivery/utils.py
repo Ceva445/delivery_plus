@@ -1,5 +1,3 @@
-import random
-from datetime import datetime
 import httplib2
 import apiclient.discovery
 from oauth2client.service_account import ServiceAccountCredentials
@@ -47,11 +45,6 @@ def write_report_gs(data=None, sheet_name=None):
     print("Row appended successfully.")
 
 
-def get_unique_identifier():
-    now = datetime.now()
-    unique_identifier = now.strftime("%Y%m%d") + str(random.randrange(1000, 9999))
-    return int(unique_identifier)
-
 
 def gen_comment(request):
     index = 0
@@ -67,7 +60,6 @@ def gen_comment(request):
 
 
 def gen_pdf_damage_repor(delivery):
-
     recive_loc = delivery.recive_location.name
     order = delivery.nr_order
     shop = delivery.shop.position_nr
