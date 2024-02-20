@@ -18,6 +18,7 @@ from django.shortcuts import get_object_or_404
 from datetime import datetime
 from deliveryplus.settings import GS_BUCKET_NAME
 from .print_server import send_label_to_cups
+from .create_transaction import create_transaction
 
 
 class HomeView(LoginRequiredMixin, View):
@@ -92,6 +93,11 @@ class DeliveryCreateView(LoginRequiredMixin, View):
             )
             delivery.transaction = f"\n{datetime.now().strftime('%m/%d/%Y, %H:%M')} Użytkownik: {self.request.user.username} przyjął dostawę \n"
             delivery.save()
+            create_transaction(
+                user=self.request.user,
+                delivery=delivery,
+                transaction_type="Recive"
+                )
         # Made it Celery  Task
         send_label_to_cups(delivery, label_comment)
         return render(
