@@ -1,4 +1,4 @@
-from django.http import FileResponse
+from django.http import FileResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from .models import (
@@ -18,8 +18,10 @@ from django.shortcuts import get_object_or_404
 from datetime import datetime
 from deliveryplus.settings import GS_BUCKET_NAME
 from .print_server import send_label_to_cups
-from .create_transaction import create_transaction
+from .utils import create_transaction
 from .reclocation import relocate_delivery
+from transaction.models import Transaction
+from .reports import write_total_action_count
 
 
 class HomeView(LoginRequiredMixin, View):
@@ -95,10 +97,8 @@ class DeliveryCreateView(LoginRequiredMixin, View):
             delivery.transaction = f"\n{datetime.now().strftime('%m/%d/%Y, %H:%M')} Użytkownik: {self.request.user.username} przyjął dostawę \n"
             delivery.save()
             create_transaction(
-                user=self.request.user,
-                delivery=delivery,
-                transaction_type="Recive"
-                )
+                user=self.request.user, delivery=delivery, transaction_type="Recive"
+            )
         # Made it Celery  Task
         send_label_to_cups(delivery, label_comment)
         return render(
@@ -177,16 +177,14 @@ class DeleveryDetailView(LoginRequiredMixin, View):
                             na {not delivery.office_chek}\n"
             delivery.office_chek = not delivery.office_chek
         if devivery_shiped or delivery_utilize:
-            
+
             if devivery_shiped:
                 to_location = Location.objects.get(name__iexact="Shiped")
             else:
                 to_location = Location.objects.get(name__iexact="Utulizacja")
             relocate_delivery(
-                    user=self.request.user,
-                    delivery=delivery,
-                    to_location=to_location
-                )
+                user=self.request.user, delivery=delivery, to_location=to_location
+            )
 
         delivery.save()
 
@@ -290,10 +288,8 @@ class RelocationView(LoginRequiredMixin, View):
                 error_message = "Zamówienie ma status complete"
                 return {"status": False, "error_message": error_message} | auto_in_val
             relocate_delivery(
-                    user=self.request.user,
-                    delivery=delivery,
-                    to_location=to_location
-                )
+                user=self.request.user, delivery=delivery, to_location=to_location
+            )
             delivery.save()
             return {"status": status}
         return {"status": status, "error_message": error_message} | auto_in_val
@@ -380,6 +376,38 @@ class SupplierCreateView(LoginRequiredMixin, View):
                 return render(request, self.template_name, context)
 
         return redirect(reverse("delivery:supplier_list"))
+
+
+class ReportListView(LoginRequiredMixin, View):
+    template_name = "delivery/report_list.html"
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
+
+
+class TotalTransactionReportView(LoginRequiredMixin, View):
+    template_name = "delivery/report_total_transaction.html"
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
+
+    def post(self, request, *args, **kwargs):
+        start_day = self.request.POST.get("start_day")
+        finish_day = self.request.POST.get("finish_day")
+        transaction = Transaction.objects.all().select_related("delivery")
+        if start_day:
+            start_day_dt = datetime.strptime(start_day, "%Y-%m-%d")
+            transaction = transaction.filter(
+                transaction_datetime__date__gte=start_day_dt
+            )
+        if finish_day:
+            finish_day_dt = datetime.strptime(finish_day, "%Y-%m-%d")
+            transaction = transaction.filter(
+                transaction_datetime__date__lte=finish_day_dt
+            )
+        write_total_action_count(transaction)
+
+        return redirect(reverse("delivery:report_list"))
 
 
 def generate_damage_pdf_report(request):

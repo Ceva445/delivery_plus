@@ -12,6 +12,8 @@ from .views import (
     SupplierListView,
     SupplierUpdateView,
     SupplierCreateView,
+    ReportListView,
+    TotalTransactionReportView,
 )
 
 urlpatterns = [
@@ -30,6 +32,12 @@ urlpatterns = [
         "<int:pk>/supplier-update/",
         SupplierUpdateView.as_view(),
         name="supplier_update",
+    ),
+    path("report-list", ReportListView.as_view(), name="report_list"),
+    path(
+        "total-transactin-cont",
+        TotalTransactionReportView.as_view(),
+        name="total_transaction",
     ),
 ]
 app_name = "delivery"

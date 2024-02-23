@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}{% endblock %}
+{% block navigation %}
+    <nav class="navigation">
+        <a class="btn btn-secondary" role="button" href="{% url 'delivery:home' %}">Do głównej</a>
+    </nav>
+{% endblock %}
+{% block content %}
+
+<a class="btn btn-outline-secondary d-flex align-items-center justify-content-center" 
+   role="button" href="" 
+   style="font-size: 30px; padding: 10px;">Raport 1</a>
+<br>
+
+<a class="btn btn-outline-secondary d-flex align-items-center justify-content-center" 
+   role="button" href="" 
+   style="font-size: 30px; padding: 10px;">Raport 2</a>
+<br>
+
+<a class="btn btn-outline-secondary d-flex align-items-center justify-content-center" 
+   role="button" href="{% url 'delivery:total_transaction' %}"
+   style="font-size: 30px; padding: 10px;">Total Transaction</a>
+<br>
+
+<a class="btn btn-outline-secondary d-flex align-items-center justify-content-center" 
+   role="button" href="" 
+   style="font-size: 30px; padding: 10px;">Raport 4</a>
+<br>
+
+<a class="btn btn-outline-secondary d-flex align-items-center justify-content-center" 
+   role="button" href="" 
+   style="font-size: 30px; padding: 10px;">Raport 5</a>
+<br>
+
+{% endblock %}

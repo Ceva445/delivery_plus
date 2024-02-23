@@ -21,7 +21,7 @@ style="font-size: 30px; padding: 10px;">Relokacja </a>
 <br>
 {% if request.user.is_superuser or request.user.role == 'admin' or request.user.role == 'leader' %}
     <a class="btn btn-outline-secondary d-flex align-items-center justify-content-center" 
-    role="button" href="" 
+    role="button" href="{% url 'delivery:report_list' %}" 
     style="font-size: 30px; padding: 10px;">Raporty </a><br>
 {% endif %}
 

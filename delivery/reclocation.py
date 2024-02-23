@@ -1,5 +1,6 @@
-from .create_transaction import create_transaction
+from .utils import create_transaction
 from datetime import datetime
+
 
 def relocate_delivery(user, delivery, to_location):
     transaction_type = "Relocate"
@@ -16,10 +17,6 @@ def relocate_delivery(user, delivery, to_location):
             transaction_type = "Shiped"
     if to_location.work_zone > delivery.location.work_zone:
         create_transaction(
-        user=user,
-        delivery=delivery,
-        transaction_type=transaction_type
-    )
+            user=user, delivery=delivery, transaction_type=transaction_type
+        )
     delivery.location = to_location
-    
-    

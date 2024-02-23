@@ -5,6 +5,7 @@ from deliveryplus import settings
 from datetime import date
 import io
 from reportlab.pdfgen import canvas
+from transaction.models import Transaction
 
 
 # open credential file
@@ -25,9 +26,18 @@ service = apiclient.discovery.build("sheets", "v4", http=httpAuth)
 
 
 def write_report_gs(data=None, sheet_name=None):
-    row_data = ["Value1", "Value2", "Value3"]
+    request_body = {"values": data}
 
-    request_body = {"values": [row_data]}
+    clear_request = (
+        service.spreadsheets()
+        .values()
+        .clear(
+            spreadsheetId=spreadsheet_id,
+            range=f"{sheet_name}!A1:Z",  # Adjust range as needed
+            body={},
+        )
+    )
+    clear_response = clear_request.execute()
 
     # Call the Sheets API to append the data
     request = (
@@ -35,7 +45,7 @@ def write_report_gs(data=None, sheet_name=None):
         .values()
         .update(
             spreadsheetId=spreadsheet_id,
-            range="A1",
+            range=f"{sheet_name}!A1",
             valueInputOption="RAW",
             body=request_body,
         )
@@ -44,7 +54,9 @@ def write_report_gs(data=None, sheet_name=None):
 
     print("Row appended successfully.")
 
-
+def create_transaction(user, delivery, transaction_type):
+    transaction = Transaction(name=transaction_type, user=user, delivery=delivery)
+    transaction.save()
 
 def gen_comment(request):
     index = 0
