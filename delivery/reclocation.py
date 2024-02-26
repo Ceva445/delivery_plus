@@ -19,4 +19,8 @@ def relocate_delivery(user, delivery, to_location):
         create_transaction(
             user=user, delivery=delivery, transaction_type=transaction_type
         )
+    elif to_location.work_zone == delivery.location.work_zone:
+         create_transaction(
+            user=user, delivery=delivery, transaction_type="Optimization"
+        )
     delivery.location = to_location

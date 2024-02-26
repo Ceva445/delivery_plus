@@ -7,6 +7,7 @@ class Transaction(models.Model):
     TRANSACTION_TYPE = (
         ("Recive", "Recive"),
         ("Relocate", "Relocate"),
+        ("Optimization", "Optimization"),
         ("Shiped", "Shiped"),
         ("Utilization", "Utilization")
     )
