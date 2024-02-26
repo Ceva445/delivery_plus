@@ -13,6 +13,7 @@ from .views import (
     SupplierUpdateView,
     SupplierCreateView,
     ReportListView,
+    SummaryReportOfGoodsView,
     TotalTransactionReportView,
 )
 
@@ -34,6 +35,11 @@ urlpatterns = [
         name="supplier_update",
     ),
     path("report-list", ReportListView.as_view(), name="report_list"),
+    path(
+        "summary-of-goods", 
+        SummaryReportOfGoodsView.as_view(), 
+        name="sum_of_goods"
+        ),
     path(
         "total-transactin-cont",
         TotalTransactionReportView.as_view(),

@@ -12,7 +12,7 @@ from .models import (
 from django.views import View
 from .forms import DeliveryForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .utils import gen_comment, write_report_gs, gen_pdf_damage_repor
+from .utils import gen_comment, gen_pdf_damage_repor
 from django.db import IntegrityError, transaction
 from django.shortcuts import get_object_or_404
 from datetime import datetime
@@ -21,7 +21,12 @@ from .print_server import send_label_to_cups
 from .utils import create_transaction
 from .reclocation import relocate_delivery
 from transaction.models import Transaction
-from .reports import write_total_action_count
+from .reports import write_summary_report_of_goods, write_total_action_count
+
+from django.db.models import F, ExpressionWrapper, Func, DateTimeField
+from django.db.models.functions import Now
+from django.db.models import Count
+
 
 
 class HomeView(LoginRequiredMixin, View):
@@ -383,6 +388,46 @@ class ReportListView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
+
+
+class SummaryReportOfGoodsView(LoginRequiredMixin, View):
+    template_name = "delivery/report_sum_of_goods.html"
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
+
+    def post(self, request, *args, **kwargs):
+        start_day = self.request.POST.get("start_day")
+        finish_day = self.request.POST.get("finish_day")
+        recive_location = self.request.POST.get("recive_loc")
+
+        queryset = Delivery.objects.all().select_related(
+            "supplier_company", "recive_location", "shop", "location"
+        ).filter(complite_status=False)
+        if start_day:
+            start_day_dt = datetime.strptime(start_day, "%Y-%m-%d")
+            queryset = queryset.filter(
+                date_recive__date__gte=start_day_dt
+                )
+        if finish_day:
+            finish_day_dt = datetime.strptime(finish_day, "%Y-%m-%d")
+            queryset = queryset.filter(
+                date_recive__date__lte=finish_day_dt
+            )
+        if recive_location:
+            queryset = queryset.filter(
+                recive_location__name = recive_location
+                )
+
+        queryset = queryset.annotate(
+            days_since_received=ExpressionWrapper(
+                    Func(Now(), F('date_recive'), function='AGE'),
+                output_field=DateTimeField()
+                )
+            )
+        queryset = queryset.order_by("date_recive")
+        write_summary_report_of_goods(queryset)
+        return redirect(reverse("delivery:report_list"))
 
 
 class TotalTransactionReportView(LoginRequiredMixin, View):

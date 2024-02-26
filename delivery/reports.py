@@ -1,3 +1,4 @@
+from datetime import datetime
 from .utils import write_report_gs
 from django.db.models import Count
 from django.db.models.functions import TruncDate
@@ -41,3 +42,41 @@ def write_total_action_count(transaction) -> None:
 
     write_report_gs(data=array, sheet_name="Total Transaction")
     # Print the array
+
+def count_waiting_time(days_and_hours_since_received):
+    
+    days = days_and_hours_since_received.days
+    hours = days_and_hours_since_received.seconds // 3600
+
+    if days<=0 and int(hours)<=0:
+        print(days_and_hours_since_received)
+        return "less one hour"
+    if days:
+        days_str = f"{days} days"
+    else:
+        days_str = ""
+    return f"{days_str} {hours} hours"
+
+def write_summary_report_of_goods(deliverys):
+    summary_report = []
+    title_list = [
+        "Identyfikator", "Data Przyjęcia", 
+        "Recepcija", "Obecna lokalizacja",
+        "Dostawca", "Zamówienie",
+        "Powód", "Czas od dnia przyjęcia"
+        ]
+    summary_report.append(title_list)
+    for delivery in deliverys:
+        row = [
+            delivery.identifier,
+            datetime.strftime(delivery.date_recive, "%Y-%m-%d"),
+            delivery.recive_location.name,
+            delivery.location.name,
+            delivery.supplier_company.name,
+            delivery.nr_order,
+            delivery.return_reasone_or_comment(),
+            count_waiting_time(delivery.days_since_received),
+        ]
+        summary_report.append(row)
+    
+    write_report_gs(data=summary_report, sheet_name="raport zbiorczy towarów ")
