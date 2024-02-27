@@ -79,4 +79,33 @@ def write_summary_report_of_goods(deliverys):
         ]
         summary_report.append(row)
     
-    write_report_gs(data=summary_report, sheet_name="raport zbiorczy towarów ")
+    write_report_gs(
+        data=summary_report, 
+        sheet_name="raport zbiorczy towarów "
+        )
+
+
+def write_irregularity_of_type(deliverys):
+    row = ()
+    irregularity_dict = {}
+    title_list = ["Data Przyjęcia", "Zamówienie", "Powód", "Dostawca", "Suma"]
+    sorted_count_delivery = [title_list]
+    for delivery in deliverys:
+        row = (
+            datetime.strftime(delivery.date_recive, "%Y-%m-%d"),
+            delivery.nr_order,
+            delivery.return_reasone_or_comment(),
+            delivery.supplier_company.name,
+            )
+        if row not in irregularity_dict:
+            irregularity_dict[row] = 0
+        irregularity_dict[row] += 1
+    #print(irregularity_dict)
+
+    for report_row, count in irregularity_dict.items():
+        sorted_count_delivery.append(list(report_row) + [count])
+    
+    write_report_gs(
+        data=sorted_count_delivery, 
+        sheet_name="rodzaj nieprawidłowości"
+        )

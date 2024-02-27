@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block navigation %}
+    <nav  class="navigation">
+     <a class="btn btn-secondary" role="button" href="{% url 'delivery:home' %}">Home</a>
+    </nav>
+{% endblock %}
+
+{% block content %}
+   <form method="post" action="{% url 'delivery:type_of_irregularity' %}">
+     {% csrf_token %}
+    <div class="input-group mb-3" type="number">
+    <span class="input-group-text" id="inputGroup-sizing-default">Start Data: </span>
+    <input name="start_day", id="start_day" type="date" class="form-control" aria-describedby="inputGroup-sizing-default">
+    </div>
+    
+    <div class="input-group mb-3" type="number">
+    <span class="input-group-text" id="inputGroup-sizing-default">Finish Data: </span>
+    <input name="finish_day", id="finish_day" type="date" class="form-control" aria-describedby="inputGroup-sizing-default">
+    </div>
+
+    <div class="input-group mb-3">
+    <select name="reasones" class="form-select">
+        <option  disabled selected value="" >Wybierz powód</option>
+        {% for reasone in reasones %}
+            <option value="{{ reasone.name }}">{{ reasone.name }}</option>
+        {% endfor %}
+    </select>
+    </div>
+
+    <div class="input-group mb-3">
+        <select name="recive_loc" class="form-select">
+            <option  disabled selected value="" > Wybierz Recepcija</option>
+            <option value="1R">Rec 1</option>
+            <option value="2R">Rec 2</option>
+        </select>
+    </div>
+    
+    <button type="submit" class="btn btn-secondary">Generowac</button>
+    
+   </form>
+{% endblock %}

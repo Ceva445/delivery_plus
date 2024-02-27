@@ -21,7 +21,11 @@ from .print_server import send_label_to_cups
 from .utils import create_transaction
 from .reclocation import relocate_delivery
 from transaction.models import Transaction
-from .reports import write_summary_report_of_goods, write_total_action_count
+from .reports import (
+    write_summary_report_of_goods,
+    write_total_action_count,
+    write_irregularity_of_type
+    )
 
 from django.db.models import F, ExpressionWrapper, Func, DateTimeField
 from django.db.models.functions import Now
@@ -429,6 +433,51 @@ class SummaryReportOfGoodsView(LoginRequiredMixin, View):
         write_summary_report_of_goods(queryset)
         return redirect(reverse("delivery:report_list"))
 
+
+class IrregularityOfTypeView(LoginRequiredMixin, View):
+    template_name = "delivery/report_type_of_irregularity.html"
+
+    def get_context_data(self, **kwargs):
+        reasones_list = ReasoneComment.objects.all()
+        reasones = [{"id": reas.id, "name": reas.name} for reas in reasones_list]
+
+        return {"reasones": reasones}
+
+    def get(self, request, *args, **kwargs):
+        reception = self.request.GET.get("reception", None)
+        context = self.get_context_data()
+        context["reception"] = reception
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        start_day = self.request.POST.get("start_day")
+        finish_day = self.request.POST.get("finish_day")
+        recive_location = self.request.POST.get("recive_loc")
+        reasone = self.request.POST.get("reasones")
+
+        queryset = Delivery.objects.all().select_related(
+            "supplier_company", "recive_location", "shop", "location"
+        ).filter(complite_status=False)
+        if start_day:
+            start_day_dt = datetime.strptime(start_day, "%Y-%m-%d")
+            queryset = queryset.filter(
+                date_recive__date__gte=start_day_dt
+                )
+        if finish_day:
+            finish_day_dt = datetime.strptime(finish_day, "%Y-%m-%d")
+            queryset = queryset.filter(
+                date_recive__date__lte=finish_day_dt
+            )
+        if recive_location:
+            queryset = queryset.filter(
+                recive_location__name = recive_location
+                )
+        if reasone:
+            queryset = queryset.filter(comment__icontains=reasone)
+        queryset = queryset.order_by("-date_recive")
+        write_irregularity_of_type(queryset)
+
+        return redirect(reverse("delivery:report_list"))
 
 class TotalTransactionReportView(LoginRequiredMixin, View):
     template_name = "delivery/report_total_transaction.html"

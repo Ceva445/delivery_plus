@@ -15,6 +15,7 @@ from .views import (
     ReportListView,
     SummaryReportOfGoodsView,
     TotalTransactionReportView,
+    IrregularityOfTypeView
 )
 
 urlpatterns = [
@@ -39,6 +40,11 @@ urlpatterns = [
         "summary-of-goods", 
         SummaryReportOfGoodsView.as_view(), 
         name="sum_of_goods"
+        ),
+    path(
+        "type-of-irregularity",
+        IrregularityOfTypeView.as_view(),
+        name="type_of_irregularity"
         ),
     path(
         "total-transactin-cont",

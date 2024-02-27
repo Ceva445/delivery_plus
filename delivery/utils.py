@@ -52,7 +52,6 @@ def write_report_gs(data=None, sheet_name=None):
     )
     response = request.execute()
 
-    print("Row appended successfully.")
 
 def create_transaction(user, delivery, transaction_type):
     transaction = Transaction(name=transaction_type, user=user, delivery=delivery)
