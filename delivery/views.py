@@ -153,6 +153,7 @@ class DeleveryDetailView(LoginRequiredMixin, View):
         context = {}
         delivery = get_object_or_404(Delivery, id=delivery_id)
         date_recive = delivery.date_recive.strftime("%d.%m.%Y")
+        context["comment"] = delivery.comment.replace("szt.", "szt.\n").replace(":", ":\n")
         context["date_recive"] = date_recive
 
         if delivery.images_url.all():
@@ -180,11 +181,15 @@ class DeleveryDetailView(LoginRequiredMixin, View):
         delivery = Delivery.objects.get(id=delivery_id)
 
         if reverse_chek_status:
+            if delivery.office_chek:
+                status, new = "", "nie "
+            else:
+                status, new = "nie ", ""
             delivery.transaction += f"\
                 {datetime.now().strftime('%m/%d/%Y, %H:%M')} \
                     Użytkownik: {self.request.user.username} \
-                        zmienił status dostawy z {delivery.office_chek} \
-                            na {not delivery.office_chek}\n"
+                        zmienił status dostawy z {status}sprawdzony przez biuro \
+                            na {new}sprawdzony przez biuro\n"
             delivery.office_chek = not delivery.office_chek
         if devivery_shiped or delivery_utilize:
 

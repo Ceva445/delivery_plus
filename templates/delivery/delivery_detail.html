@@ -50,7 +50,7 @@
     <p class="alert alert-dark">Data otrzymania: {{ date_recive }}</p>
     <p class="alert alert-dark">Uzytkownik ktory przyjal towar: {{ delivery.user }}</p>
     {% comment %} <p class="alert alert-dark">Uzytkownik ktory wykonal ostatni ruch: {{}}</p> {% endcomment %}
-    <p class="alert alert-dark">Komentarz: {{ delivery.comment }}</p>
+    <p class="alert alert-dark">Komentarz: {{ comment | linebreaksbr}}</p>
     <p class="alert alert-dark">Lokalizacja przyjęciowa: {{ delivery.recive_location }}</p>
     <p class="alert alert-dark">Obecna lokalizacja: {{ delivery.location }}</p>
     <p class="alert alert-dark">Sklep: {{ delivery.shop }}</p>
