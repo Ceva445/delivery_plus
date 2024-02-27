@@ -22,6 +22,7 @@ from .utils import create_transaction
 from .reclocation import relocate_delivery
 from transaction.models import Transaction
 from .reports import (
+    write_ready_to_ship,
     write_summary_report_of_goods,
     write_total_action_count,
     write_irregularity_of_type
@@ -503,6 +504,43 @@ class TotalTransactionReportView(LoginRequiredMixin, View):
 
         return redirect(reverse("delivery:report_list"))
 
+
+class ReadyToShipView(LoginRequiredMixin, View):
+    template_name = "delivery/report_ready_to_ship.html"
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
+    
+    def post(self, request, *args, **kwargs):
+        start_day = self.request.POST.get("start_day")
+        finish_day = self.request.POST.get("finish_day")
+        recive_location = self.request.POST.get("recive_loc")
+        
+        transaction = Transaction.objects.all().filter(name="Relocate")\
+            .select_related("delivery").filter(delivery__location__work_zone=3)
+        if start_day:
+            start_day_dt = datetime.strptime(start_day, "%Y-%m-%d")
+            transaction = transaction.filter(
+                transaction_datetime__date__gte=start_day_dt
+            )
+        if finish_day:
+            finish_day_dt = datetime.strptime(finish_day, "%Y-%m-%d")
+            transaction = transaction.filter(
+                transaction_datetime__date__lte=finish_day_dt
+            )
+        if recive_location:
+            transaction = transaction.filter(
+                delivery__recive_location__name = recive_location
+                )
+        transaction = transaction.annotate(
+            days_since_received=ExpressionWrapper(
+                    Func(Now(), F('transaction_datetime'), function='AGE'),
+                output_field=DateTimeField()
+                )
+            ).order_by("-transaction_datetime")
+        write_ready_to_ship(transaction)
+
+        return redirect(reverse("delivery:report_list"))
 
 def generate_damage_pdf_report(request):
     # delivery = Delivery.objects.get(id=delivery_id)

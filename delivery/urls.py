@@ -15,7 +15,8 @@ from .views import (
     ReportListView,
     SummaryReportOfGoodsView,
     TotalTransactionReportView,
-    IrregularityOfTypeView
+    IrregularityOfTypeView,
+    ReadyToShipView
 )
 
 urlpatterns = [
@@ -51,5 +52,10 @@ urlpatterns = [
         TotalTransactionReportView.as_view(),
         name="total_transaction",
     ),
+    path(
+        "ready_to_ship",
+        ReadyToShipView.as_view(),
+        name="ready_to_ship"
+    )
 ]
 app_name = "delivery"

@@ -43,7 +43,7 @@ def write_total_action_count(transaction) -> None:
     write_report_gs(data=array, sheet_name="Total Transaction")
     # Print the array
 
-def count_waiting_time(days_and_hours_since_received):
+def convert_waiting_time(days_and_hours_since_received):
     
     days = days_and_hours_since_received.days
     hours = days_and_hours_since_received.seconds // 3600
@@ -61,7 +61,7 @@ def write_summary_report_of_goods(deliverys):
     summary_report = []
     title_list = [
         "Identyfikator", "Data Przyjęcia", 
-        "Recepcija", "Obecna lokalizacja",
+        "Recepcja", "Obecna lokalizacja",
         "Dostawca", "Zamówienie",
         "Powód", "Czas od dnia przyjęcia"
         ]
@@ -75,7 +75,7 @@ def write_summary_report_of_goods(deliverys):
             delivery.supplier_company.name,
             delivery.nr_order,
             delivery.return_reasone_or_comment(),
-            count_waiting_time(delivery.days_since_received),
+            convert_waiting_time(delivery.days_since_received),
         ]
         summary_report.append(row)
     
@@ -109,3 +109,38 @@ def write_irregularity_of_type(deliverys):
         data=sorted_count_delivery, 
         sheet_name="rodzaj nieprawidłowości"
         )
+    
+def write_ready_to_ship(transactions):
+    sorted_ready_to_ship = []
+    title_list = [
+        "Identyfikator", "Data Przyjęcia", "Data przygotowania",
+        "Recepcja", "Obecna lokalizacja",
+        "Dostawca", "Zamówienie",
+        "Powód", "Czas od dnia przyjęcia"
+        ]  
+    filterd_transaction_list = []
+    for action in transactions:
+        delivery = action.delivery
+        if delivery.identifier not in filterd_transaction_list:
+            row = [
+                delivery.identifier,
+                datetime.strftime(delivery.date_recive, "%Y-%m-%d"),
+                datetime.strftime(action.transaction_datetime, "%Y-%m-%d"),
+                delivery.recive_location.name,
+                delivery.location.name,
+                delivery.supplier_company.name,
+                delivery.nr_order,
+                delivery.return_reasone_or_comment(),
+                convert_waiting_time(action.days_since_received),
+                action.days_since_received
+            ]
+            filterd_transaction_list.append(delivery.identifier)
+            sorted_ready_to_ship.append(row)
+    sorted_ready_to_ship = sorted(sorted_ready_to_ship, key=lambda x: x[-1], reverse=True)
+    sorted_ready_to_ship = [inner_list[:-1] for inner_list in sorted_ready_to_ship]
+    sorted_ready_to_ship.insert(0, title_list)
+    write_report_gs(
+        data=sorted_ready_to_ship,
+        sheet_name="gotowy do wysyłki"
+    )
+    
