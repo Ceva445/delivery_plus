@@ -26,7 +26,7 @@ style="font-size: 30px; padding: 10px;">Relokacja </a>
 {% endif %}
 
 
-{%if request.user.role == 'admin'%}
+{%if request.user.role == 'admin' or request.user.is_superuser %}
     <a class="btn btn-outline-secondary d-flex align-items-center justify-content-center" 
     role="button" href="{% url 'delivery:admin_panel' %}" 
     style="font-size: 30px; padding: 10px;">ADMIN PANEL </a><br>
