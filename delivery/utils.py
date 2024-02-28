@@ -69,18 +69,42 @@ def gen_comment(request):
     comment = f"{reasones}: {ean_qty_str}"
     return comment
 
+def get_smart_split_comment(comment):
+    smart_split_text = []
+    line = ""
+    for word in comment.split(" "):
+        if len(line) + len(word) >= 100:
+            smart_split_text.append(line)
+            line = f"{word}"
+        else:
+            line += " " + word
+    if line:
+        smart_split_text.append(line)
+    return smart_split_text
+
+def get_total_products_count(comment):
+    count = 0
+    split_comment = comment.split(" ")[::-1]
+    for indx, word in enumerate(split_comment):
+        if "szt" in word.lower():
+            try:
+                count += int(split_comment[indx + 1])
+            except:
+                pass
+    return count
+
 
 def gen_pdf_damage_repor(delivery):
     recive_loc = delivery.recive_location.name
     order = delivery.nr_order
     shop = delivery.shop.position_nr
-    total_qty = 100  # !!! Add count to total
     supplier = delivery.supplier_company.name
     full_name = delivery.user.full_name
     recive_data = delivery.date_recive.strftime("%Y-%m-%d")
     # full_comment = comment + extra_comment
-    comment = "Podczsas kontroli wykryto dekomplet: 9002754329167 34 szt. 64527543294567 64 szt."
-    extra_commrnt = "Product wyjento z palety, nosznik wycofano"
+    comment = delivery.comment
+    total_qty = get_total_products_count(comment)
+    extra_commrnt = delivery.extra_comment
     sscc = delivery.sscc_barcode
 
     if recive_loc == "1R":
@@ -108,8 +132,8 @@ def gen_pdf_damage_repor(delivery):
         y_position = 222
 
         my_canvas.drawString(x_position, 240, f"SSCC: {sscc}")
-        for line in comment.split("szt.")[:-1]:
-            my_canvas.drawString(x_position, y_position, f"{line}szt.")
+        for line in get_smart_split_comment(comment=comment):
+            my_canvas.drawString(x_position, y_position, f"{line}")
             y_position -= line_spacing
         if extra_commrnt:
             my_canvas.drawString(x_position, y_position, f"{extra_commrnt}.")
@@ -127,8 +151,8 @@ def gen_pdf_damage_repor(delivery):
         y_position = 232
 
         my_canvas.drawString(x_position, 250, f"SSCC: {sscc}")
-        for line in comment.split("szt.")[:-1]:
-            my_canvas.drawString(x_position, y_position, f"{line}szt.")
+        for line in get_smart_split_comment(comment=comment):
+            my_canvas.drawString(x_position, y_position, f"{line}")
             y_position -= line_spacing
         if extra_commrnt:
             my_canvas.drawString(x_position, y_position, f"{extra_commrnt}.")
