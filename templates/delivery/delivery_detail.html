@@ -1,14 +1,20 @@
 {% extends 'base.html' %}
 {% load crispy_forms_filters %}
-
+{% load static %}
 {% block navigation %}
-    <a class="btn btn-secondary" role="button" href="{% url 'delivery:home' %}">Do głównej</a>
-    <a class="btn btn-outline-secondary" role="button" href="{% url 'delivery:delivery_storage' %}">Wróć</a>
+    <a class="btn btn-secondary" role="button" href="{% url 'delivery:home' %}">
+        <img src="{% static '/img/house.svg' %}" alt="Справжнє зображення">
+    </a>
+    <a class="btn btn-outline-secondary" role="button" href="{% url 'delivery:delivery_storage' %}">
+        <img src="{% static '/img/arrow-bend-up-left.svg' %}" alt="Справжнє зображення">
+    </a>
 
     <form action="{% url 'delivery:generaport' %}" method="post" target="_blank" style="display: inline; float: right;">
         {% csrf_token %}
         <input type="hidden" name="delivery_number" value="{{ delivery.id }}" id="delivery_id">
-        <button type="submit" class="btn btn-outline-secondary">Protokół</button>
+        <button type="submit" class="btn btn-outline-secondary">
+            <img src="{% static '/img/file-pdf.svg' %}" alt="Справжнє зображення">
+        </button>
     </form>
 
     {% if not delivery.complite_status %}
@@ -16,23 +22,30 @@
         {% csrf_token %}
         <input type="hidden", name="reverse_check_status", value="{{ delivery.id }}" , id="reverse_check_status">
         <button type="submit" class="btn btn-outline-secondary">
-        {% if delivery.office_chek %}
-            YES
-        {% else %}
-            NO
-        {% endif %}</button>
+            {% if delivery.office_chek %}
+                
+            <img src="{% static '/img/x.svg' %}" alt="Справжнє зображення">
+            {% else %}
+                
+            <img src="{% static '/img/check-fat.svg' %}" alt="Справжнє зображення">
+            {% endif %}
+        </button>
     </form>
     
     <form action="{% url 'delivery:delivery_detail' pk=delivery.id %}" method="post"  style="display: inline;">
         {% csrf_token %}
         <input type="hidden", name="utilize", value="{{ delivery.id }}" , id="utilization">
-        <button type="submit" class="btn btn-outline-secondary"> Utylizacja</button>
+        <button type="submit" class="btn btn-outline-secondary"> 
+            <img src="{% static '/img/trash.svg' %}" alt="Справжнє зображення">
+        </button>
     </form>
 
     <form action="{% url 'delivery:delivery_detail' pk=delivery.id %}" method="post"  style="display: inline;">
         {% csrf_token %}
         <input type="hidden", name="shiped", value="{{ delivery.id }}" , id="utilization">
-        <button type="submit" class="btn btn-outline-secondary">Wysłać</button>
+        <button type="submit" class="btn btn-outline-secondary">
+            <img src="{% static '/img/truck.svg' %}" alt="Справжнє зображення">
+        </button>
     </form>
     {% endif %}
 
