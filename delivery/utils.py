@@ -7,6 +7,9 @@ import io
 from reportlab.pdfgen import canvas
 from transaction.models import Transaction
 
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+
 
 # open credential file
 CREDENTIALS_FILE = "cred.json"
@@ -113,9 +116,10 @@ def gen_pdf_damage_repor(delivery):
         damage_protocol_path = "static/img/second_rec.jpg"
 
     buffer = io.BytesIO()
+    pdfmetrics.registerFont(TTFont("FreeSans", "freesans/FreeSans.ttf"))
     my_canvas = canvas.Canvas(buffer)
     my_canvas.drawImage(damage_protocol_path, 0, 0, width=602, height=840)
-    my_canvas.setFont("Helvetica", 10)
+    my_canvas.setFont("FreeSans", 10)
 
     if recive_loc == "1R":
         my_canvas.drawString(170, 661, f"{full_name}")
