@@ -104,7 +104,7 @@ class DeliveryCreateView(LoginRequiredMixin, View):
                 date_recive=date_recive,
                 extra_comment=extra_comment,
             )
-            delivery.transaction = f"\n{datetime.now().strftime('%m/%d/%Y, %H:%M')} Użytkownik: {self.request.user.username} przyjął dostawę \n"
+            delivery.transaction = f"\n{datetime.now().strftime('%m/%d/%Y, %H:%M')} {self.request.user.username} przyjął dostawę \n"
             delivery.save()
             create_transaction(
                 user=self.request.user, delivery=delivery, transaction_type="Recive"
@@ -187,7 +187,7 @@ class DeleveryDetailView(LoginRequiredMixin, View):
                 status, new = "nie ", ""
             delivery.transaction += f"\
                 {datetime.now().strftime('%m/%d/%Y, %H:%M')} \
-                    Użytkownik: {self.request.user.username} \
+                     {self.request.user.username} \
                         zmienił status dostawy z {status}sprawdzony przez biuro \
                             na {new}sprawdzony przez biuro\n"
             delivery.office_chek = not delivery.office_chek
