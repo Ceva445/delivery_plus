@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block navigation %}
+    <nav class="navigation">
+        <a class="btn btn-secondary" role="button" href="{% url 'delivery:home' %}">Do głównej</a>
+    </nav>
+{% endblock %}
+
+{% block content %}
+<form method="post" action="{% url 'delivery:delivery_uncomplit' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="input-group mb-3" type="number">
+        <span class="input-group-text" style="width: 35%;">Identyfikator: </span>
+        <input type="number" style="width: 65%;" name="identifier" value="{{ identifier }}" required>
+    </div>
+
+    <div class="input-group mb-3" type="number">
+        <span class="input-group-text" style="width: 35%;">To Location: </span>
+        <input type="text" style="width: 65%;" name="to_location" value="{{ to_location }}" required>
+    </div>
+
+    <button type="submit" style="width: 100%;">Relokuj</button>
+</form>
+
+{% if error_message %}
+    <div class="alert alert-danger" role="alert">
+        {{ error_message }}
+    </div>
+{% endif %}
+
+{% endblock %}

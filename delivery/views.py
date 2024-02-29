@@ -282,7 +282,30 @@ class RelocationView(LoginRequiredMixin, View):
         else:
             return render(request, self.template_name, context)
 
-    
+class UncompliteView(LoginRequiredMixin, View):
+    template_name = "delivery/uncomplit.html"
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
+
+    def post(self, request, *args, **kwargs):
+        identifier = request.POST.get("identifier")
+        to_location = request.POST.get("to_location")
+
+        context = relocate_or_get_error(
+            identifier=identifier, 
+            to_location=to_location, 
+            request=request,
+            uncomplit=True
+            )
+        if context["status"]:
+            return render(
+                request,
+                self.template_name,
+            )
+        else:
+            return render(request, self.template_name, context)
+  
 
 class SupplierListView(LoginRequiredMixin, View):
     template_name = "delivery/supplier_list.html"

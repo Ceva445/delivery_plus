@@ -23,7 +23,13 @@ def relocate_or_get_error(identifier, to_location, request, uncomplit=False):
             status = False
 
         if status:
+            #if uncomplit action check delivery complit status if true made uncomplit
             if uncomplit:
+                if not delivery.complite_status:
+                    del auto_in_val["to_location"]
+                    del auto_in_val["identifier"]
+                    error_message = "Ta dostawa nie ma statusu complete"
+                    return {"status": False, "error_message": error_message} | auto_in_val
                 delivery.complite_status = False
             if delivery.complite_status:
                 del auto_in_val["to_location"]
