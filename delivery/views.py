@@ -510,7 +510,7 @@ class TotalTransactionReportView(LoginRequiredMixin, View):
         return redirect(reverse("delivery:report_list"))
 
 
-class ReadyToShipView(LoginRequiredMixin, View):
+class ReadyToShipReportView(LoginRequiredMixin, View):
     template_name = "delivery/report_ready_to_ship.html"
 
     def get(self, request, *args, **kwargs):

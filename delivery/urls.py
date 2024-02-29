@@ -16,7 +16,7 @@ from .views import (
     SummaryReportOfGoodsView,
     TotalTransactionReportView,
     IrregularityOfTypeView,
-    ReadyToShipView
+    ReadyToShipReportView
 )
 
 urlpatterns = [
@@ -54,7 +54,7 @@ urlpatterns = [
     ),
     path(
         "ready_to_ship",
-        ReadyToShipView.as_view(),
+        ReadyToShipReportView.as_view(),
         name="ready_to_ship"
     )
 ]
