@@ -1,6 +1,8 @@
 from django.http import FileResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
+
+from .relocate_or_get_error import relocate_or_get_error
 from .models import (
     Delivery,
     Supplier,
@@ -267,7 +269,11 @@ class RelocationView(LoginRequiredMixin, View):
         identifier = request.POST.get("identifier")
         to_location = request.POST.get("to_location")
 
-        context = self.relocate_or_get_error(identifier, to_location)
+        context = relocate_or_get_error(
+            identifier=identifier, 
+            to_location=to_location, 
+            request=request
+            )
         if context["status"]:
             return render(
                 request,
@@ -276,39 +282,7 @@ class RelocationView(LoginRequiredMixin, View):
         else:
             return render(request, self.template_name, context)
 
-    def relocate_or_get_error(self, identifier, to_location):
-        error_message = ""
-        status = True
-        auto_in_val = {"identifier": identifier, "to_location": to_location}
-        try:
-            to_location = Location.objects.get(name__iexact=to_location)
-        except Location.DoesNotExist:
-            error_message = "Nieprawidłowa lokalizacja"
-            del auto_in_val["to_location"]
-            status = False
-        try:
-            delivery = Delivery.objects.get(identifier=identifier)
-        except Delivery.DoesNotExist:
-            if error_message:
-                error_message += "i identyfikator."
-            else:
-                error_message = "Nieprawidłowy identyfikator."
-            del auto_in_val["identifier"]
-            status = False
-
-        if status:
-            if delivery.complite_status:
-                del auto_in_val["to_location"]
-                del auto_in_val["identifier"]
-                error_message = "Zamówienie ma status complete"
-                return {"status": False, "error_message": error_message} | auto_in_val
-            relocate_delivery(
-                user=self.request.user, delivery=delivery, to_location=to_location
-            )
-            delivery.save()
-            return {"status": status}
-        return {"status": status, "error_message": error_message} | auto_in_val
-
+    
 
 class SupplierListView(LoginRequiredMixin, View):
     template_name = "delivery/supplier_list.html"
