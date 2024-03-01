@@ -85,8 +85,8 @@ class DeliveryCreateView(LoginRequiredMixin, View):
         extra_comment = request.POST.get("extra_comment", "")
         date_recive = request.POST.get("date_recive", datetime.now())
         reasone = request.POST.get("reasones")
-
-        if comment is None:
+        recive_location = request.POST.get("recive_location")
+        if recive_location == "second":
             recive_loc = Location.objects.get(name="2R")
             comment = gen_comment(request)
             label_comment = reasone
