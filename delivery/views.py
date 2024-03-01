@@ -77,6 +77,7 @@ class DeliveryCreateView(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
+        context = self.get_context_data()
         selected_supplier_id = request.POST.get("selected_supplier_id")
         order_nr = int(request.POST.get("order_nr"))
         sscc_barcode = request.POST.get("sscc_barcode")
@@ -86,6 +87,13 @@ class DeliveryCreateView(LoginRequiredMixin, View):
         date_recive = request.POST.get("date_recive", datetime.now())
         reasone = request.POST.get("reasones")
         recive_location = request.POST.get("recive_location")
+
+        if not selected_supplier_id:
+            context["reception"] = recive_location
+            context["error_message"] = "Wprowadzono nieprawidłowego dostawcę"
+            return render(request, self.template_name, context)
+
+
         if recive_location == "second":
             recive_loc = Location.objects.get(name="2R")
             comment = gen_comment(request)

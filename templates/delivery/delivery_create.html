@@ -85,6 +85,10 @@
         <input class="btn btn-secondary" type="submit" value="Submit" style="width: 100%;"> 
 </form>
 
-
+{% if error_message %}
+    <div class="alert alert-danger" role="alert">
+        {{ error_message }}
+    </div>
+{% endif %}
     
 {% endblock %}
