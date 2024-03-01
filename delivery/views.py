@@ -203,6 +203,8 @@ class DeleveryDetailView(LoginRequiredMixin, View):
                         zmienił status dostawy z {status}sprawdzony przez biuro \
                             na {new}sprawdzony przez biuro\n"
             delivery.office_chek = not delivery.office_chek
+            delivery.save()
+            return redirect("delivery:delivery_detail", pk=delivery_id)
         if devivery_shiped or delivery_utilize:
 
             if devivery_shiped:
@@ -213,7 +215,7 @@ class DeleveryDetailView(LoginRequiredMixin, View):
                 user=self.request.user, delivery=delivery, to_location=to_location
             )
             delivery.save()
-            return redirect("delivery:delivery_detail", pk=1)
+            return redirect("delivery:delivery_detail", pk=delivery_id)
 
         delivery.save()
 
