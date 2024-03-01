@@ -34,11 +34,17 @@ class Location(models.Model):
     )
     DEFAULT_WORK_ZONE = WORKZON_ONE
 
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=20, unique=True)
     work_zone = models.IntegerField(choices=WORKZON_CHOICES, default=DEFAULT_WORK_ZONE)
 
     def __str__(self) -> str:
         return self.name
+    
+    def get_work_zone_display(self):
+        for code, display_name in self.WORKZON_CHOICES:
+            if self.work_zone == code:
+                return display_name
+        return None
 
 
 class Supplier(models.Model):
