@@ -182,6 +182,8 @@ class DeleveryDetailView(LoginRequiredMixin, View):
         delivery_utilize = self.request.POST.get("utilize")
         delivery = Delivery.objects.get(id=delivery_id)
 
+        context = self.get_context_data(delivery_id=delivery_id)
+
         if reverse_chek_status:
             if delivery.office_chek:
                 status, new = "", "nie "
@@ -202,10 +204,11 @@ class DeleveryDetailView(LoginRequiredMixin, View):
             relocate_delivery(
                 user=self.request.user, delivery=delivery, to_location=to_location
             )
+            delivery.save()
+            return redirect("delivery:delivery_detail", pk=1)
 
         delivery.save()
 
-        context = self.get_context_data(delivery_id=delivery_id)
         return render(request, "delivery/delivery_detail.html", context)
 
 
