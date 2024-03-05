@@ -4,7 +4,7 @@ import xlrd
 
 
 class Command(BaseCommand):
-    help = "Description of my custom command"
+    help = "Command to create Supplier"
 
     def handle(self, *args, **options):
         workbook = xlrd.open_workbook("suppliers.xls")
