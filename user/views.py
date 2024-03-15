@@ -14,7 +14,6 @@ from .forms import UserCreationForm, UserSearchForm, UserUpdateForm
 
 class UserListView(LoginRequiredMixin, generic.ListView):
     model = User
-    paginate_by = 10
 
     def get_context_data(self, **kwargs):
         context = super(UserListView, self).get_context_data(**kwargs)
@@ -41,8 +40,12 @@ class UserCreateView(LoginRequiredMixin, generic.CreateView):
         user = form.save(commit=False)
 
         role = self.request.POST.get("role")  # Get the selected role from the request
+        full_name = self.request.POST.get("full_name")
         if role:
             user.role = role
+
+        if full_name:
+            user.full_name = full_name
 
         user.save()
 

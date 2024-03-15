@@ -15,18 +15,6 @@
     {% csrf_token %}
     {{ form|crispy }}
 
-    <!-- Add a dropdown menu or radio buttons for selecting the role -->
-    <div class="form-group">
-      
-      <label for="id_role">Role:</label>
-      <select name="role" id="id_role" class="form-control">
-        <option value="">Wybiez uprawienia </option>
-        {% for value, label in user_role %}
-            <option value="{{ value }}">{{ label }}</option>
-        {% endfor %}
-      </select>
-    </div>
-    <br>
                 
     <input class="btn btn-primary" type="submit" value="Submit">
   </form>

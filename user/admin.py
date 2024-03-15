@@ -18,7 +18,7 @@ class UserAdmin(UserAdmin):
     )
     list_filter = ("is_active", "is_staff", "is_superuser")
     fieldsets = (
-        (None, {"fields": ("username", "email", "password")}),
+        (None, {"fields": ("username", "email", "password", "full_name", "role")}),
         (
             "Permissions",
             {
@@ -40,7 +40,9 @@ class UserAdmin(UserAdmin):
                 "classes": ("wide",),
                 "fields": (
                     "username",
+                    "full_name",
                     "email",
+                    "role",
                     "password1",
                     "password2",
                     "is_staff",

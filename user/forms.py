@@ -9,7 +9,7 @@ class UserCreationForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = UserCreationForm.Meta.fields
+        fields = UserCreationForm.Meta.fields + ("full_name","role")
 
 
 class UserUpdateForm(forms.ModelForm):
@@ -19,7 +19,7 @@ class UserUpdateForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ["username", "full_name", "new_password"]
+        fields = ["username", "full_name", "new_password", "role"]
 
 
 class UserSearchForm(forms.Form):
