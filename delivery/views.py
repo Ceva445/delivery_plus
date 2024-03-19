@@ -84,12 +84,16 @@ class DeliveryCreateView(LoginRequiredMixin, View):
         shop_nr = int(request.POST.get("shop"))
         comment = request.POST.get("comment", None)
         extra_comment = request.POST.get("extra_comment", "")
-        date_recive = request.POST.get("date_recive", datetime.now())
+        date_recive = request.POST.get("date_recive", None)
         reasone = request.POST.get("reasones")
         recive_location = request.POST.get("recive_location")
 
-        if isinstance(date_recive, str):
+        print(date_recive)
+
+        if date_recive:
             date_recive = datetime.strptime(date_recive, "%Y-%m-%d") + timedelta(hours=5)
+        else:
+            date_recive = datetime.now()
 
         if not selected_supplier_id:
             context["reception"] = recive_location
