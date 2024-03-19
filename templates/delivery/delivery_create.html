@@ -52,7 +52,7 @@
     {% if request.user.is_superuser or request.user.role == 'admin' or request.user.role == 'leader' %}
     <div class="input-group mb-3" type="number", >
         <span class="input-group-text" id="inputGroup-sizing-default">Data: </span>
-        <input name="date_to_print", id="work_day" type="date" class="form-control" aria-describedby="inputGroup-sizing-default" value="{{data_today}}">
+        <input name="date_recive", id="work_day" type="date" class="form-control" aria-describedby="inputGroup-sizing-default" value="{{data_today}}">
         
     </div>
     {% endif %}

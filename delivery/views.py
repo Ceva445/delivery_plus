@@ -17,7 +17,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .utils import gen_comment, gen_pdf_damage_repor
 from django.db import IntegrityError, transaction
 from django.shortcuts import get_object_or_404
-from datetime import datetime
+from datetime import datetime, timedelta
 from deliveryplus.settings import GS_BUCKET_NAME
 from .print_server import send_label_to_cups
 from .utils import create_transaction
@@ -87,6 +87,9 @@ class DeliveryCreateView(LoginRequiredMixin, View):
         date_recive = request.POST.get("date_recive", datetime.now())
         reasone = request.POST.get("reasones")
         recive_location = request.POST.get("recive_location")
+
+        if isinstance(date_recive, str):
+            date_recive = datetime.strptime(date_recive, "%Y-%m-%d") + timedelta(hours=5)
 
         if not selected_supplier_id:
             context["reception"] = recive_location
