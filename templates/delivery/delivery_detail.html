@@ -49,6 +49,14 @@
             <img src="{% static '/img/truck.svg' %}" alt="Wysłać">
         </button>
     </form>
+
+    <form action="{% url 'delivery:delivery_detail' pk=delivery.id %}" method="post"  style="display: inline;">
+        {% csrf_token %}
+        <input type="hidden", name="reprint", value="{{ delivery.id }}" , id="reprint">
+        <button type="submit" class="btn btn-outline-secondary" title="Wydrukuj etykietę">
+            <img src="{% static '/img/printer.svg' %}" alt="Wysłać">
+        </button>
+    </form>
     {% endif %}
 
 {% endblock %}

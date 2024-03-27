@@ -88,8 +88,6 @@ class DeliveryCreateView(LoginRequiredMixin, View):
         reasone = request.POST.get("reasones")
         recive_location = request.POST.get("recive_location")
 
-        print(date_recive)
-
         if date_recive:
             date_recive = datetime.strptime(date_recive, "%Y-%m-%d") + timedelta(hours=5)
         else:
@@ -195,6 +193,7 @@ class DeleveryDetailView(LoginRequiredMixin, View):
         reverse_chek_status = self.request.POST.get("reverse_check_status")
         devivery_shiped = self.request.POST.get("shiped")
         delivery_utilize = self.request.POST.get("utilize")
+        delivery_reprint_label = self.request.POST.get("reprint")
         delivery = Delivery.objects.get(id=delivery_id)
 
         context = self.get_context_data(delivery_id=delivery_id)
@@ -213,7 +212,6 @@ class DeleveryDetailView(LoginRequiredMixin, View):
             delivery.save()
             return redirect("delivery:delivery_detail", pk=delivery_id)
         if devivery_shiped or delivery_utilize:
-
             if devivery_shiped:
                 to_location = Location.objects.get(name__iexact="Shiped")
             else:
@@ -223,7 +221,9 @@ class DeleveryDetailView(LoginRequiredMixin, View):
             )
             delivery.save()
             return redirect("delivery:delivery_detail", pk=delivery_id)
-
+        if delivery_reprint_label:
+            send_label_to_cups(delivery=delivery, comment=delivery.comment, reprint_status=True)
+            return redirect("delivery:delivery_detail", pk=delivery_id)
         delivery.save()
 
         return render(request, "delivery/delivery_detail.html", context)
