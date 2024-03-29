@@ -193,9 +193,10 @@ class DeleveryDetailView(LoginRequiredMixin, View):
         reverse_chek_status = self.request.POST.get("reverse_check_status")
         devivery_shiped = self.request.POST.get("shiped")
         delivery_utilize = self.request.POST.get("utilize")
+        delivery_cancel = self.request.POST.get("cancel")
         delivery_reprint_label = self.request.POST.get("reprint")
         delivery = Delivery.objects.get(id=delivery_id)
-
+        
         context = self.get_context_data(delivery_id=delivery_id)
 
         if reverse_chek_status:
@@ -221,6 +222,18 @@ class DeleveryDetailView(LoginRequiredMixin, View):
             )
             delivery.save()
             return redirect("delivery:delivery_detail", pk=delivery_id)
+        # relocate to location ANULACJA and delete all pictures
+        if delivery_cancel:
+            to_location = Location.objects.get(name__iexact="ANULACJA")
+            relocate_delivery(
+                user=self.request.user, delivery=delivery, to_location=to_location
+            )
+            if delivery.images_url.values():
+                delivery.delete_images()
+                delivery.images_url.clear()
+            delivery.save()
+            return redirect("delivery:delivery_detail", pk=delivery_id)
+
         if delivery_reprint_label:
             send_label_to_cups(delivery=delivery, comment=delivery.comment, reprint_status=True)
             return redirect("delivery:delivery_detail", pk=delivery_id)

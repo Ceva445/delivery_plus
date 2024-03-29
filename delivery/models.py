@@ -9,6 +9,7 @@ from django.core.files.storage import default_storage
 from google.oauth2 import service_account
 import os
 import uuid
+from google.api_core.exceptions import NotFound
 
 
 class ReasoneComment(models.Model):
@@ -31,6 +32,7 @@ class Location(models.Model):
         (WORKZON_THREE, "Ready to load"),
         (WORKZON_FOR, "Utilization"),
         (WORKZON_FOR, "Shiped"),
+        (WORKZON_FOR, "Cancel"),
     )
     DEFAULT_WORK_ZONE = WORKZON_ONE
 
@@ -103,9 +105,7 @@ class ImageModel(models.Model):
     def delete_image_from_bucket(self):
         bucket_name = settings.GS_BUCKET_NAME
         file_path = str(self.image_data)
-        credentials = service_account.Credentials.from_service_account_file(
-            settings.GS_CREDENTIALS
-        )
+        credentials = settings.GS_CREDENTIALS
         client = storage.Client(credentials=credentials)
         bucket = client.bucket(bucket_name)
         blob = bucket.blob(file_path)
@@ -143,3 +143,25 @@ class Delivery(models.Model):
             return self.comment.replace("Podczas kontroli wykryto ", "").split(":")[0]
         else:
             return self.comment
+
+    def delete(self, *args, **kwargs):
+        self.delete_images()
+        super().delete(*args, **kwargs)
+
+    def delete_images(self):
+        bucket_name = settings.GS_BUCKET_NAME
+        credentials = settings.GS_CREDENTIALS
+        client = storage.Client(credentials=credentials)
+        bucket = client.bucket(bucket_name)
+        for image_model in self.images_url.all():
+            blob_name = str(image_model.image_data)
+            blob = bucket.blob(blob_name)
+            try:
+                blob.delete()
+            except NotFound as e:
+                # Обробка помилки 404
+                print(f"Object {blob_name} not found: {e}")
+            except Exception as e:
+                # Обробка будь-яких інших помилок
+                print(f"An error occurred while deleting {blob_name}: {e}")
+        

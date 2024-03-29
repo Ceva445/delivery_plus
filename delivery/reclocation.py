@@ -10,14 +10,15 @@ def relocate_delivery(user, delivery, to_location):
                 {delivery.location.name} do lokalizacji {to_location.name}\n"
     if to_location.work_zone == 4:
         delivery.complite_status = True
-        if to_location.name == "Utulizacja":
-            transaction_type = "Utilization"
-        else:
-            to_location.name == "Shiped"
-            transaction_type = "Shiped"
+        transact_names = {
+            "Utulizacja": "Utulizacja",
+            "Shiped": "Shiped",
+            "ANULACJA": "Anulacja"
+            }
+
     if to_location.work_zone > delivery.location.work_zone:
         create_transaction(
-            user=user, delivery=delivery, transaction_type=transaction_type
+            user=user, delivery=delivery, transaction_type=transact_names[to_location.name]
         )
     elif to_location.work_zone == delivery.location.work_zone:
          create_transaction(

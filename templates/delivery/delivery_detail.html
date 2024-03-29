@@ -57,6 +57,14 @@
             <img src="{% static '/img/printer.svg' %}" alt="Wysłać">
         </button>
     </form>
+
+    <form action="{% url 'delivery:delivery_detail' pk=delivery.id %}" method="post"  style="display: inline;">
+        {% csrf_token %}
+        <input type="hidden", name="cancel", value="{{ delivery.id }}" , id="cancel">
+        <button type="submit" class="btn btn-outline-secondary" title="Anulować">
+            <img src="{% static '/img/prohibit.svg' %}" alt="">
+        </button>
+    </form>
     {% endif %}
 
 {% endblock %}
