@@ -122,39 +122,37 @@ def gen_pdf_damage_repor(delivery):
     my_canvas.setFont("FreeSans", 10)
 
     if recive_loc == "1R":
-        my_canvas.drawString(170, 661, f"{full_name}")
-        my_canvas.drawString(342, 661, f"{recive_data}")
-        my_canvas.drawString(50, 505, f"{order}")
-        my_canvas.drawString(140, 505, f"LM - {shop}")
-        my_canvas.drawString(210, 505, f"{total_qty} szt.")
-        my_canvas.drawString(320, 505, f"{supplier}")
+        my_canvas.drawString(170, 674, f"{full_name}")
+        my_canvas.drawString(342, 674, f"{recive_data}")
+        my_canvas.drawString(50, 517, f"{order}")
+        my_canvas.drawString(140, 517, f"LM - {shop}")
+        #my_canvas.drawString(210, 517, f"{total_qty} szt.") # after adding C/P pyge and qty of delivery un comment
+        my_canvas.drawString(320, 517, f"{supplier}")
 
         line_spacing = 20
-        number_of_lines = 5
 
         x_position = 40
-        y_position = 222
+        y_position = 237
 
-        my_canvas.drawString(x_position, 240, f"SSCC: {sscc}")
+        my_canvas.drawString(x_position, 255, f"SSCC: {sscc}")
         for line in get_smart_split_comment(comment=comment):
             my_canvas.drawString(x_position, y_position, f"{line}")
             y_position -= line_spacing
         if extra_commrnt:
             my_canvas.drawString(x_position, y_position, f"{extra_commrnt}.")
     else:
-        my_canvas.drawString(170, 663, f"{full_name}")
-        my_canvas.drawString(342, 663, f"{recive_data}")
-        my_canvas.drawString(50, 505, f"{order}")
-        my_canvas.drawString(140, 505, f"LM - {shop}")
-        my_canvas.drawString(210, 505, f"{total_qty} szt.")
-        my_canvas.drawString(300, 505, f"{supplier[:16]}")
+        my_canvas.drawString(170, 676, f"{full_name}")
+        my_canvas.drawString(342, 676, f"{recive_data}")
+        my_canvas.drawString(50, 517, f"{order}")
+        my_canvas.drawString(140, 517, f"LM - {shop}")
+        my_canvas.drawString(210, 517, f"{total_qty} szt.")
+        my_canvas.drawString(300, 517, f"{supplier[:16]}")
 
         line_spacing = 20
-        number_of_lines = 5
         x_position = 40
-        y_position = 232
+        y_position = 242
 
-        my_canvas.drawString(x_position, 250, f"SSCC: {sscc}")
+        my_canvas.drawString(x_position, 260, f"SSCC: {sscc}")
         for line in get_smart_split_comment(comment=comment):
             my_canvas.drawString(x_position, y_position, f"{line}")
             y_position -= line_spacing
