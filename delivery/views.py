@@ -58,26 +58,28 @@ class SelectReceptionView(LoginRequiredMixin, View):
 class DeliveryCreateView(LoginRequiredMixin, View):
     template_name = "delivery/delivery_create.html"
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, rec_loc, **kwargs):
 
         supliers_list = Supplier.objects.all()
         suppliers = [
             {"id": sup.id, "name": f"{sup.name} - {sup.supplier_wms_id}"}
             for sup in supliers_list
         ]
-        reasones_list = ReasoneComment.objects.all()
+        if rec_loc == "second":
+            reasones_list = ReasoneComment.objects.filter(name__icontains="Podczas kontroli")
+        else:
+            reasones_list = ReasoneComment.objects.filter(name__icontains="Podczas rozładunku") 
         reasones = [{"id": reas.id, "name": reas.name} for reas in reasones_list]
 
         return {"suppliers": suppliers, "reasones": reasones}
 
     def get(self, request, *args, **kwargs):
         reception = self.request.GET.get("reception", None)
-        context = self.get_context_data()
+        context = self.get_context_data(rec_loc=reception)
         context["reception"] = reception
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        context = self.get_context_data()
         selected_supplier_id = request.POST.get("selected_supplier_id")
         order_nr = int(request.POST.get("order_nr"))
         sscc_barcode = request.POST.get("sscc_barcode")
@@ -85,9 +87,9 @@ class DeliveryCreateView(LoginRequiredMixin, View):
         comment = request.POST.get("comment", None)
         extra_comment = request.POST.get("extra_comment", "")
         date_recive = request.POST.get("date_recive", None)
-        reasone = request.POST.get("reasones")
         recive_location = request.POST.get("recive_location")
-
+        context = self.get_context_data(rec_loc = recive_location)
+  
         if date_recive:
             date_recive = datetime.strptime(date_recive, "%Y-%m-%d") + timedelta(hours=5)
         else:
@@ -98,14 +100,12 @@ class DeliveryCreateView(LoginRequiredMixin, View):
             context["error_message"] = "Wprowadzono nieprawidłowego dostawcę"
             return render(request, self.template_name, context)
 
-
         if recive_location == "second":
             recive_loc = Location.objects.get(name="2R")
-            comment = gen_comment(request)
-            label_comment = reasone
         else:
             recive_loc = Location.objects.get(name="1R")
-            label_comment = comment
+        comment = gen_comment(request)
+        label_comment = comment
         with transaction.atomic():
             delivery = Delivery.objects.create(
                 supplier_company=get_object_or_404(Supplier, id=selected_supplier_id),

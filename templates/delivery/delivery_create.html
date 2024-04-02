@@ -38,15 +38,22 @@
     </div>
     
 
-    {% comment %} 
-    <div class="mb-3" id="imag-fields">
-        <input name="images_url_1" class="form-control" type="file" id="formFileMultiple">
-        <button type="button" onclick="addImageField()" style="width: 100%;">+</button>
-    </div> 
-    {% endcomment %}
-
     {% if reception == "first" %}
+    {% comment %} <div class="input-group mb-3" type="number">
         <input name="comment" type="text" maxlength="39" class="form-control" placeholder="Dodaj komentarz" required>
+    </div> {% endcomment %}
+    <div class="input-group mb-3" type="number">
+        <select id="tape_of_delivery" name="tape_of_delivery" class="form-select">
+            <option  disabled selected value="" >Sposób dostawy</option>
+            <option value="pacz.">Paczka</option>
+            <option value="pall.">Paleta</option>
+        </select> 
+    </div>
+        <div class="input-group mb-3" type="number">
+            <span class="input-group-text" style="width: 35%;" >QTY: </span>
+            <input type="number" style="width: 65%;" name="qty_unit" required>
+        </div>
+
     {% endif %}
 
     {% if request.user.is_superuser or request.user.role == 'admin' or request.user.role == 'leader' %}
@@ -57,15 +64,19 @@
     </div>
     {% endif %}
     
-    {% if reception == "second" %}    
+    <div class="input-group mb-3" type="number", >
         <select name="reasones" class="form-select" required>
             <option  disabled selected value="" >Wybierz powód</option>
             {% for reasone in reasones %}
                 <option value="{{ reasone.name }}">{{ reasone.name }}</option>
             {% endfor %}
         </select>
-        <br>
+    </div>
+    <div class="input-group mb-3" type="number", >
         <input name="extra_comment" type="text" class="form-control" placeholder="Co dalej stało się z produktem?">
+    </div>
+    
+    {% if reception == "second" %}    
 
         <label for="ean">Products:</label>
         <div id="product-fields">

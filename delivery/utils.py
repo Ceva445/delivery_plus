@@ -63,13 +63,20 @@ def create_transaction(user, delivery, transaction_type):
 def gen_comment(request):
     index = 0
     reasones = request.POST.get("reasones")
-    ean_qty_str = ""
-    while request.POST.get(f"qty_{index}"):
-        qty = request.POST.get(f"qty_{index}")
-        ean = request.POST.get(f"ean_{index}", "")
-        ean_qty_str += f"{ean} {qty} szt. "
-        index += 1
-    comment = f"{reasones}: {ean_qty_str}"
+    rec_loc = request.POST.get("recive_location")
+    if rec_loc == "second":
+        ean_qty_str = ""
+        while request.POST.get(f"qty_{index}"):
+            qty = request.POST.get(f"qty_{index}")
+            ean = request.POST.get(f"ean_{index}", "")
+            ean_qty_str += f"{ean} {qty} szt. "
+            index += 1
+        comment = f"{reasones}: {ean_qty_str}"
+    else:
+        qty_unit = request.POST.get("qty_unit")
+        tape_of_delivery = request.POST.get("tape_of_delivery")
+        comment = f"{reasones}: {qty_unit} szt. {tape_of_delivery}"
+    print(comment)
     return comment
 
 def get_smart_split_comment(comment):
