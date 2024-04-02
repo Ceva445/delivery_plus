@@ -17,54 +17,61 @@
         </button>
     </form>
 
-    {% if not delivery.complite_status %}
-    <form action="{% url 'delivery:delivery_detail' pk=delivery.id %}" method="post"  style="display: inline;">
-        {% csrf_token %}
-        <input type="hidden", name="reverse_check_status", value="{{ delivery.id }}" , id="reverse_check_status">
-        
-        {% if delivery.office_chek %}
-            <button type="submit" class="btn btn-outline-secondary" title="anulować status sprawdzony przez biuro">
-                <img src="{% static '/img/x.svg' %}" alt="anulować status sprawdzony przez biuro"> 
-            </button>
-        {% else %}
-            <button type="submit" class="btn btn-outline-secondary" title="zaznacz status sprawdzony przez biuro">
-                <img src="{% static '/img/check-fat.svg' %}" alt="zaznacz status sprawdzony przez biuro">
-            </button>
-        {% endif %}   
-
-    </form>
     
-    <form action="{% url 'delivery:delivery_detail' pk=delivery.id %}" method="post"  style="display: inline;">
-        {% csrf_token %}
-        <input type="hidden", name="utilize", value="{{ delivery.id }}" , id="utilization">
-        <button type="submit" class="btn btn-outline-secondary" title="Utylizacja"> 
-            <img src="{% static '/img/trash.svg' %}" alt="utylizacja">
-        </button>
-    </form>
-
-    <form action="{% url 'delivery:delivery_detail' pk=delivery.id %}" method="post"  style="display: inline;">
-        {% csrf_token %}
-        <input type="hidden", name="shiped", value="{{ delivery.id }}" , id="shiped">
-        <button type="submit" class="btn btn-outline-secondary" title="Wysłać">
-            <img src="{% static '/img/truck.svg' %}" alt="Wysłać">
-        </button>
-    </form>
+    
+    {% if not delivery.complite_status %}
+        {%if request.user.role != 'regular' %}
+            <form action="{% url 'delivery:delivery_detail' pk=delivery.id %}" method="post"  style="display: inline;">
+                {% csrf_token %}
+                <input type="hidden", name="reverse_check_status", value="{{ delivery.id }}" , id="reverse_check_status">
+                
+                {% if delivery.office_chek %}
+                    <button type="submit" class="btn btn-outline-secondary" title="anulować status sprawdzony przez biuro">
+                        <img src="{% static '/img/x.svg' %}" alt="anulować status sprawdzony przez biuro"> 
+                    </button>
+                {% else %}
+                    <button type="submit" class="btn btn-outline-secondary" title="zaznacz status sprawdzony przez biuro">
+                        <img src="{% static '/img/check-fat.svg' %}" alt="zaznacz status sprawdzony przez biuro">
+                    </button>
+                {% endif %}   
+            </form>
+        {% endif %}  
 
     <form action="{% url 'delivery:delivery_detail' pk=delivery.id %}" method="post"  style="display: inline;">
         {% csrf_token %}
         <input type="hidden", name="reprint", value="{{ delivery.id }}" , id="reprint">
         <button type="submit" class="btn btn-outline-secondary" title="Wydrukuj etykietę">
-            <img src="{% static '/img/printer.svg' %}" alt="Wysłać">
+            <img src="{% static '/img/printer.svg' %}" alt="Wydrukuj etykietę">
         </button>
     </form>
+    
+        {%if request.user.role != 'regular' %}
+        <form action="{% url 'delivery:delivery_detail' pk=delivery.id %}" method="post"  style="display: inline;">
+            {% csrf_token %}
+            <input type="hidden", name="utilize", value="{{ delivery.id }}" , id="utilization">
+            <button type="submit" class="btn btn-outline-secondary" title="Utylizacja"> 
+                <img src="{% static '/img/trash.svg' %}" alt="utylizacja">
+            </button>
+        </form>
 
-    <form action="{% url 'delivery:delivery_detail' pk=delivery.id %}" method="post"  style="display: inline;">
-        {% csrf_token %}
-        <input type="hidden", name="cancel", value="{{ delivery.id }}" , id="cancel">
-        <button type="submit" class="btn btn-outline-secondary" title="Anulować">
-            <img src="{% static '/img/prohibit.svg' %}" alt="">
-        </button>
-    </form>
+        <form action="{% url 'delivery:delivery_detail' pk=delivery.id %}" method="post"  style="display: inline;">
+            {% csrf_token %}
+            <input type="hidden", name="shiped", value="{{ delivery.id }}" , id="shiped">
+            <button type="submit" class="btn btn-outline-secondary" title="Wysłać">
+                <img src="{% static '/img/truck.svg' %}" alt="Wysłać">
+            </button>
+        </form>
+
+        
+
+        <form action="{% url 'delivery:delivery_detail' pk=delivery.id %}" method="post"  style="display: inline;">
+            {% csrf_token %}
+            <input type="hidden", name="cancel", value="{{ delivery.id }}" , id="cancel">
+            <button type="submit" class="btn btn-outline-secondary" title="Anulować">
+                <img src="{% static '/img/prohibit.svg' %}" alt="">
+            </button>
+        </form>
+        {% endif %}
     {% endif %}
 
 {% endblock %}

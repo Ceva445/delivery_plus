@@ -8,12 +8,12 @@
    role="button" href="{% url 'delivery:select_receprion' %}" 
    style="font-size: 30px; padding: 10px;">Nowe Delivery</a>
 <br>
-{% if request.user.is_superuser or request.user.role == 'admin' or request.user.role == 'leader' %}
+
 <a class="btn btn-outline-secondary d-flex align-items-center justify-content-center" 
     role="button" href="{% url 'delivery:delivery_storage' %}" 
     style="font-size: 30px; padding: 10px;">Sprawdź bazę </a>
     <br>
-{% endif %}
+
 
 <a class="btn btn-outline-secondary d-flex align-items-center justify-content-center" 
 role="button" href="{% url 'delivery:delivery_relocation' %}" 
