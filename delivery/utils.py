@@ -133,8 +133,9 @@ def gen_pdf_damage_repor(delivery):
         my_canvas.drawString(342, 674, f"{recive_data}")
         my_canvas.drawString(50, 517, f"{order}")
         my_canvas.drawString(140, 517, f"LM - {shop}")
-        #my_canvas.drawString(210, 517, f"{total_qty} szt.") # after adding C/P pyge and qty of delivery un comment
+        my_canvas.drawString(210, 517, f"{total_qty} szt.")
         my_canvas.drawString(320, 517, f"{supplier}")
+        my_canvas.drawString(320, 440, f"{'Paczka' if 'pacz' in comment else 'Paleta'}")
 
         line_spacing = 20
 
@@ -142,7 +143,7 @@ def gen_pdf_damage_repor(delivery):
         y_position = 237
 
         my_canvas.drawString(x_position, 255, f"SSCC: {sscc}")
-        for line in get_smart_split_comment(comment=comment):
+        for line in get_smart_split_comment(comment=comment.replace("pacz.", "").replace("pall.", "")):
             my_canvas.drawString(x_position, y_position, f"{line}")
             y_position -= line_spacing
         if extra_commrnt:
