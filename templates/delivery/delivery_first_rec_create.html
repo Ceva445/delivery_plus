@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block content %}
-<form method="post" action="{% url 'delivery:delivery_create' %}" enctype="multipart/form-data">
+<form method="post" action="{% url 'delivery:first_rec_del_create' %}" enctype="multipart/form-data">
     {% csrf_token %}
 
     <div class="input-group mb-3" type="number">
@@ -20,29 +20,10 @@
         </div>
     <input type="hidden" name="selected_supplier_id" id="selected_supplier_id" required>
     </div>
-    
-    
-    {% if reception == "second" %}
+
     <div class="input-group mb-3" type="number">
         <span class="input-group-text" style="width: 35%;">Zamówienie: </span>
-        <input type="number" style="width: 65%;" name="order_nr" required required min="10000000" max="99999999">
-    </div>
-
-    <div class="input-group mb-3" type="number">
-        <span class="input-group-text" style="width: 35%;">Sklep: </span>
-        <input type="number" style="width: 65%;" name="shop" required min="1" max="84">
-    </div>
-
-    <div class="input-group mb-3" type="number">
-        <span class="input-group-text" style="width: 35%;" >SSCC: </span>
-        <input type="text" style="width: 65%;" name="sscc_barcode" maxlength="20" required>
-    </div>
-    {% endif %}
-
-    {% if reception == "first" %}
-    <div class="input-group mb-3" type="number">
-        <span class="input-group-text" style="width: 35%;">Zamówienie: </span>
-        <input type="text" style="width: 65%;" name="order_nr" maxlength="40" required>
+        <input type="number" style="width: 65%;" name="order_nr" required min="10000000" max="99999999">
     </div>
 
     <div class="input-group mb-3" type="number">
@@ -52,15 +33,9 @@
 
     <div class="input-group mb-3" type="number">
         <span class="input-group-text" style="width: 35%;" >SSCC: </span>
-        <input type="text" style="width: 65%;" name="sscc_barcode" maxlength="20">
+        <input type="text" style="width: 65%;" name="sscc_barcode" maxlength="40", required>
     </div>
-    {% endif %}
-    
 
-    {% if reception == "first" %}
-    {% comment %} <div class="input-group mb-3" type="number">
-        <input name="comment" type="text" maxlength="39" class="form-control" placeholder="Dodaj komentarz" required>
-    </div> {% endcomment %}
     <div class="input-group mb-3" type="number">
         <select id="tape_of_delivery" name="tape_of_delivery" class="form-select">
             <option  disabled selected value="" >Sposób dostawy</option>
@@ -73,7 +48,7 @@
             <input type="number" style="width: 65%;" name="qty_unit" required>
         </div>
 
-    {% endif %}
+
 
     {% if request.user.is_superuser or request.user.role == 'admin' or request.user.role == 'leader' %}
     <div class="input-group mb-3" type="number", >
@@ -94,22 +69,6 @@
     <div class="input-group mb-3" type="number", >
         <input name="extra_comment" type="text" class="form-control" placeholder="Co dalej stało się z produktem?">
     </div>
-    
-    {% if reception == "second" %}    
-
-        <label for="ean">Products:</label>
-        <div id="product-fields">
-            <div class="product-field">
-                <input type="number" name="ean_0" style="width: 65%;" placeholder="EAN" margin-right: 1px;> 
-                <input type="number" name="qty_0" style="width: 33%;" placeholder="QTY" required>
-            </div>
-        </div>
-        <br>
-        <button type="button" onclick="addProductField()" style="width: 49%;">+</button>
-        <button type="button" onclick="removeLastProductField()" style="width: 49%;">-</button>
-        <br>
-        <br>
-    {% endif %}
 
         <input type="hidden" name="recive_location" id="recive_location" value={{ reception }} required>
         <input class="btn btn-secondary" type="submit" value="Submit" style="width: 100%;"> 

@@ -14,7 +14,7 @@ def send_label_to_cups(delivery, comment, reprint_status=False):
     rec_data = delivery.date_recive.strftime("%Y/%m/%d")
     data_to_send = {
         "supplier_company": f"{delivery.supplier_company.name}",
-        "shop": f"{delivery.shop.position_nr}",
+        "shop": f"{delivery.shop.position_nr if delivery.shop is not None else 'Brak'}",
         "user": f"{delivery.user.username}",
         "data": f"{rec_data}",
         "order": f"{delivery.nr_order}",

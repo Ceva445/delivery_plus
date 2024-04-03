@@ -129,6 +129,145 @@ class DeliveryCreateView(LoginRequiredMixin, View):
         return render(
             request, "delivery/delivery_image_add.html", {"delivery_id": delivery.id}
         )
+class DeliveryFirsrRecCreateView(LoginRequiredMixin, View):
+    template_name = "delivery/delivery_first_rec_create.html"
+
+    def get_context_data(self, **kwargs):
+
+        supliers_list = Supplier.objects.all()
+        suppliers = [
+            {"id": sup.id, "name": f"{sup.name} - {sup.supplier_wms_id}"}
+            for sup in supliers_list
+        ]
+        reasones_list = ReasoneComment.objects.filter(name__icontains="Podczas rozładunku") 
+        reasones = [{"id": reas.id, "name": reas.name} for reas in reasones_list]
+
+        return {"suppliers": suppliers, "reasones": reasones}
+
+    def get(self, request, *args, **kwargs):
+        reception = self.request.GET.get("reception", None)
+        context = self.get_context_data()
+        context["reception"] = reception
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        selected_supplier_id = request.POST.get("selected_supplier_id")
+        order_nr = request.POST.get("order_nr")
+        sscc_barcode = request.POST.get("sscc_barcode")
+        shop_id = request.POST.get("shop", None)
+        comment = request.POST.get("comment", None)
+        extra_comment = request.POST.get("extra_comment", "")
+        date_recive = request.POST.get("date_recive", None)
+        recive_location = request.POST.get("recive_location")
+        if date_recive:
+            date_recive = datetime.strptime(date_recive, "%Y-%m-%d") + timedelta(hours=5)
+        else:
+            date_recive = datetime.now()
+        if not selected_supplier_id:
+            context = self.get_context_data()
+            context["reception"] = recive_location
+            context["error_message"] = "Wprowadzono nieprawidłowego dostawcę"
+            return render(request, self.template_name, context)
+        if shop_id:
+            shop = Shop.objects.get(position_nr=int(shop))
+        else:
+            shop = None
+        recive_loc = Location.objects.get(name="1R")
+        comment = gen_comment(request)
+        label_comment = comment
+        with transaction.atomic():
+            delivery = Delivery.objects.create(
+                supplier_company=get_object_or_404(Supplier, id=selected_supplier_id),
+                nr_order=order_nr,
+                sscc_barcode=sscc_barcode,
+                user=self.request.user,
+                comment=comment,
+                recive_location=recive_loc,
+                shop=shop,
+                location=recive_loc,
+                date_recive=date_recive,
+                extra_comment=extra_comment,
+            )
+            delivery.transaction = f"\n{datetime.now().strftime('%m/%d/%Y, %H:%M')} {self.request.user.username} przyjął dostawę \n"
+            delivery.save()
+            create_transaction(
+                user=self.request.user, delivery=delivery, transaction_type="Recive"
+            )
+        # Made it Celery  Task
+        send_label_to_cups(delivery, label_comment)
+        return render(
+            request, "delivery/delivery_image_add.html", {"delivery_id": delivery.id}
+        )
+
+
+class DeliverySecondRecCreateView(LoginRequiredMixin, View):
+    template_name = "delivery/delivery_second_rec_create.html"
+
+    def get_context_data(self, **kwargs):
+
+        supliers_list = Supplier.objects.all()
+        suppliers = [
+            {"id": sup.id, "name": f"{sup.name} - {sup.supplier_wms_id}"}
+            for sup in supliers_list
+        ]
+        reasones_list = ReasoneComment.objects.filter(name__icontains="Podczas kontroli")
+        reasones = [{"id": reas.id, "name": reas.name} for reas in reasones_list]
+        return {"suppliers": suppliers, "reasones": reasones}
+
+    def get(self, request, *args, **kwargs):
+        reception = self.request.GET.get("reception", None)
+        context = self.get_context_data()
+        context["reception"] = reception
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        selected_supplier_id = request.POST.get("selected_supplier_id")
+        order_nr = int(request.POST.get("order_nr"))
+        sscc_barcode = request.POST.get("sscc_barcode")
+        shop_nr = int(request.POST.get("shop"))
+        comment = request.POST.get("comment", None)
+        extra_comment = request.POST.get("extra_comment", "")
+        date_recive = request.POST.get("date_recive", None)
+        recive_location = request.POST.get("recive_location")
+        context = self.get_context_data()
+  
+        if date_recive:
+            date_recive = datetime.strptime(date_recive, "%Y-%m-%d") + timedelta(hours=5)
+        else:
+            date_recive = datetime.now()
+
+        if not selected_supplier_id:
+            context["reception"] = recive_location
+            context["error_message"] = "Wprowadzono nieprawidłowego dostawcę"
+            return render(request, self.template_name, context)
+    
+        recive_loc = Location.objects.get(name="2R")
+        
+        comment = gen_comment(request)
+        label_comment = comment
+        with transaction.atomic():
+            delivery = Delivery.objects.create(
+                supplier_company=get_object_or_404(Supplier, id=selected_supplier_id),
+                nr_order=order_nr,
+                sscc_barcode=sscc_barcode,
+                user=self.request.user,
+                comment=comment,
+                recive_location=recive_loc,
+                shop=Shop.objects.get(position_nr=int(shop_nr)),
+                location=recive_loc,
+                date_recive=date_recive,
+                extra_comment=extra_comment,
+            )
+            delivery.transaction = f"\n{datetime.now().strftime('%m/%d/%Y, %H:%M')} {self.request.user.username} przyjął dostawę \n"
+            delivery.save()
+            create_transaction(
+                user=self.request.user, delivery=delivery, transaction_type="Recive"
+            )
+        # Made it Celery  Task
+        send_label_to_cups(delivery, label_comment)
+        return render(
+            request, "delivery/delivery_image_add.html", {"delivery_id": delivery.id}
+        )
 
 
 class DeliveryImageAdd(LoginRequiredMixin, View):
