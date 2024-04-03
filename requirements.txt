@@ -26,3 +26,4 @@ httplib2
 oauth2client
 oauthlib
 reportlab
+djangorestframework

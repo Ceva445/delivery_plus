@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from .views import (
     SelectReceptionView,
     DeliveryCreateView,
@@ -27,6 +27,7 @@ from .views import (
 
 urlpatterns = [
     path("", HomeView.as_view(), name="home"),
+    path("api/", include("delivery.api.urls")),
     path("reception/", SelectReceptionView.as_view(), name="select_receprion"),
     path("reception/create/", DeliveryCreateView.as_view(), name="delivery_create"),
     path("first-rec/create/", DeliveryFirsrRecCreateView.as_view(), name="first_rec_del_create"),
