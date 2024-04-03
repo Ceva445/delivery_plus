@@ -23,7 +23,7 @@ def send_label_to_cups(delivery, comment, reprint_status=False):
         "print_status": True
     }
     # print(data_to_send)
-    try:
-        requests.post(cups_url, json=data_to_send)
-    except TimeoutError:
-        pass
+    # try:
+    #     requests.post(cups_url, json=data_to_send)
+    # except TimeoutError:
+    #     pass
