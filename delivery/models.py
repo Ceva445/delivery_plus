@@ -114,9 +114,9 @@ class ImageModel(models.Model):
 
 class Delivery(models.Model):
     supplier_company = models.ForeignKey(Supplier, on_delete=models.SET_NULL, null=True)
-    nr_order = models.IntegerField()  # додати валідатор довжина 20 знаків
+    nr_order = models.CharField( max_length=40, null=True) # додати валідатор довжина 20 знаків
     sscc_barcode = models.CharField(
-        max_length=20
+        max_length=20, null=True
     )  # !!!! можливо 20 задежить чи сканер читає (00)
     images_url = models.ManyToManyField(ImageModel, blank=True)
     date_recive = models.DateTimeField()
@@ -125,7 +125,7 @@ class Delivery(models.Model):
     recive_location = models.ForeignKey(
         Location, on_delete=models.CASCADE, related_name="recive_location"
     )  # створити модель для локалізацій
-    shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
+    shop = models.ForeignKey(Shop, on_delete=models.CASCADE, null=True)
     location = models.ForeignKey(
         Location, on_delete=models.CASCADE, related_name="location"
     )
