@@ -169,7 +169,7 @@ class DeliveryFirsrRecCreateView(LoginRequiredMixin, View):
             context["error_message"] = "Wprowadzono nieprawidłowego dostawcę"
             return render(request, self.template_name, context)
         if shop_id:
-            shop = Shop.objects.get(position_nr=int(shop))
+            shop = Shop.objects.get(position_nr=int(shop_id))
         else:
             shop = None
         recive_loc = Location.objects.get(name="1R")
