@@ -134,7 +134,7 @@ class Delivery(models.Model):
     extra_comment = models.CharField(max_length=255, blank=True)
     transaction = models.TextField(blank=True)
     complite_status = models.BooleanField(default=False)
-
+    download_images_status = models.BooleanField(default=False)
     def __str__(self):
         return str(self.nr_order)
 
@@ -165,3 +165,10 @@ class Delivery(models.Model):
                 # Обробка будь-яких інших помилок
                 print(f"An error occurred while deleting {blob_name}: {e}")
         
+    @staticmethod
+    def delete_images_set(images_list):
+        bucket_name = settings.GS_BUCKET_NAME
+        credentials = settings.GS_CREDENTIALS
+        client = storage.Client(credentials=credentials)
+        bucket = client.bucket(bucket_name)
+        bucket.delete_blobs(images_list)
