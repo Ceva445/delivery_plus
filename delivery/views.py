@@ -812,3 +812,7 @@ def generate_damage_pdf_report(request):
 
     response = FileResponse(report, as_attachment=False, filename="Protokół szkody.pdf")
     return response
+
+
+def not_used_image_menager(request):
+    return render(request, "delivery/not_used_image_menager.html")

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+{% block navigation %}
+    <nav class="navigation">
+        <a class="btn btn-outline-secondary" role="button" href="{% url 'delivery:home' %}" title="Do główną">
+            <img src="{% static '/img/house.svg' %}" alt="Do główną">
+        </a>
+        
+        <a class="btn btn-outline-secondary" role="button" href="{% url 'delivery:admin_panel' %}" title="Wróć">
+            <img src="{% static '/img/arrow-bend-up-left.svg' %}" alt="Wróć">
+        </a>
+    </nav>
+{% endblock %}
+
+{% block content %}
+
+<a class="btn btn-outline-secondary d-flex align-items-center justify-content-center" 
+    role="button" href="{% url 'delivery:unused_image' %}?format=json" target="_blank"
+    style="font-size: 40px; padding: 10px;">NIE UZYWANE ZDIECIA</a>
+<br>
+
+{% endblock %}

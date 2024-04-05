@@ -10,6 +10,7 @@ from .views import (
     UncompliteView,
     generate_damage_pdf_report,
     admin_panel,
+    not_used_image_menager,
     SupplierListView,
     SupplierUpdateView,
     SupplierCreateView,
@@ -39,6 +40,7 @@ urlpatterns = [
     path("uncomplit/", UncompliteView.as_view(), name="delivery_uncomplit"),
     path("print-report/", generate_damage_pdf_report, name="generaport"),
     path("admin-panel/", admin_panel, name="admin_panel"),
+    path("image/menager", not_used_image_menager, name="not_used_image_menager"),
     path("supplier-list/", SupplierListView.as_view(), name="supplier_list"),
     path("supplier-create/", SupplierCreateView.as_view(), name="supplier_create"),
     path(
