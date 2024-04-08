@@ -147,7 +147,7 @@ class Delivery(models.Model):
     def delete(self, *args, **kwargs):
         self.delete_images()
         super().delete(*args, **kwargs)
-
+    # rewrite this 
     def delete_images(self):
         bucket_name = settings.GS_BUCKET_NAME
         credentials = settings.GS_CREDENTIALS

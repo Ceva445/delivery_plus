@@ -107,7 +107,7 @@ def get_total_products_count(comment):
 def gen_pdf_damage_repor(delivery):
     recive_loc = delivery.recive_location.name
     order = delivery.nr_order
-    shop = delivery.shop.position_nr
+    shop = delivery.shop
     supplier = delivery.supplier_company.name
     full_name = delivery.user.full_name
     recive_data = delivery.date_recive.strftime("%Y-%m-%d")
@@ -116,6 +116,11 @@ def gen_pdf_damage_repor(delivery):
     total_qty = get_total_products_count(comment)
     extra_commrnt = delivery.extra_comment
     sscc = delivery.sscc_barcode
+
+    if shop is not None:
+        shop = shop.position_nr
+    else:
+        shop = ""
 
     if recive_loc == "1R":
         damage_protocol_path = "static/img/first_rec.jpg"
@@ -132,7 +137,8 @@ def gen_pdf_damage_repor(delivery):
         my_canvas.drawString(170, 674, f"{full_name}")
         my_canvas.drawString(342, 674, f"{recive_data}")
         my_canvas.drawString(50, 517, f"{order}")
-        my_canvas.drawString(140, 517, f"LM - {shop}")
+        if shop:
+            my_canvas.drawString(140, 517, f"LM - {shop}")
         my_canvas.drawString(210, 517, f"{total_qty} szt.")
         my_canvas.drawString(320, 517, f"{supplier}")
         my_canvas.drawString(320, 440, f"{'Paczka' if 'pacz' in comment else 'Paleta'}")
@@ -142,7 +148,7 @@ def gen_pdf_damage_repor(delivery):
         x_position = 40
         y_position = 237
 
-        my_canvas.drawString(x_position, 255, f"SSCC: {sscc}")
+        my_canvas.drawString(x_position, 255, f"SSCC/Supplier: {sscc}")
         for line in get_smart_split_comment(comment=comment.replace("pacz.", "").replace("pall.", "")):
             my_canvas.drawString(x_position, y_position, f"{line}")
             y_position -= line_spacing
