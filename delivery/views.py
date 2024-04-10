@@ -271,7 +271,7 @@ class DeliverySecondRecCreateView(LoginRequiredMixin, View):
 
 
 class DeliveryImageAdd(LoginRequiredMixin, View):
-    template_name = "delivery/delivery_image_create.html"
+    template_name = "delivery/delivery_image_add.html"
 
     def get_context_data(self, **kwargs):
         context = {}
@@ -279,13 +279,17 @@ class DeliveryImageAdd(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         delivery_id = int(self.request.GET.get("delivery_id"))
+        back_to_detail = self.request.GET.get("back_to_detail")
         context = self.get_context_data()
         context["delivery_id"] = delivery_id
+        context["back_to_detail"] = back_to_detail
+        print("!!!!!!!!!!",back_to_detail)
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
         delivery_id = self.request.POST.get("delivery_id")
-
+        back_to_detail = self.request.POST.get("back_to_detail")
+        print(back_to_detail)
         if request.FILES:
             delivery = Delivery.objects.get(id=delivery_id)
             index = 1
@@ -299,6 +303,8 @@ class DeliveryImageAdd(LoginRequiredMixin, View):
             image_instances = ImageModel.objects.bulk_create(images)
             delivery.images_url.add(*image_instances)
             delivery.save()
+        if back_to_detail:
+            return redirect("delivery:delivery_detail", pk=delivery_id) 
         return render(request, "delivery/select_reception.html")
 
 
