@@ -22,8 +22,8 @@ def send_label_to_cups(delivery, comment, reprint_status=False):
         "comment": f"{comment[:39]}",
         "print_status": True
     }
-    # print(data_to_send)
-    # try:
-    #     requests.post(cups_url, json=data_to_send)
-    # except TimeoutError:
-    #     pass
+    #print(data_to_send)
+    try:
+        requests.post(cups_url, json=data_to_send)
+    except TimeoutError:
+        pass
