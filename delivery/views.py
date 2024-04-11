@@ -139,7 +139,7 @@ class DeliveryFirsrRecCreateView(LoginRequiredMixin, View):
             {"id": sup.id, "name": f"{sup.name} - {sup.supplier_wms_id}"}
             for sup in supliers_list
         ]
-        reasones_list = ReasoneComment.objects.filter(name__icontains="Podczas rozładunku") 
+        reasones_list = ReasoneComment.objects.filter(name__icontains="Podcas rozładunku") 
         reasones = [{"id": reas.id, "name": reas.name} for reas in reasones_list]
 
         return {"suppliers": suppliers, "reasones": reasones}
