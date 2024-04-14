@@ -21,7 +21,7 @@ class TodoList(APIView):
                 not_used_images_info.append(
                     {
                         "path": "/".join(str(image.image_data).split("/")[:2]),
-                        "file_name": f"{delivery.identifier}_{i}",
+                        "file_name": f"{delivery.identifier}_{delivery.nr_order}_{i}",
                         "image_url":f"https://storage.googleapis.com/{GS_BUCKET_NAME}/{image.image_data}"
                     }
                 )
