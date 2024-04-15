@@ -6,11 +6,6 @@ def send_label_to_cups(delivery, comment, reprint_status=False):
     cups_url = CUPS_POST_URL
     if reprint_status:
         cups_url +="reprint/"
-    if comment:
-        if "Podczas kontroli wykryto " in comment:
-            comment = comment.replace("Podczas kontroli wykryto ", "")
-    else:
-        comment = ""
     rec_data = delivery.date_recive.strftime("%Y/%m/%d")
     data_to_send = {
         "supplier_company": f"{delivery.supplier_company.name}",
