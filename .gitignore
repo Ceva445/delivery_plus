@@ -11,3 +11,4 @@ data/
 staticfiles/
 *.xls
 cred.json
+img_to_del.json
