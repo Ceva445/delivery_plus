@@ -1,11 +1,16 @@
 import requests
 from deliveryplus.settings import CUPS_POST_URL
+from .models import ReasoneComment
 
 
-def send_label_to_cups(delivery, comment, reprint_status=False):
+def send_label_to_cups(delivery, comment="", reprint_status=False):
     cups_url = CUPS_POST_URL
     if reprint_status:
+        all_reasons = [reason[0] for reason in ReasoneComment.objects.all().values_list("name")]
         cups_url +="reprint/"
+        comment = [reason for reason in all_reasons if reason in delivery.comment]
+        if comment:
+            comment = comment[0].replace("Podczas kontroli", "").replace("Podcas rozładunku", "")
     rec_data = delivery.date_recive.strftime("%Y/%m/%d")
     data_to_send = {
         "supplier_company": f"{delivery.supplier_company.name}",

@@ -174,7 +174,7 @@ class DeliveryFirsrRecCreateView(LoginRequiredMixin, View):
             shop = None
         recive_loc = Location.objects.get(name="1R")
         comment = gen_comment(request)
-        label_comment = (request.POST.get("reasones"),"").replace("Podcas rozładunku wykryto", "")
+        label_comment = (request.POST.get("reasones"),"").replace("Podcas rozładunku", "")
         with transaction.atomic():
             delivery = Delivery.objects.create(
                 supplier_company=get_object_or_404(Supplier, id=selected_supplier_id),
@@ -244,7 +244,7 @@ class DeliverySecondRecCreateView(LoginRequiredMixin, View):
         recive_loc = Location.objects.get(name="2R")
         
         comment = gen_comment(request)
-        label_comment = (request.POST.get("reasones"),"").replace("Podczas kontroli wykryto", "")
+        label_comment = (request.POST.get("reasones"),"").replace("Podczas kontroli", "")
         with transaction.atomic():
             delivery = Delivery.objects.create(
                 supplier_company=get_object_or_404(Supplier, id=selected_supplier_id),
@@ -380,7 +380,7 @@ class DeleveryDetailView(LoginRequiredMixin, View):
             return redirect("delivery:delivery_detail", pk=delivery_id)
 
         if delivery_reprint_label:
-            send_label_to_cups(delivery=delivery, comment=delivery.comment, reprint_status=True)
+            send_label_to_cups(delivery=delivery, reprint_status=True)
             return redirect("delivery:delivery_detail", pk=delivery_id)
         delivery.save()
 
