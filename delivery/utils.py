@@ -76,7 +76,6 @@ def gen_comment(request):
         qty_unit = request.POST.get("qty_unit")
         tape_of_delivery = request.POST.get("tape_of_delivery")
         comment = f"{reasones}: {qty_unit} szt. {tape_of_delivery}"
-    print(comment)
     return comment
 
 def get_smart_split_comment(comment):

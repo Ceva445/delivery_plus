@@ -173,8 +173,10 @@ class DeliveryFirsrRecCreateView(LoginRequiredMixin, View):
         else:
             shop = None
         recive_loc = Location.objects.get(name="1R")
+        print("!!!!!!!")
         comment = gen_comment(request)
-        label_comment = (request.POST.get("reasones"),"").replace("Podcas rozładunku", "")
+        label_comment = str(request.POST.get("reasones","")).replace("Podcas rozładunku wykryto", "")
+        print(label_comment)
         with transaction.atomic():
             delivery = Delivery.objects.create(
                 supplier_company=get_object_or_404(Supplier, id=selected_supplier_id),
@@ -244,7 +246,7 @@ class DeliverySecondRecCreateView(LoginRequiredMixin, View):
         recive_loc = Location.objects.get(name="2R")
         
         comment = gen_comment(request)
-        label_comment = (request.POST.get("reasones"),"").replace("Podczas kontroli", "")
+        label_comment = str(request.POST.get("reasones","")).replace("Podczas kontroli wykryto", "")
         with transaction.atomic():
             delivery = Delivery.objects.create(
                 supplier_company=get_object_or_404(Supplier, id=selected_supplier_id),
