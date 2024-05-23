@@ -152,7 +152,9 @@ def gen_pdf_damage_repor(delivery):
             my_canvas.drawString(x_position, y_position, f"{line}")
             y_position -= line_spacing
         if extra_commrnt:
-            my_canvas.drawString(x_position, y_position, f"{extra_commrnt}.")
+            for line in get_smart_split_comment(comment=extra_commrnt):
+                my_canvas.drawString(x_position, y_position, f"{line}.")
+                y_position -= line_spacing
     else:
         my_canvas.drawString(170, 676, f"{full_name}")
         my_canvas.drawString(342, 676, f"{recive_data}")
