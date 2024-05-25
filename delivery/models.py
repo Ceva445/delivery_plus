@@ -33,6 +33,7 @@ class Location(models.Model):
         (WORKZON_FOR, "Utilization"),
         (WORKZON_FOR, "Shiped"),
         (WORKZON_FOR, "Cancel"),
+        (WORKZON_FOR, "Transfer")
     )
     DEFAULT_WORK_ZONE = WORKZON_ONE
 

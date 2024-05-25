@@ -6,7 +6,8 @@ def relocate_delivery(user, delivery, to_location):
     transact_names = {
             "Utulizacja": "Utulizacja",
             "Shiped": "Shiped",
-            "ANULACJA": "Anulacja"
+            "ANULACJA": "Anulacja",
+            "Transfer": "Transfer"
             }
     delivery.transaction += f"\
         {datetime.now().strftime('%m/%d/%Y, %H:%M')} \

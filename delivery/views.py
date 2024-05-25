@@ -342,6 +342,7 @@ class DeleveryDetailView(LoginRequiredMixin, View):
         delivery_utilize = self.request.POST.get("utilize")
         delivery_cancel = self.request.POST.get("cancel")
         delivery_reprint_label = self.request.POST.get("reprint")
+        delivery_transfer = self.request.POST.get("transfer")
         delivery = Delivery.objects.get(id=delivery_id)
         
         context = self.get_context_data(delivery_id=delivery_id)
@@ -359,9 +360,11 @@ class DeleveryDetailView(LoginRequiredMixin, View):
             delivery.office_chek = not delivery.office_chek
             delivery.save()
             return redirect("delivery:delivery_detail", pk=delivery_id)
-        if devivery_shiped or delivery_utilize:
+        if devivery_shiped or delivery_utilize or delivery_transfer:
             if devivery_shiped:
                 to_location = Location.objects.get(name__iexact="Shiped")
+            elif delivery_transfer:
+                to_location = Location.objects.get(name__iexact="Transfer")
             else:
                 to_location = Location.objects.get(name__iexact="Utulizacja")
             relocate_delivery(

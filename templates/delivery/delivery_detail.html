@@ -71,6 +71,16 @@
                 <img src="{% static '/img/prohibit.svg' %}" alt="">
             </button>
         </form>
+
+        {% if delivery.recive_location.name == "1R" %}
+            <form action="{% url 'delivery:delivery_detail' pk=delivery.id %}" method="post"  style="display: inline;">
+                {% csrf_token %}
+                <input type="hidden", name="transfer", value="{{ delivery.id }}" , id="cancel">
+                <button type="submit" class="btn btn-outline-secondary" title="Transfer do drugiej recepcji">
+                    <img src="{% static '/img/transfer.svg' %}" alt="">
+                </button>
+            </form>
+        {% endif %}
         {% endif %}
     {% endif %}
 
@@ -89,7 +99,7 @@
     <p class="alert alert-dark">Uzytkownik ktory przyjal towar: {{ delivery.user }}</p>
     {% comment %} <p class="alert alert-dark">Uzytkownik ktory wykonal ostatni ruch: {{}}</p> {% endcomment %}
     <p class="alert alert-dark">Komentarz: {{ comment | linebreaksbr}}</p>
-    <p class="alert alert-dark">Lokalizacja przyjęciowa: {{ delivery.recive_location }}</p>
+    <p class="alert alert-dark">Lokalizacja przyjęciowa: {{ delivery.recive_location.name }}</p>
     <p class="alert alert-dark">Obecna lokalizacja: {{ delivery.location }}</p>
     <p class="alert alert-dark">Sklep: {{ delivery.shop }}</p>
     <p class="alert alert-dark">Identyfikator: {{ delivery.identifier }}</p>
