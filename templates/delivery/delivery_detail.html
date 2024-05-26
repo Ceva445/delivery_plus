@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load crispy_forms_filters %}
 {% load static %}
+<div class="btn-group flex-container">
 {% block navigation %}
     <a class="btn btn-outline-secondary" role="button" href="{% url 'delivery:home' %}" title="Do główną">
         <img src="{% static '/img/house.svg' %}" alt="Do główną">
@@ -85,7 +86,7 @@
     {% endif %}
 
 {% endblock %}
-
+</div>
 {% block content %}
 
 <div>
