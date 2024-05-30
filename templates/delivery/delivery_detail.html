@@ -72,7 +72,6 @@
                 <img src="{% static '/img/prohibit.svg' %}" alt="">
             </button>
         </form>
-
         {% if delivery.recive_location.name == "1R" %}
             <form action="{% url 'delivery:delivery_detail' pk=delivery.id %}" method="post"  style="display: inline;">
                 {% csrf_token %}
