@@ -346,6 +346,22 @@ class DeleveryDetailView(LoginRequiredMixin, View):
         delivery = Delivery.objects.get(id=delivery_id)
         
         context = self.get_context_data(delivery_id=delivery_id)
+        lovo = self.request.POST.get("lovo")
+        if lovo:
+            print(lovo)
+            lovo_url = self.request.POST.get("lovo_url")
+            lovo_name = self.request.POST.get("lovo_name")
+            delivery.lovo_link = lovo_url
+            delivery.lovo_name = lovo_name
+
+            delivery.transaction += f"\
+                {datetime.now().strftime('%m/%d/%Y, %H:%M')} \
+                     {self.request.user.username} dodał link Lovo"
+            delivery.office_chek = True
+
+            delivery.save()
+            return redirect("delivery:delivery_detail", pk=delivery_id)
+
 
         if reverse_chek_status:
             if delivery.office_chek:

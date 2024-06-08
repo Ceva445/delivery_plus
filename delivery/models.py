@@ -136,6 +136,8 @@ class Delivery(models.Model):
     transaction = models.TextField(blank=True)
     complite_status = models.BooleanField(default=False)
     download_images_status = models.BooleanField(default=False)
+    lovo_link = models.TextField(blank=True, null=True)
+    lovo_name = models.TextField(blank=True, null=True)
     def __str__(self):
         return str(self.nr_order)
 

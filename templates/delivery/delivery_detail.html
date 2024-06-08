@@ -19,9 +19,11 @@
     </form>
 
     
-    
     {% if not delivery.complite_status %}
-        {%if request.user.role != 'regular' %}
+        <button id="lovoShowButton" name="lovo_show" type="button" class="btn btn-outline-secondary" title="Lovo link">
+            <img src="{% static '/img/link.svg' %}" alt="Lovo link"> 
+        </button>
+        {% comment %} {%if request.user.role != 'regular' %}
             <form action="{% url 'delivery:delivery_detail' pk=delivery.id %}" method="post"  style="display: inline;">
                 {% csrf_token %}
                 <input type="hidden", name="reverse_check_status", value="{{ delivery.id }}" , id="reverse_check_status">
@@ -36,7 +38,7 @@
                     </button>
                 {% endif %}   
             </form>
-        {% endif %}  
+        {% endif %}   {% endcomment %}
 
     <form action="{% url 'delivery:delivery_detail' pk=delivery.id %}" method="post"  style="display: inline;">
         {% csrf_token %}
@@ -72,15 +74,15 @@
                 <img src="{% static '/img/prohibit.svg' %}" alt="">
             </button>
         </form>
-        {% if delivery.recive_location.name == "1R" %}
-            <form action="{% url 'delivery:delivery_detail' pk=delivery.id %}" method="post"  style="display: inline;">
-                {% csrf_token %}
-                <input type="hidden", name="transfer", value="{{ delivery.id }}" , id="cancel">
-                <button type="submit" class="btn btn-outline-secondary" title="Transfer do drugiej recepcji">
-                    <img src="{% static '/img/transfer.svg' %}" alt="">
-                </button>
-            </form>
-        {% endif %}
+            {% if delivery.recive_location.name == "1R" %}
+                <form action="{% url 'delivery:delivery_detail' pk=delivery.id %}" method="post"  style="display: inline;">
+                    {% csrf_token %}
+                    <input type="hidden", name="transfer", value="{{ delivery.id }}" , id="cancel">
+                    <button type="submit" class="btn btn-outline-secondary" title="Transfer do drugiej recepcji">
+                        <img src="{% static '/img/transfer.svg' %}" alt="">
+                    </button>
+                </form>
+            {% endif %}
         {% endif %}
     {% endif %}
 
@@ -90,8 +92,93 @@
 
 <div>
     {% csrf_token %}
-    
-    <!-- Supplier Company -->
+    <form action="{% url 'delivery:delivery_detail' pk=delivery.id %}" method="post" style="display: inline;">
+        {% csrf_token %}
+        <div>
+            <br>
+            {% csrf_token %}
+            <form action="{% url 'delivery:delivery_detail' pk=delivery.id %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <div id="lovoDiv" style="display: flex; align-items: stretch; display: none;">
+                    <div id="editable-div" 
+                         class="Am aiL Al editable LW-avf tS-tW" 
+                         hidefocus="true" 
+                         aria-label="Message Body" 
+                         g_editable="true" 
+                         role="textbox" 
+                         aria-multiline="true" 
+                         contenteditable="true" 
+                         tabindex="1" 
+                         itacorner="6,7:1,1,0,0" 
+                         spellcheck="false" 
+                         aria-owns=":wg" 
+                         aria-controls=":wg" 
+                         style="direction: ltr; 
+                                border: 1px solid #ccc; 
+                                padding: 10px; 
+                                outline: none; 
+                                flex-grow: 1;">
+                    </div>
+                    <input type="hidden" name="lovo" value="{{ delivery.id }}" id="lovo">
+                    <input type="hidden" name="lovo_url" value="" id="lovo_url">
+                    <input type="hidden" name="lovo_name" value="" id="lovo_name">
+                    <button id="parseButton" 
+                            class="btn btn-outline-secondary" 
+                            title="Submit Content" 
+                            style="border: 1px solid #ccc; padding: 0 10px;">
+                            <img src="{% static '/img/check-fat.svg' %}" alt="zaznacz status sprawdzony przez biuro">
+                    </button>
+                </div>
+            </form>
+            
+            <script>
+                // Функція для перемикання видимості блоку
+                function toggleLovoDiv() {
+                    var lovoDiv = document.getElementById("lovoDiv");
+                    if (lovoDiv.style.display === "none" || lovoDiv.style.display === "") {
+                        lovoDiv.style.display = "flex";
+                    } else {
+                        lovoDiv.style.display = "none";
+                    }
+                }
+        
+                // Додаємо слухача подій до кнопки
+                document.getElementById("lovoShowButton").addEventListener("click", toggleLovoDiv);
+        
+                // Функція для обробки контенту
+                function parseContent() {
+                    var divContent = document.getElementById("editable-div").innerHTML;
+                    
+                    var tempElement = document.createElement('div');
+                    tempElement.innerHTML = divContent;
+            
+                    var aTag = tempElement.querySelector('a');
+            
+                    if (aTag) {
+                        var lovoUrl = aTag.getAttribute('href');
+                        var lovoName = aTag.innerText;
+                        
+                        document.getElementById("lovo_url").value = lovoUrl;
+                        document.getElementById("lovo_name").value = lovoName;
+                    }
+                }
+            
+                document.getElementById("parseButton").addEventListener("click", function(event) {
+                    parseContent();
+                });
+            </script>
+   
+    <br>
+
+    {% if delivery.lovo_link  %}
+    <p class="alert alert-dark">Sprawa Lovo: 
+        <a target="_blank"
+        class="link-secondary" 
+        href={{delivery.lovo_link}}>
+        {{ delivery.lovo_name }}
+    </a> </p>
+    {% endif %}
+
     <p class="alert alert-dark">Supplier Company: {{ delivery.supplier_company }}</p>
     <p class="alert alert-dark">Numer zamówienia: {{ delivery.nr_order }}</p>
     <p class="alert alert-dark">SSCC: {{ delivery.sscc_barcode }}</p>
@@ -122,5 +209,7 @@
     </form>
    
     {% comment %} <input type="submit" value="Submit"> {% endcomment %}
+    <!-- Editable div for new field -->
+    
 </div>
 {% endblock %}
