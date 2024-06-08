@@ -16,9 +16,14 @@ class SupplierAdmin(admin.ModelAdmin):
     search_fields = ["supplier_wms_id"]
 
 
+class DeliveryAdmin(admin.ModelAdmin):
+    list_display = ("identifier", "nr_order", "shop",)
+    search_fields = ("identifier",)
+    list_filter = ("identifier", "shop",)
+
 admin.site.register(Location)
 admin.site.register(Shop, ShopAdmin)
 admin.site.register(Supplier, SupplierAdmin)
-admin.site.register(Delivery)
+admin.site.register(Delivery, DeliveryAdmin)
 admin.site.register(ReasoneComment)
 admin.site.register(ImageModel)

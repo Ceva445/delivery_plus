@@ -49,7 +49,7 @@ def write_report_gs(data=None, sheet_name=None):
         .update(
             spreadsheetId=spreadsheet_id,
             range=f"{sheet_name}!A1",
-            valueInputOption="RAW",
+            valueInputOption="USER_ENTERED",
             body=request_body,
         )
     )

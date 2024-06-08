@@ -63,10 +63,11 @@ def write_summary_report_of_goods(deliverys):
         "Identyfikator", "Data Przyjęcia", 
         "Recepcja", "Obecna lokalizacja",
         "Dostawca", "Zamówienie",
-        "Powód", "Czas od dnia przyjęcia"
+        "Powód", "Czas od dnia przyjęcia","Link Lovo"
         ]
     summary_report.append(title_list)
     for delivery in deliverys:
+        lovo_link = f'=HYPERLINK("{delivery.lovo_link}";"{delivery.lovo_name}")' if delivery.lovo_link else ""
         row = [
             delivery.identifier,
             datetime.strftime(delivery.date_recive, "%Y-%m-%d"),
@@ -76,6 +77,7 @@ def write_summary_report_of_goods(deliverys):
             delivery.nr_order,
             delivery.return_reasone_or_comment(),
             convert_waiting_time(delivery.days_since_received),
+            lovo_link
         ]
         summary_report.append(row)
     
