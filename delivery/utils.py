@@ -138,9 +138,9 @@ def gen_pdf_damage_repor(delivery):
         my_canvas.drawString(50, 517, f"{order}")
         if shop:
             my_canvas.drawString(140, 517, f"LM - {shop}")
-        my_canvas.drawString(210, 517, f"{total_qty} szt.")
+        my_canvas.drawString(210, 517, f"{total_qty} {'Paczka' if 'pacz.' in comment else 'Paleta'}.")
         my_canvas.drawString(320, 517, f"{supplier}")
-        my_canvas.drawString(210, 500, f"{'Paczka' if 'pacz.' in comment else 'Paleta'}")
+        #my_canvas.drawString(210, 500, f"{'Paczka' if 'pacz.' in comment else 'Paleta'}")
 
         line_spacing = 20
 
