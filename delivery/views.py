@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import FileResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -434,29 +435,50 @@ class DeliveryStorageView(LoginRequiredMixin, View):
         queryset = Delivery.objects.all().select_related(
             "supplier_company", "recive_location", "shop", "location"
         )
-        if status:
+        if status and status != 'None':
             queryset = queryset.filter(location__work_zone=status)
-        if identifier:
+        if identifier and identifier != 'None':
             queryset = queryset.filter(identifier__icontains=identifier)
-        if nr_order:
+        if nr_order and nr_order != 'None':
             queryset = queryset.filter(nr_order=nr_order)
-        if sscc_barcode:
+        if sscc_barcode and sscc_barcode != 'None':
             queryset = queryset.filter(sscc_barcode__icontains=sscc_barcode)
-        if date_recive:
+        if date_recive and date_recive and date_recive != 'None':
             date_recive_dt = datetime.strptime(date_recive, "%Y-%m-%d")
             queryset = queryset.filter(date_recive__date=date_recive_dt)
-        if shop:
+        if shop and shop != 'None':
             queryset = queryset.filter(shop=shop)
-        if location:
+        if location and location != 'None':
             queryset = queryset.filter(location__name__icontains=location)
-        if recive_loc:
+        if recive_loc and recive_loc != 'None':
             queryset = queryset.filter(recive_location__name=recive_loc)
-        if office_chek:
+        if office_chek and office_chek != 'None':
             queryset = queryset.filter(office_chek=office_chek)
 
-        context["delivery_list"] = queryset.order_by("-date_recive")
-        return render(request, "delivery/delivery_list.html", context)
 
+        page = request.POST.get('page', 1)
+        paginator = Paginator(queryset.order_by("-date_recive"), 300)
+        try:
+            deliveries = paginator.page(page)
+        except PageNotAnInteger:
+            deliveries = paginator.page(1)
+        except EmptyPage:
+            deliveries = paginator.page(paginator.num_pages)
+
+        context["delivery_list"] = deliveries
+        context["filters"] = {
+            "identifier": identifier,
+            "nr_order": nr_order,
+            "sscc_barcode": sscc_barcode,
+            "date_recive": date_recive,
+            "shop": shop,
+            "location": location,
+            "status": status,
+            "recive_loc": recive_loc,
+            "office_chek": office_chek,
+        }
+
+        return render(request, "delivery/delivery_list.html", context)
 
 class RelocationView(LoginRequiredMixin, View):
     template_name = "delivery/relocation.html"
