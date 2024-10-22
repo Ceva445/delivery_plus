@@ -133,21 +133,21 @@ def gen_pdf_damage_repor(delivery):
     my_canvas.setFont("FreeSans", 10)
 
     if recive_loc == "1R":
-        my_canvas.drawString(170, 674, f"{full_name}")
-        my_canvas.drawString(342, 674, f"{recive_data}")
-        my_canvas.drawString(50, 517, f"{order}")
+        my_canvas.drawString(170, 664, f"{full_name}")
+        my_canvas.drawString(342, 664, f"{recive_data}")
+        my_canvas.drawString(50, 507, f"{order}")
         if shop:
-            my_canvas.drawString(140, 517, f"LM - {shop}")
-        my_canvas.drawString(210, 517, f"{total_qty} {'Paczka' if 'pacz.' in comment else 'Paleta'}.")
-        my_canvas.drawString(320, 517, f"{supplier}")
+            my_canvas.drawString(140, 507, f"LM - {shop}")
+        my_canvas.drawString(210, 507, f"{total_qty} {'Paczka' if 'pacz.' in comment else 'Paleta'}.")
+        my_canvas.drawString(320, 507, f"{supplier}")
         #my_canvas.drawString(210, 500, f"{'Paczka' if 'pacz.' in comment else 'Paleta'}")
 
         line_spacing = 20
 
         x_position = 40
-        y_position = 237
+        y_position = 227
 
-        my_canvas.drawString(x_position, 255, f"SSCC/ASN: {sscc}")
+        my_canvas.drawString(x_position, 245, f"SSCC/ASN: {sscc}")
         for line in get_smart_split_comment(comment=comment.replace("pacz.", "").replace("pall.", "")):
             my_canvas.drawString(x_position, y_position, f"{line}")
             y_position -= line_spacing
@@ -156,18 +156,18 @@ def gen_pdf_damage_repor(delivery):
                 my_canvas.drawString(x_position, y_position, f"{line}.")
                 y_position -= line_spacing
     else:
-        my_canvas.drawString(170, 676, f"{full_name}")
-        my_canvas.drawString(342, 676, f"{recive_data}")
-        my_canvas.drawString(50, 517, f"{order}")
-        my_canvas.drawString(140, 517, f"LM - {shop}")
-        my_canvas.drawString(210, 517, f"{total_qty} szt.")
-        my_canvas.drawString(300, 517, f"{supplier[:16]}")
+        my_canvas.drawString(170, 666, f"{full_name}")
+        my_canvas.drawString(342, 666, f"{recive_data}")
+        my_canvas.drawString(50, 507, f"{order}")
+        my_canvas.drawString(140, 507, f"LM - {shop}")
+        my_canvas.drawString(210, 507, f"{total_qty} szt.")
+        my_canvas.drawString(300, 507, f"{supplier[:16]}")
 
         line_spacing = 20
         x_position = 40
-        y_position = 242
+        y_position = 232
 
-        my_canvas.drawString(x_position, 260, f"SSCC: {sscc}")
+        my_canvas.drawString(x_position, 250, f"SSCC: {sscc}")
         for line in get_smart_split_comment(comment=comment):
             my_canvas.drawString(x_position, y_position, f"{line}")
             y_position -= line_spacing
