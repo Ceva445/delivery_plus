@@ -31,7 +31,7 @@ SPREADSHEET_ID = os.environ["SPREADSHEET_ID"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "deliveru-plus.onrender.com", "delivery-plus-test.onrender.com", "delivery-plus.onrender.com"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
