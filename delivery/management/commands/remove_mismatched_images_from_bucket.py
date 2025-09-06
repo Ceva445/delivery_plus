@@ -36,3 +36,4 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("Deleted missing images from the bucket."))
         else:
             self.stdout.write(self.style.SUCCESS("All images are present in the database."))
+        self.style.SUCCESS("Done")
