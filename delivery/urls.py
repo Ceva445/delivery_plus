@@ -23,7 +23,8 @@ from .views import (
     LocationUpdateView,
     LocationCreateView,
     DeliveryFirsrRecCreateView,
-    DeliverySecondRecCreateView
+    DeliverySecondRecCreateView,
+    DeliveryArchivatorView,
 )
 
 urlpatterns = [
@@ -35,6 +36,7 @@ urlpatterns = [
     path("second-rec/create/", DeliverySecondRecCreateView.as_view(), name="second_rec_del_create"),
     path("add-image/", DeliveryImageAdd.as_view(), name="add_image"),
     path("storage/", DeliveryStorageView.as_view(), name="delivery_storage"),
+    path("archivator/", DeliveryArchivatorView.as_view(), name="delivery_archivator"),
     path("<int:pk>/detail/", DeleveryDetailView.as_view(), name="delivery_detail"),
     path("relocation/", RelocationView.as_view(), name="delivery_relocation"),
     path("uncomplit/", UncompliteView.as_view(), name="delivery_uncomplit"),

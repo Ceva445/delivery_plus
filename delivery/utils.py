@@ -9,7 +9,9 @@ from transaction.models import Transaction
 
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-
+from openpyxl import Workbook
+from openpyxl.styles import Font, Alignment
+from openpyxl.utils import get_column_letter
 
 # open credential file
 CREDENTIALS_FILE = "cred.json"
@@ -55,6 +57,54 @@ def write_report_gs(data=None, sheet_name=None):
     )
     response = request.execute()
 
+def generate_deliveries_excel(deliveries):
+    """Генерує Excel-файл з переданих Delivery записів."""
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Completed Deliveries"
+
+    headers = [
+        "Numer zamówienia", "Identyfikator", "SSCC", "Data otrzymania",
+        "Supplier", "Lokalizacja przyjęciowa", "Obecna lokalizacja",
+        "Sklep", "Uzytkownik ktory przyjal towar", "Komentarz", "Transaction"
+    ]
+    ws.append(headers)
+    for col in range(1, len(headers) + 1):
+        ws.cell(row=1, column=col).font = Font(bold=True)
+
+    for d in deliveries:
+        if d.transaction:
+            lines = [line.strip() for line in d.transaction.splitlines() if line.strip()]
+            transaction_text = "\n".join(lines)
+        else:
+            transaction_text = ""
+
+        row = [
+            str(d.nr_order) if d.nr_order else "",
+            str(d.identifier) if d.identifier else "",
+            str(d.sscc_barcode) if d.sscc_barcode else "",
+            str(d.date_recive.strftime("%Y-%m-%d")) if d.date_recive else "",
+            str(d.supplier_company.name) if d.supplier_company else "",
+            str(d.recive_location.name) if d.recive_location else "",
+            str(d.location.name) if d.location else "",
+            str(d.shop.name) if d.shop else "",
+            str(d.user) if d.user else "",
+            str(d.comment.replace("Podcas rozładunku wykryto ", "").replace("Podczas kontroli wykryto ", "")) if d.comment else "",
+            transaction_text
+        ]
+        ws.append(row)
+
+    # Wrap text
+    transaction_col = len(headers)
+    for cell in ws[get_column_letter(transaction_col)]:
+        cell.alignment = Alignment(wrap_text=True)
+
+    # Автоширина
+    for i, column_cells in enumerate(ws.columns, start=1):
+        max_length = max(len(str(cell.value)) if cell.value else 0 for cell in column_cells)
+        ws.column_dimensions[get_column_letter(i)].width = min(max_length + 2, 40)
+
+    return wb
 
 def create_transaction(user, delivery, transaction_type):
     transaction = Transaction(name=transaction_type, user=user, delivery=delivery)

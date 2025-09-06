@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block navigation %}
+<nav class="navigation">
+    <a class="btn btn-secondary" role="button" href="{% url 'delivery:home' %}">Do głównej</a>
+</nav>
+{% endblock %}
+
+{% block content %}
+<form id="archivatorForm" method="post" action="{% url 'delivery:delivery_archivator' %}" enctype="multipart/form-data" target="downloadFrame">
+    {% csrf_token %}
+
+    <div class="input-group mb-3">
+        <p class="alter alert-dark">
+            Ilość zamówień do archiwizacji: {{ complite_deliveries }}
+        </p>
+    </div>
+
+    <div class="input-group mb-3">
+        <select name="recive_loc" class="form-select">
+            <option disabled selected value="">Wybierz Recepcja</option>
+            <option value="1R">Rec 1</option>
+            <option value="2R">Rec 2</option>
+        </select>
+    </div>
+
+    <div class="input-group mb-3">
+        <input type="number" name="record_qty" class="form-control"
+               placeholder="Ile archiwizować"
+               value="500" min="1" max="{{ complite_deliveries }}">
+    </div>
+
+    <div class="form-check mb-3">
+        <input type="checkbox" name="delete_record" class="form-check-input" id="delete_record">
+        <label class="form-check-label" for="delete_record">
+            Usuń zarchiwizowane rekordy po eksporcie
+        </label>
+    </div>
+
+    <input class="btn btn-secondary" type="submit" value="Generuj raport" style="width: 100%;">
+</form>
+
+<!-- Невидимий iframe для завантаження файлу -->
+<iframe name="downloadFrame" style="display:none;"></iframe>
+
+<script>
+document.getElementById('archivatorForm').addEventListener('submit', function () {
+    // Через 2 секунди редіректимо на GET, щоб оновити сторінку
+    setTimeout(function () {
+        window.location.href = "{% url 'delivery:delivery_archivator' %}";
+    }, 2000);
+});
+</script>
+{% endblock %}

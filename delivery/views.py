@@ -1,5 +1,9 @@
+from openpyxl import Workbook
+from openpyxl.styles import Font, Alignment
+from openpyxl.utils import get_column_letter
+
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import FileResponse, JsonResponse
+from django.http import FileResponse, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
@@ -15,7 +19,7 @@ from .models import (
 from django.views import View
 from .forms import DeliveryForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .utils import gen_comment, gen_pdf_damage_repor
+from .utils import gen_comment, gen_pdf_damage_repor, generate_deliveries_excel
 from django.db import IntegrityError, transaction
 from django.shortcuts import get_object_or_404
 from datetime import datetime, timedelta
@@ -407,7 +411,47 @@ class DeleveryDetailView(LoginRequiredMixin, View):
         delivery.save()
 
         return render(request, "delivery/delivery_detail.html", context)
+class DeliveryArchivatorView(LoginRequiredMixin, View):
+    template_name = "delivery/delivery_archivator.html"
 
+    def get(self, request, *args, **kwargs):
+        complite_deliveries = Delivery.objects.filter(
+            complite_status=True
+        ).count()
+        return render(request, self.template_name, {"complite_deliveries": complite_deliveries})
+
+    def post(self, request, *args, **kwargs):
+        recive_loc = request.POST.get("recive_loc")
+        record_qty_raw = request.POST.get("record_qty")
+        delete_record = request.POST.get("delete_record")
+
+        record_qty = int(record_qty_raw) if record_qty_raw and record_qty_raw.isdigit() else None
+
+        deliveries = Delivery.objects.filter(complite_status=True)\
+            .select_related(
+                "supplier_company", "recive_location", "shop", "location", "user"
+            ).order_by("date_recive")
+
+        if recive_loc and recive_loc != 'None':
+            deliveries = deliveries.filter(recive_location__name=recive_loc)
+
+        if record_qty and record_qty > 0:
+            deliveries = deliveries[:record_qty]
+
+        # Генерація Excel
+        wb = generate_deliveries_excel(deliveries)
+
+        # Віддаємо файл
+        response = HttpResponse(
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+        response["Content-Disposition"] = 'attachment; filename="completed_deliveries.xlsx"'
+        wb.save(response)
+         # Видалення записів
+        if delete_record:
+            Delivery.objects.filter(id__in=[d.id for d in deliveries]).delete()
+
+        return response
 
 class DeliveryStorageView(LoginRequiredMixin, View):
     template_name = "delivery/storeg_filter_page.html"
