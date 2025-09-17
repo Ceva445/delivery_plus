@@ -23,6 +23,7 @@ from .utils import gen_comment, gen_pdf_damage_repor, generate_deliveries_excel
 from django.db import IntegrityError, transaction
 from django.shortcuts import get_object_or_404
 from datetime import datetime, timedelta
+from django.utils import timezone
 from deliveryplus.settings import GS_BUCKET_NAME
 from .print_server import send_label_to_cups
 from .utils import create_transaction
@@ -38,6 +39,7 @@ from .reports import (
 from django.db.models import F, ExpressionWrapper, Func, DateTimeField
 from django.db.models.functions import Now
 from django.db.models import Count
+from deliveryplus.settings import COMPLETED_ORDERS_AFTER_DAYS
 
 
 
@@ -416,7 +418,8 @@ class DeliveryArchivatorView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         complite_deliveries = Delivery.objects.filter(
-            complite_status=True
+            complite_status=True,
+            date_recive__lte=timezone.now() - timedelta(days=COMPLETED_ORDERS_AFTER_DAYS)
         ).count()
         return render(request, self.template_name, {"complite_deliveries": complite_deliveries})
 
@@ -427,17 +430,16 @@ class DeliveryArchivatorView(LoginRequiredMixin, View):
 
         record_qty = int(record_qty_raw) if record_qty_raw and record_qty_raw.isdigit() else None
 
-        deliveries = Delivery.objects.filter(complite_status=True)\
+        deliveries = Delivery.objects.filter(complite_status=True,
+                date_recive__lte=timezone.now() - timedelta(days=COMPLETED_ORDERS_AFTER_DAYS))\
             .select_related(
                 "supplier_company", "recive_location", "shop", "location", "user"
             ).order_by("date_recive")
 
         if recive_loc and recive_loc != 'None':
             deliveries = deliveries.filter(recive_location__name=recive_loc)
-
         if record_qty and record_qty > 0:
             deliveries = deliveries[:record_qty]
-
         # Генерація Excel
         wb = generate_deliveries_excel(deliveries)
 
