@@ -420,18 +420,20 @@ class DeliveryArchivatorView(LoginRequiredMixin, View):
         complite_deliveries = Delivery.objects.filter(
             complite_status=True,
             date_recive__lte=timezone.now() - timedelta(days=COMPLETED_ORDERS_AFTER_DAYS)
-        ).count()
-        return render(request, self.template_name, {"complite_deliveries": complite_deliveries})
+        ).select_related(
+                "supplier_company", "recive_location", "shop", "location", "user"
+            ).count()
+        return render(request, self.template_name, {"complite_deliveries": complite_deliveries, "completed_orders_after_days": COMPLETED_ORDERS_AFTER_DAYS})
 
     def post(self, request, *args, **kwargs):
         recive_loc = request.POST.get("recive_loc")
         record_qty_raw = request.POST.get("record_qty")
         delete_record = request.POST.get("delete_record")
-
+        completed_orders_after_days_raw = int(request.POST.get("completed_orders_after_days", COMPLETED_ORDERS_AFTER_DAYS))
         record_qty = int(record_qty_raw) if record_qty_raw and record_qty_raw.isdigit() else None
 
         deliveries = Delivery.objects.filter(complite_status=True,
-                date_recive__lte=timezone.now() - timedelta(days=COMPLETED_ORDERS_AFTER_DAYS))\
+                date_recive__lte=timezone.now() - timedelta(days=completed_orders_after_days_raw))\
             .select_related(
                 "supplier_company", "recive_location", "shop", "location", "user"
             ).order_by("date_recive")

@@ -27,7 +27,15 @@
     <div class="input-group mb-3">
         <input type="number" name="record_qty" class="form-control"
                placeholder="Ile archiwizować"
-               value="500" min="1" max="{{ complite_deliveries }}">
+               value="500" min="1" max="{{ complite_deliveries }}"
+               title="Wprowadź liczbę rekordów do archiwizacji">
+    </div>
+
+    <div class="input-group mb-3">
+        <input type="number" name="completed_orders_after_days" class="form-control"
+               placeholder="starsze niż (dni)"
+               min="1" value="{{ completed_orders_after_days }}"
+               title="Wprowadź liczbę dni">
     </div>
 
     <div class="form-check mb-3">
@@ -35,6 +43,8 @@
         <label class="form-check-label" for="delete_record">
             Usuń zarchiwizowane rekordy po eksporcie
         </label>
+    </div>
+
     </div>
 
     <input class="btn btn-secondary" type="submit" value="Generuj raport" style="width: 100%;">
