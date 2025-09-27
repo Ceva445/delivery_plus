@@ -32,7 +32,7 @@ class Command(BaseCommand):
             for img in missing_images:
                 url = f"https://storage.googleapis.com/{bucket_name}/{img}"
                 self.stdout.write(url)
-            Delivery.delete_images_set(missing_images)
+            Delivery.delete_images_set(missing_images[:10])#only first 10 images will be deleted
             self.stdout.write(self.style.SUCCESS("Deleted missing images from the bucket."))
         else:
             self.stdout.write(self.style.SUCCESS("All images are present in the database."))

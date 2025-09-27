@@ -5,7 +5,7 @@ from delivery.models import Delivery, ImageModel
 from django.db.models import Count
 
 from deliveryplus.settings import GS_BUCKET_NAME
-
+from django.core import management
 
 class TodoList(APIView):
     def get(self, request):
@@ -45,4 +45,16 @@ class TodoList(APIView):
         Delivery.delete_images_set(images_list)
 
 
+        return Response({"ok":"ok"})
+
+
+class RemoveMismachImagesFromDB(APIView):
+    def get(self, request):
+        management.call_command("remove_mismach_images_from_db")
+        return Response({"ok":"ok"})
+
+
+class RemoveMismachImagesFromGBucket(APIView):
+    def get(self, request):
+        management.call_command("remove_mismatched_images_from_bucket")
         return Response({"ok":"ok"})
